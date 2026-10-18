@@ -1,0 +1,12 @@
+{
+  "lang": "en",
+  "translationKey": "example-technical-document",
+  "title": "Example technical document: equipment description and operating conditions",
+  "authors": ["Example Manufacturer Ltd."],
+  "evidenceType": "other",
+  "source": "TODO(content): real source",
+  "pdf": "/research/placeholder-07.pdf",
+  "summary": "TODO(content): real summary. Placeholder for a manufacturer’s technical document. It is not a study; it describes the equipment, its installation and operating conditions.",
+  "group": "research-studies",
+  "featured": false
+}

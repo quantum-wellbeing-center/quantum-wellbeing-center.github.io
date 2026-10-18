@@ -1,0 +1,13 @@
+{
+  "lang": "ro",
+  "translationKey": "example-peer-reviewed-study",
+  "title": "Exemplu de articol evaluat de specialiști privind relaxarea raportată după sesiuni",
+  "authors": ["Autor Exemplu, A.", "Autoare Exemplu, B."],
+  "year": 2023,
+  "evidenceType": "peer-reviewed",
+  "source": "TODO(content): sursă reală",
+  "pdf": "/research/placeholder-01.pdf",
+  "summary": "TODO(content): rezumat real. Substituent pentru un articol publicat într-o revistă cu evaluare de specialiști (peer-review). Rezumatul final trebuie să descrie neutru ce a măsurat articolul, pe câți participanți și ce limite declară autorii.",
+  "group": "published-clinical",
+  "featured": true
+}

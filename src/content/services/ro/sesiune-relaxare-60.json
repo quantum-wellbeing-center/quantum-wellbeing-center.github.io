@@ -1,0 +1,11 @@
+{
+  "lang": "ro",
+  "translationKey": "relaxation-session-60",
+  "name": "Sesiune de relaxare – 60 de minute",
+  "description": "O oră într-un spațiu liniștit, cu lumină difuză, în care stai confortabil și te deconectezi. Include o scurtă prezentare înainte de prima vizită. TODO(content): confirmați prețul și durata.",
+  "durationMinutes": 60,
+  "price": 150,
+  "currency": "RON",
+  "highlighted": false,
+  "order": 1
+}

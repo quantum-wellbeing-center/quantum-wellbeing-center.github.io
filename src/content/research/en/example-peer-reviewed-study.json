@@ -1,0 +1,13 @@
+{
+  "lang": "en",
+  "translationKey": "example-peer-reviewed-study",
+  "title": "Example peer-reviewed article on reported relaxation after sessions",
+  "authors": ["Example Author, A.", "Example Author, B."],
+  "year": 2023,
+  "evidenceType": "peer-reviewed",
+  "source": "TODO(content): real source",
+  "pdf": "/research/placeholder-01.pdf",
+  "summary": "TODO(content): real summary. Placeholder for an article published in a peer-reviewed journal. The final summary should neutrally describe what the article measured, on how many participants, and which limitations the authors state.",
+  "group": "published-clinical",
+  "featured": true
+}

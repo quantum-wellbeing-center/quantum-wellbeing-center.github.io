@@ -1,0 +1,12 @@
+{
+  "lang": "ro",
+  "translationKey": "example-technical-document",
+  "title": "Exemplu de document tehnic: descrierea echipamentului și a condițiilor de funcționare",
+  "authors": ["Producător Exemplu SRL"],
+  "evidenceType": "other",
+  "source": "TODO(content): sursă reală",
+  "pdf": "/research/placeholder-07.pdf",
+  "summary": "TODO(content): rezumat real. Substituent pentru un document tehnic al producătorului. Nu este un studiu; descrie echipamentul, instalarea și condițiile de funcționare.",
+  "group": "research-studies",
+  "featured": false
+}

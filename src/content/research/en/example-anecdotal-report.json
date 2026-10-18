@@ -1,0 +1,13 @@
+{
+  "lang": "en",
+  "translationKey": "example-anecdotal-report",
+  "title": "Example anecdotal report: client-reported experiences collected by questionnaire",
+  "authors": ["The centre team (example)"],
+  "year": 2025,
+  "evidenceType": "anecdotal-report",
+  "source": "TODO(content): real source",
+  "pdf": "/research/placeholder-08.pdf",
+  "summary": "TODO(content): real summary. Placeholder for a collection of client-reported experiences. The accounts are subjective, have no control group and are not scientific evidence; they are shown as additional material only.",
+  "group": "additional",
+  "featured": false
+}

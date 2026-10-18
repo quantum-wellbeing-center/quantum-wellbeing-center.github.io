@@ -1,0 +1,13 @@
+{
+  "lang": "ro",
+  "translationKey": "example-pilot-study-session-environment",
+  "title": "Exemplu de studiu pilot despre mediul sesiunii: lumină, sunet și temperatură",
+  "authors": ["Cercetător Exemplu, D."],
+  "year": 2020,
+  "evidenceType": "pilot-study",
+  "source": "TODO(content): sursă reală",
+  "pdf": "/research/placeholder-05.pdf",
+  "summary": "TODO(content): rezumat real. Substituent pentru un studiu pilot care descrie condițiile de mediu ale sesiunilor și modul în care participanții le-au evaluat prin chestionar.",
+  "group": "research-studies",
+  "featured": false
+}

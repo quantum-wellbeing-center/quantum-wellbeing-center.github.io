@@ -1,0 +1,11 @@
+{
+  "lang": "en",
+  "translationKey": "coaching-session",
+  "name": "Coaching session – 50 minutes",
+  "description": "A structured one-to-one conversation about your personal balance and organisation goals. A complementary service, available by appointment. TODO(content): confirm the price, duration and who delivers the session.",
+  "durationMinutes": 50,
+  "price": 200,
+  "currency": "RON",
+  "highlighted": false,
+  "order": 4
+}

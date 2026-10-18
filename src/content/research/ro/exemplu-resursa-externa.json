@@ -1,0 +1,13 @@
+{
+  "lang": "ro",
+  "translationKey": "example-external-resource",
+  "title": "Exemplu de resursă externă: sinteză găzduită pe un site terț",
+  "authors": ["Organizație Exemplu"],
+  "year": 2017,
+  "evidenceType": "review",
+  "source": "TODO(content): sursă reală",
+  "pdf": "https://example.com/TODO-content/placeholder.pdf",
+  "summary": "TODO(content): rezumat real și adresă reală. Substituent pentru un document găzduit în afara site-ului; linkul se deschide pe site-ul terț, iar mărimea fișierului nu poate fi afișată.",
+  "group": "additional",
+  "featured": false
+}

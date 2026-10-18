@@ -1,0 +1,11 @@
+{
+  "lang": "en",
+  "translationKey": "relaxation-session-120",
+  "name": "Relaxation session – 120 minutes",
+  "description": "The extended option for those who want more quiet time. You can read, listen to music on headphones or simply rest. TODO(content): confirm the price and duration.",
+  "durationMinutes": 120,
+  "price": 250,
+  "currency": "RON",
+  "highlighted": false,
+  "order": 2
+}

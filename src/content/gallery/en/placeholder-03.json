@@ -1,0 +1,9 @@
+{
+  "lang": "en",
+  "translationKey": "placeholder-03",
+  "image": "../../../assets/gallery/placeholder-03.svg",
+  "alt": "Solid-colour placeholder image labelled “Placeholder image 3”",
+  "caption": "TODO(content): “before” photo – pair 2. Replace with the real, unedited photo, published only with the written consent of the person shown.",
+  "consent": true,
+  "order": 3
+}

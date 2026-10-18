@@ -1,0 +1,13 @@
+{
+  "lang": "ro",
+  "translationKey": "example-pilot-study-relaxation",
+  "title": "Exemplu de studiu pilot privind relaxarea raportată după sesiuni",
+  "authors": ["Autor Exemplu, A.", "Autoare Exemplu, B."],
+  "year": 2024,
+  "evidenceType": "pilot-study",
+  "source": "TODO(content): sursă reală",
+  "pdf": "/research/placeholder-04.pdf",
+  "summary": "TODO(content): rezumat real. Substituent pentru un studiu pilot cu un număr mic de participanți. Un studiu pilot verifică dacă o întrebare merită cercetată la scară mai mare; nu demonstrează efecte.",
+  "group": "research-studies",
+  "featured": true
+}

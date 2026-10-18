@@ -1,0 +1,11 @@
+{
+  "lang": "ro",
+  "translationKey": "relaxation-session-120",
+  "name": "Sesiune de relaxare – 120 de minute",
+  "description": "Varianta extinsă, pentru cei care vor mai mult timp de liniște. Poți citi, asculta muzică la căști sau pur și simplu să te odihnești. TODO(content): confirmați prețul și durata.",
+  "durationMinutes": 120,
+  "price": 250,
+  "currency": "RON",
+  "highlighted": false,
+  "order": 2
+}

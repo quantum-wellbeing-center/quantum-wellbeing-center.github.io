@@ -1,0 +1,13 @@
+{
+  "lang": "en",
+  "translationKey": "example-pilot-study-session-environment",
+  "title": "Example pilot study on the session environment: light, sound and temperature",
+  "authors": ["Example Researcher, D."],
+  "year": 2020,
+  "evidenceType": "pilot-study",
+  "source": "TODO(content): real source",
+  "pdf": "/research/placeholder-05.pdf",
+  "summary": "TODO(content): real summary. Placeholder for a pilot study describing the environmental conditions of sessions and how participants rated them in a questionnaire.",
+  "group": "research-studies",
+  "featured": false
+}

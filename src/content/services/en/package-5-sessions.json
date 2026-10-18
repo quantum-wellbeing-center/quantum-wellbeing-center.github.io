@@ -1,0 +1,12 @@
+{
+  "lang": "en",
+  "translationKey": "package-5-sessions",
+  "name": "Package of 5 sixty-minute sessions",
+  "description": "Five one-hour sessions at a better price than bought separately. Book them one at a time, at your own pace, within six months. TODO(content): confirm the price, validity and package terms.",
+  "durationMinutes": 60,
+  "price": 650,
+  "currency": "RON",
+  "sessionsPerPackage": 5,
+  "highlighted": true,
+  "order": 3
+}

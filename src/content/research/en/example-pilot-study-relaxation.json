@@ -1,0 +1,13 @@
+{
+  "lang": "en",
+  "translationKey": "example-pilot-study-relaxation",
+  "title": "Example pilot study on reported relaxation after sessions",
+  "authors": ["Example Author, A.", "Example Author, B."],
+  "year": 2024,
+  "evidenceType": "pilot-study",
+  "source": "TODO(content): real source",
+  "pdf": "/research/placeholder-04.pdf",
+  "summary": "TODO(content): real summary. Placeholder for a pilot study with a small number of participants. A pilot study checks whether a question is worth researching at a larger scale; it does not demonstrate effects.",
+  "group": "research-studies",
+  "featured": true
+}

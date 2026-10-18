@@ -1,0 +1,12 @@
+{
+  "lang": "ro",
+  "translationKey": "package-5-sessions",
+  "name": "Pachet 5 sesiuni de 60 de minute",
+  "description": "Cinci sesiuni de o oră, la un preț mai bun decât cumpărate separat. Programările se fac pe rând, în ritmul tău, în termen de șase luni. TODO(content): confirmați prețul, valabilitatea și condițiile pachetului.",
+  "durationMinutes": 60,
+  "price": 650,
+  "currency": "RON",
+  "sessionsPerPackage": 5,
+  "highlighted": true,
+  "order": 3
+}

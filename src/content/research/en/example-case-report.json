@@ -1,0 +1,13 @@
+{
+  "lang": "en",
+  "translationKey": "example-case-report",
+  "title": "Example case report: one person’s experience across ten sessions",
+  "authors": ["Example Author, A."],
+  "year": 2019,
+  "evidenceType": "case-report",
+  "source": "TODO(content): real source",
+  "pdf": "/research/placeholder-06.pdf",
+  "summary": "TODO(content): real summary. Placeholder for a case report. A case report describes a single person and cannot be generalised; the final summary must keep that caveat.",
+  "group": "research-studies",
+  "featured": false
+}

@@ -1,0 +1,13 @@
+{
+  "lang": "ro",
+  "translationKey": "example-case-report",
+  "title": "Exemplu de raport de caz: experiența unei singure persoane pe parcursul a zece sesiuni",
+  "authors": ["Autor Exemplu, A."],
+  "year": 2019,
+  "evidenceType": "case-report",
+  "source": "TODO(content): sursă reală",
+  "pdf": "/research/placeholder-06.pdf",
+  "summary": "TODO(content): rezumat real. Substituent pentru un raport de caz. Un raport de caz descrie o singură persoană și nu poate fi generalizat; rezumatul final trebuie să păstreze acest avertisment.",
+  "group": "research-studies",
+  "featured": false
+}
