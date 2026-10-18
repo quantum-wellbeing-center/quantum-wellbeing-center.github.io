@@ -7,3 +7,6 @@ playwright-report/
 lighthouse-report/
 public/research/
 package-lock.json
+# Owner's plan and third-party skill files keep their own formatting.
+WEBSITE_PLAN.md
+.claude/skills/

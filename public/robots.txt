@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /styleguide/
+
+# TODO(content): replace example.com with the real domain (also in astro.config.mjs).
+Sitemap: https://example.com/sitemap-index.xml

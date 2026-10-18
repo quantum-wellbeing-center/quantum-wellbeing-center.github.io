@@ -1,0 +1,74 @@
+---
+/**
+ * Compact opening hours from site config, grouped by identical days.
+ * `inline` renders one line (top bar); otherwise a definition list (footer, contact).
+ */
+import { groupOpeningHours, type Weekday } from '../config/site';
+import { useTranslations, type Locale } from '../i18n';
+
+interface Props {
+  lang: Locale;
+  inline?: boolean;
+  class?: string;
+}
+
+const { lang, inline = false, class: className } = Astro.props;
+const t = useTranslations(lang);
+
+const dayShort = (day: Weekday) => t(`hours.${day}Short`);
+const dayLong = (day: Weekday) => t(`hours.${day}`);
+
+const groups = groupOpeningHours().map((g) => ({
+  days: inline
+    ? g.from === g.to
+      ? dayShort(g.from)
+      : `${dayShort(g.from)}–${dayShort(g.to)}`
+    : g.from === g.to
+      ? dayLong(g.from)
+      : `${dayLong(g.from)} – ${dayLong(g.to)}`,
+  time: g.opens && g.closes ? t('hours.range', { from: g.opens, to: g.closes }) : t('hours.closed'),
+}));
+---
+
+{inline ? (
+  <span class:list={['hours-inline', className]}>
+    {groups.map((g, i) => (
+      <span class="hours-inline__item">
+        {i > 0 && <span aria-hidden="true"> · </span>}
+        <span>{g.days}</span> <span class="hours-inline__time">{g.time}</span>
+      </span>
+    ))}
+  </span>
+) : (
+  <dl class:list={['hours', className]}>
+    {groups.map((g) => (
+      <div class="hours__row">
+        <dt>{g.days}</dt>
+        <dd>{g.time}</dd>
+      </div>
+    ))}
+  </dl>
+)}
+
+<style>
+  .hours-inline__time {
+    font-variant-numeric: tabular-nums;
+  }
+  .hours {
+    display: grid;
+    gap: var(--space-1);
+    margin: 0;
+  }
+  .hours__row {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-3);
+  }
+  .hours dt {
+    color: var(--label-secondary);
+  }
+  .hours dd {
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+  }
+</style>

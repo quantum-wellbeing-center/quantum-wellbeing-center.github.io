@@ -1,0 +1,202 @@
+---
+/**
+ * MobileMenu island: a toggle button and a full-screen sheet for the header contents below 900px.
+ *
+ * Progressive enhancement: without JavaScript the toggle stays hidden and the slot content
+ * renders as a static list under the header bar, so every link is still reachable.
+ * With JavaScript: aria-expanded/aria-controls, focus trap, Escape closes, focus returns to the
+ * toggle, body scroll lock, closes on link click and when the viewport grows past 900px.
+ */
+import { useTranslations, type Locale } from '../../i18n';
+import Icon from '../ui/Icon.astro';
+
+interface Props {
+  lang: Locale;
+  id?: string;
+}
+
+const { lang, id = 'site-menu' } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<button
+  class="menu-toggle"
+  type="button"
+  aria-expanded="false"
+  aria-controls={id}
+  data-menu-toggle
+  data-label-open={t('a11y.openMenu')}
+  data-label-close={t('a11y.closeMenu')}
+  hidden
+>
+  <Icon name="menu" size={24} class="menu-toggle__icon menu-toggle__icon--open" />
+  <Icon name="x" size={24} class="menu-toggle__icon menu-toggle__icon--close" />
+  <span class="visually-hidden" data-menu-toggle-label>
+    {t('a11y.openMenu')}
+  </span>
+</button>
+
+<div class="site-menu" id={id} data-menu>
+  <slot />
+</div>
+
+<script>
+  const BREAKPOINT = '(min-width: 56.25em)';
+  const FOCUSABLE =
+    'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+  function setup(toggle: HTMLButtonElement, menu: HTMLElement) {
+    const root = toggle.closest<HTMLElement>('[data-header]') ?? document.body;
+    const label = toggle.querySelector<HTMLElement>('[data-menu-toggle-label]');
+    const openLabel = toggle.dataset.labelOpen ?? 'Open menu';
+    const closeLabel = toggle.dataset.labelClose ?? 'Close menu';
+    const desktop = window.matchMedia(BREAKPOINT);
+    let isOpen = false;
+
+    root.setAttribute('data-enhanced', '');
+    toggle.hidden = false;
+
+    const focusables = () =>
+      [toggle, ...menu.querySelectorAll<HTMLElement>(FOCUSABLE)].filter(
+        (el) => el.offsetParent !== null || el === toggle,
+      );
+
+    function open() {
+      if (isOpen) return;
+      isOpen = true;
+      menu.setAttribute('data-open', '');
+      toggle.setAttribute('aria-expanded', 'true');
+      if (label) label.textContent = closeLabel;
+      document.body.classList.add('is-locked');
+      document.addEventListener('keydown', onKeydown);
+      const first = menu.querySelector<HTMLElement>(FOCUSABLE);
+      first?.focus();
+    }
+
+    function close(returnFocus = true) {
+      if (!isOpen) return;
+      isOpen = false;
+      menu.removeAttribute('data-open');
+      toggle.setAttribute('aria-expanded', 'false');
+      if (label) label.textContent = openLabel;
+      document.body.classList.remove('is-locked');
+      document.removeEventListener('keydown', onKeydown);
+      if (returnFocus) toggle.focus();
+    }
+
+    function onKeydown(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        close();
+        return;
+      }
+      if (event.key !== 'Tab') return;
+      const items = focusables();
+      if (items.length === 0) return;
+      const first = items[0] as HTMLElement;
+      const last = items[items.length - 1] as HTMLElement;
+      const active = document.activeElement;
+      if (event.shiftKey && active === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && active === last) {
+        event.preventDefault();
+        first.focus();
+      } else if (!(active instanceof HTMLElement) || !items.includes(active)) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+
+    toggle.addEventListener('click', () => (isOpen ? close() : open()));
+    menu.addEventListener('click', (event) => {
+      const target = event.target;
+      if (target instanceof Element && target.closest('a[href]')) close(false);
+    });
+    desktop.addEventListener('change', (event) => {
+      if (event.matches) close(false);
+    });
+  }
+
+  const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  const menu = document.querySelector<HTMLElement>('[data-menu]');
+  if (toggle && menu) setup(toggle, menu);
+</script>
+
+<style>
+  .menu-toggle {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    min-width: var(--touch-target);
+    min-height: var(--touch-target);
+    border-radius: var(--radius-capsule);
+    color: var(--label);
+  }
+  .menu-toggle:hover {
+    background: var(--fill);
+  }
+  .menu-toggle__icon--close {
+    display: none;
+  }
+  .menu-toggle[aria-expanded='true'] .menu-toggle__icon--open {
+    display: none;
+  }
+  .menu-toggle[aria-expanded='true'] .menu-toggle__icon--close {
+    display: block;
+  }
+
+  /* Desktop: the sheet wrapper disappears and its children join the header row. */
+  @media (min-width: 56.25em) {
+    .site-menu {
+      display: contents;
+    }
+  }
+
+  @media (max-width: 56.24em) {
+    .menu-toggle:not([hidden]) {
+      display: inline-flex;
+    }
+    /* Not enhanced: static block under the header bar (links always reachable). */
+    .site-menu {
+      width: 100%;
+      padding-block: var(--space-4) var(--space-5);
+    }
+    /* Enhanced: a full-screen sheet below the bar, hidden until opened. */
+    /* The sheet is a descendant of the header bar's stacking context: a negative z-index
+       keeps it under the bar's material (::before, -1) and content, so the logo and the
+       close toggle stay visible on top of the open sheet. */
+    :global([data-enhanced]) .site-menu {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      padding: calc(var(--header-height) + var(--space-5)) var(--gutter)
+        calc(var(--space-6) + env(safe-area-inset-bottom));
+      background: var(--bg);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      visibility: hidden;
+      opacity: 0;
+      transform: translateY(-0.5rem);
+      transition:
+        opacity var(--duration-base) var(--ease-out),
+        transform var(--duration-base) var(--ease-out),
+        visibility 0s linear var(--duration-base);
+    }
+    :global([data-enhanced]) .site-menu[data-open] {
+      visibility: visible;
+      opacity: 1;
+      transform: none;
+      transition:
+        opacity var(--duration-base) var(--ease-out),
+        transform var(--duration-base) var(--ease-out),
+        visibility 0s;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global([data-enhanced]) .site-menu {
+      transform: none;
+    }
+  }
+</style>

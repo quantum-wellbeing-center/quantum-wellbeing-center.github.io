@@ -1,0 +1,138 @@
+---
+/**
+ * BaseLayout: HTML shell, SEO head, global styles and the shared chrome.
+ * Renders the header exactly once. Pages pass `pageKey` so the language switcher and
+ * hreflang alternates point to the same page in the other language.
+ *
+ * For dynamic routes (articles) pass `alternateUrl` with the translated path,
+ * or `alternateUrl={null}` when no translation exists (no hreflang is emitted then).
+ */
+import '../styles/tokens.css';
+import '../styles/typography.css';
+import '../styles/base.css';
+
+import { site } from '../config/site';
+import {
+  bcp47,
+  getAlternatePath,
+  otherLocale,
+  type Locale,
+  type PageKey,
+  type RouteParams,
+} from '../i18n';
+import SkipLink from '../components/SkipLink.astro';
+import TopBar from '../components/TopBar.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import WhatsAppButton from '../components/WhatsAppButton.astro';
+import CookieConsent from '../components/islands/CookieConsent.astro';
+
+export interface Props {
+  lang: Locale;
+  title: string;
+  description: string;
+  pageKey: PageKey;
+  /** Route params for dynamic pages, e.g. { slug }. */
+  params?: RouteParams;
+  /** Path of this page in the other language; `null` when there is none. */
+  alternateUrl?: string | null;
+  noindex?: boolean;
+  /** Absolute URL or site-relative path of the Open Graph image. */
+  ogImage?: string;
+  ogType?: 'website' | 'article';
+  /** Hide the top info bar and the WhatsApp button, e.g. on the styleguide. */
+  minimalChrome?: boolean;
+}
+
+const {
+  lang,
+  title,
+  description,
+  pageKey,
+  params,
+  alternateUrl,
+  noindex = false,
+  ogImage = '/og-default.png',
+  ogType = 'website',
+  minimalChrome = false,
+} = Astro.props;
+
+const siteUrl = Astro.site ?? new URL(site.domain);
+const currentPath = Astro.url.pathname;
+const canonical = new URL(currentPath, siteUrl).href;
+const other = otherLocale(lang);
+
+const alternatePath =
+  alternateUrl === null ? null : (alternateUrl ?? getAlternatePath(lang, pageKey, params));
+const roPath = lang === 'ro' ? currentPath : alternatePath;
+const enPath = lang === 'en' ? currentPath : alternatePath;
+const hreflangs: { lang: string; href: string }[] = [];
+if (roPath) hreflangs.push({ lang: 'ro', href: new URL(roPath, siteUrl).href });
+if (enPath) hreflangs.push({ lang: 'en', href: new URL(enPath, siteUrl).href });
+if (roPath) hreflangs.push({ lang: 'x-default', href: new URL(roPath, siteUrl).href });
+
+const fullTitle =
+  pageKey === 'home' ? `${site.brandName} – ${title}` : `${title} – ${site.brandName}`;
+const ogImageUrl = new URL(ogImage, siteUrl).href;
+const ogLocale = lang === 'ro' ? 'ro_RO' : 'en_US';
+const ogLocaleAlternate = other === 'ro' ? 'ro_RO' : 'en_US';
+---
+
+<!doctype html>
+<html lang={bcp47(lang)} dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <link rel="canonical" href={canonical} />
+    {hreflangs.map((alt) => (
+      <link rel="alternate" hreflang={alt.lang} href={alt.href} />
+    ))}
+
+    <meta property="og:site_name" content={site.brandName} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content={ogLocale} />
+    {alternatePath && <meta property="og:locale:alternate" content={ogLocaleAlternate} />}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000000" />
+    <meta name="color-scheme" content="light dark" />
+
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta name="generator" content={Astro.generator} />
+
+    <slot name="head" />
+  </head>
+  <body>
+    <SkipLink lang={lang} />
+    {site.features.topBar && !minimalChrome && <TopBar lang={lang} />}
+    <Header lang={lang} pageKey={pageKey} params={params} alternateUrl={alternateUrl} />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <Footer lang={lang} />
+    <CookieConsent lang={lang} />
+    {site.features.whatsappButton && !minimalChrome && <WhatsAppButton lang={lang} />}
+  </body>
+</html>
+
+<style>
+  main:focus {
+    outline: none;
+  }
+</style>

@@ -1,0 +1,72 @@
+---
+/**
+ * LanguageSwitcher: links to the SAME page in the other language.
+ * Uses the route map via `pageKey` (+ `params` for dynamic routes) or an explicit `alternateUrl`.
+ * Pass `alternateUrl={null}` when the page has no translation: the link then goes to the other home.
+ */
+import {
+  getAlternatePath,
+  otherLocale,
+  useTranslations,
+  type Locale,
+  type PageKey,
+  type RouteParams,
+} from '../i18n';
+import Icon from './ui/Icon.astro';
+
+interface Props {
+  lang: Locale;
+  pageKey: PageKey;
+  params?: RouteParams;
+  alternateUrl?: string | null;
+  class?: string;
+}
+
+const { lang, pageKey, params, alternateUrl, class: className } = Astro.props;
+const t = useTranslations(lang);
+const other = otherLocale(lang);
+const href =
+  alternateUrl === null
+    ? getAlternatePath(lang, 'home')
+    : (alternateUrl ?? getAlternatePath(lang, pageKey, params));
+---
+
+<nav class:list={['lang-switch', className]} aria-label={t('a11y.languageSwitcher')}>
+  <a
+    class="lang-switch__link"
+    href={href}
+    hreflang={other}
+    lang={other}
+    data-lang-switch={other}
+    title={t('lang.switchTo')}
+  >
+    <Icon name="globe" size={16} />
+    <span class="lang-switch__code" aria-hidden="true">
+      {other.toUpperCase()}
+    </span>
+    <span class="visually-hidden">{t(`lang.${other}`)}</span>
+  </a>
+</nav>
+
+<style>
+  .lang-switch {
+    display: inline-flex;
+  }
+  .lang-switch__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+    min-height: var(--touch-target);
+    min-width: var(--touch-target);
+    padding: 0 var(--space-3);
+    border-radius: var(--radius-capsule);
+    color: var(--label);
+    font-size: var(--text-subheadline);
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color var(--duration-fast) var(--ease-out);
+  }
+  .lang-switch__link:hover {
+    background: var(--fill);
+  }
+</style>

@@ -1,0 +1,15 @@
+---
+import { useTranslations, type Locale } from '../i18n';
+
+interface Props {
+  lang: Locale;
+  target?: string;
+}
+
+const { lang, target = '#main' } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<a class="skip-link" href={target}>
+  {t('a11y.skipToContent')}
+</a>

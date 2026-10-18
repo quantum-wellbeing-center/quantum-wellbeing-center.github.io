@@ -1,0 +1,365 @@
+---
+/**
+ * CookieConsent island.
+ *
+ * - Full mode (analytics or embeds configured): categories necessary (always on), statistics,
+ *   marketing; "Accept all", "Reject all", "Preferences" with equal visual weight.
+ * - Notice mode (nothing optional configured): a short notice with one OK button.
+ *
+ * Stores { version, choices, timestamp } in localStorage under "cookie-consent",
+ * dispatches `consent-changed` on window (detail: the stored record), exposes
+ * `window.__cookieConsent` (getter) and `window.__openCookiePreferences()`.
+ * Any element with [data-consent-open] reopens the dialog. No optional script loads here:
+ * consumers listen for `consent-changed` and check `detail.choices`.
+ */
+import { site, hasOptionalScripts } from '../../config/site';
+import { getRoute, useTranslations, type Locale } from '../../i18n';
+import Button from '../ui/Button.astro';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const fullMode = hasOptionalScripts();
+const policyHref = getRoute(lang, 'cookies');
+---
+
+<section
+  class="consent"
+  role="dialog"
+  aria-modal="false"
+  aria-labelledby="consent-title"
+  aria-describedby="consent-text"
+  data-consent
+  data-version={site.consentVersion}
+  data-mode={fullMode ? 'full' : 'notice'}
+  hidden
+>
+  <div class="consent__inner">
+    <h2 class="consent__title" id="consent-title">
+      {fullMode ? t('cookie.title') : t('cookie.noticeTitle')}
+    </h2>
+    <p class="consent__text" id="consent-text">
+      {fullMode ? t('cookie.intro') : t('cookie.noticeText')}
+      <a href={policyHref}>{t('cookie.policyLink')}</a>
+    </p>
+
+    {fullMode ? (
+      <>
+        <div class="consent__prefs" id="consent-prefs" data-consent-prefs hidden>
+          <ul class="consent__list" role="list">
+            <li class="consent__option">
+              <div class="consent__option-head">
+                <span class="consent__option-name" id="consent-necessary-label">
+                  {t('cookie.necessary')}
+                </span>
+                <span class="consent__always">{t('cookie.alwaysOn')}</span>
+              </div>
+              <p class="consent__option-desc">{t('cookie.necessaryDesc')}</p>
+            </li>
+            <li class="consent__option">
+              <label class="consent__option-head">
+                <span class="consent__option-name">{t('cookie.statistics')}</span>
+                <input type="checkbox" name="statistics" data-consent-choice="statistics" />
+              </label>
+              <p class="consent__option-desc">{t('cookie.statisticsDesc')}</p>
+            </li>
+            <li class="consent__option">
+              <label class="consent__option-head">
+                <span class="consent__option-name">{t('cookie.marketing')}</span>
+                <input type="checkbox" name="marketing" data-consent-choice="marketing" />
+              </label>
+              <p class="consent__option-desc">{t('cookie.marketingDesc')}</p>
+            </li>
+          </ul>
+          <Button variant="secondary" size="sm" data-consent-action="save">
+            {t('cookie.save')}
+          </Button>
+        </div>
+        <div class="consent__actions">
+          <Button variant="secondary" size="sm" data-consent-action="accept">
+            {t('cookie.acceptAll')}
+          </Button>
+          <Button variant="secondary" size="sm" data-consent-action="reject">
+            {t('cookie.rejectAll')}
+          </Button>
+          <Button
+            variant="secondary"
+            size="sm"
+            data-consent-action="prefs"
+            aria-expanded="false"
+            aria-controls="consent-prefs"
+          >
+            {t('cookie.preferences')}
+          </Button>
+        </div>
+      </>
+    ) : (
+      <div class="consent__actions">
+        <Button variant="secondary" size="sm" data-consent-action="ok">
+          {t('cookie.ok')}
+        </Button>
+      </div>
+    )}
+  </div>
+</section>
+
+<script>
+  type Choices = { necessary: true; statistics: boolean; marketing: boolean };
+  type ConsentRecord = { version: number; choices: Choices; timestamp: string };
+
+  declare global {
+    interface Window {
+      __cookieConsent: ConsentRecord | null;
+      __openCookiePreferences: () => void;
+    }
+    interface WindowEventMap {
+      'consent-changed': CustomEvent<ConsentRecord>;
+    }
+  }
+
+  const STORAGE_KEY = 'cookie-consent';
+
+  function read(): ConsentRecord | null {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return null;
+      const parsed: unknown = JSON.parse(raw);
+      if (
+        typeof parsed === 'object' &&
+        parsed !== null &&
+        'version' in parsed &&
+        'choices' in parsed &&
+        'timestamp' in parsed
+      ) {
+        return parsed as ConsentRecord;
+      }
+      return null;
+    } catch {
+      return null;
+    }
+  }
+
+  function setup(dialog: HTMLElement) {
+    const version = Number(dialog.dataset.version ?? '1');
+    const prefs = dialog.querySelector<HTMLElement>('[data-consent-prefs]');
+    const prefsToggle = dialog.querySelector<HTMLButtonElement>('[data-consent-action="prefs"]');
+    const checkboxes = Array.from(
+      dialog.querySelectorAll<HTMLInputElement>('[data-consent-choice]'),
+    );
+    let opener: HTMLElement | null = null;
+
+    const setOffset = () => {
+      const visible = !dialog.hidden;
+      document.documentElement.style.setProperty(
+        '--consent-offset',
+        visible ? `${dialog.offsetHeight + 12}px` : '0px',
+      );
+    };
+
+    function show(focus: boolean) {
+      dialog.hidden = false;
+      document.body.classList.add('has-consent');
+      const current = read();
+      for (const box of checkboxes) {
+        const key = box.dataset.consentChoice as keyof Choices | undefined;
+        if (key && key !== 'necessary') box.checked = current?.choices[key] ?? false;
+      }
+      setOffset();
+      if (focus) dialog.querySelector<HTMLElement>('button')?.focus();
+    }
+
+    function hide() {
+      dialog.hidden = true;
+      document.body.classList.remove('has-consent');
+      if (prefs) {
+        prefs.hidden = true;
+        prefsToggle?.setAttribute('aria-expanded', 'false');
+      }
+      setOffset();
+      if (opener) {
+        opener.focus();
+        opener = null;
+      }
+    }
+
+    function save(choices: Choices) {
+      const record: ConsentRecord = {
+        version,
+        choices,
+        timestamp: new Date().toISOString(),
+      };
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(record));
+      } catch {
+        /* storage unavailable: the choice applies to this page view only */
+      }
+      window.dispatchEvent(new CustomEvent('consent-changed', { detail: record }));
+      hide();
+    }
+
+    dialog.addEventListener('click', (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      const button = target.closest<HTMLElement>('[data-consent-action]');
+      if (!button) return;
+      switch (button.dataset.consentAction) {
+        case 'accept':
+          save({ necessary: true, statistics: true, marketing: true });
+          break;
+        case 'reject':
+        case 'ok':
+          save({ necessary: true, statistics: false, marketing: false });
+          break;
+        case 'save': {
+          const get = (name: keyof Choices) =>
+            checkboxes.find((b) => b.dataset.consentChoice === name)?.checked ?? false;
+          save({ necessary: true, statistics: get('statistics'), marketing: get('marketing') });
+          break;
+        }
+        case 'prefs':
+          if (prefs) {
+            const open = prefs.hidden;
+            prefs.hidden = !open;
+            button.setAttribute('aria-expanded', String(open));
+            if (open) prefs.querySelector<HTMLElement>('input, button')?.focus();
+            setOffset();
+          }
+          break;
+      }
+    });
+
+    dialog.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && opener) {
+        event.preventDefault();
+        hide();
+      }
+    });
+
+    document.addEventListener('click', (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      const trigger = target.closest<HTMLElement>('[data-consent-open]');
+      if (!trigger) return;
+      event.preventDefault();
+      opener = trigger;
+      show(true);
+    });
+
+    window.addEventListener('resize', setOffset);
+
+    Object.defineProperty(window, '__cookieConsent', { get: read, configurable: true });
+    window.__openCookiePreferences = () => {
+      opener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+      show(true);
+    };
+
+    const existing = read();
+    if (existing && existing.version === version) {
+      window.dispatchEvent(new CustomEvent('consent-changed', { detail: existing }));
+    } else {
+      show(false);
+    }
+  }
+
+  const dialog = document.querySelector<HTMLElement>('[data-consent]');
+  if (dialog) setup(dialog);
+</script>
+
+<style>
+  .consent {
+    position: fixed;
+    inset-inline: var(--space-4);
+    inset-block-end: calc(var(--space-4) + env(safe-area-inset-bottom));
+    z-index: var(--z-modal);
+    max-width: 36rem;
+    margin-inline: auto;
+    background: var(--bg-elevated);
+    color: var(--label);
+    border-radius: var(--radius-card);
+    box-shadow:
+      var(--shadow-lg),
+      inset 0 0 0 1px var(--separator);
+    max-height: calc(100dvh - var(--space-8));
+    overflow-y: auto;
+  }
+  .consent[hidden] {
+    display: none;
+  }
+  .consent__inner {
+    padding: var(--space-5);
+    display: grid;
+    gap: var(--space-4);
+  }
+  .consent__title {
+    font-size: var(--text-headline);
+    line-height: var(--leading-headline);
+    font-weight: 600;
+  }
+  .consent__text {
+    font-size: var(--text-subheadline);
+    line-height: var(--leading-subheadline);
+    color: var(--label-secondary);
+  }
+  .consent__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .consent__actions > :global(*) {
+    flex: 1 1 auto;
+  }
+  .consent__prefs {
+    display: grid;
+    gap: var(--space-4);
+    padding-block-start: var(--space-2);
+  }
+  .consent__list {
+    display: grid;
+    gap: var(--space-3);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .consent__option {
+    padding-block-start: var(--space-3);
+    border-top: 1px solid var(--separator);
+  }
+  .consent__option-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    min-height: var(--touch-target);
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .consent__option-head input {
+    width: 1.5rem;
+    height: 1.5rem;
+    accent-color: var(--accent-fill);
+    cursor: pointer;
+  }
+  .consent__always {
+    font-size: var(--text-footnote);
+    font-weight: 500;
+    color: var(--label-secondary);
+  }
+  .consent__option-desc {
+    font-size: var(--text-footnote);
+    line-height: var(--leading-footnote);
+    color: var(--label-secondary);
+  }
+  @media (min-width: 40em) {
+    .consent {
+      inset-inline: auto var(--space-5);
+    }
+  }
+  @media print {
+    .consent {
+      display: none;
+    }
+  }
+</style>

@@ -1,0 +1,69 @@
+---
+/**
+ * Floating WhatsApp button: bottom right, 56px, safe-area aware.
+ * The cookie consent island sets `--consent-offset` on <html> while the banner is open,
+ * which lifts this button so the two never overlap.
+ */
+import { whatsappUrl } from '../config/site';
+import { useTranslations, type Locale } from '../i18n';
+import Icon from './ui/Icon.astro';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<aside class="whatsapp-fab-wrap" aria-label={t('actions.whatsapp')}>
+  <a class="whatsapp-fab" href={whatsappUrl} target="_blank" rel="noopener" data-whatsapp-fab>
+    <Icon name="whatsapp" size={28} />
+    <span class="visually-hidden">
+      {t('a11y.whatsappButton')} ({t('a11y.newTab')})
+    </span>
+  </a>
+</aside>
+
+<style>
+  .whatsapp-fab {
+    position: fixed;
+    inset-inline-end: calc(var(--space-4) + env(safe-area-inset-right));
+    inset-block-end: calc(
+      var(--space-4) + env(safe-area-inset-bottom) + var(--consent-offset, 0px)
+    );
+    z-index: var(--z-overlay);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: var(--radius-capsule);
+    background: var(--accent-fill);
+    color: var(--on-accent);
+    box-shadow: var(--shadow-md);
+    text-decoration: none;
+    transition:
+      transform var(--duration-fast) var(--ease-out),
+      inset-block-end var(--duration-base) var(--ease-out),
+      box-shadow var(--duration-fast) var(--ease-out);
+  }
+  .whatsapp-fab:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+  }
+  .whatsapp-fab:focus-visible {
+    outline-offset: 3px;
+    border-radius: var(--radius-capsule);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .whatsapp-fab:hover {
+      transform: none;
+    }
+  }
+  @media print {
+    .whatsapp-fab {
+      display: none;
+    }
+  }
+</style>

@@ -1,0 +1,80 @@
+---
+/**
+ * Social profile links from site config, as icon buttons with accessible names.
+ */
+import { site } from '../config/site';
+import { useTranslations, type Locale } from '../i18n';
+import Icon from './ui/Icon.astro';
+import type { IconName } from './ui/Icon.astro';
+
+interface Props {
+  lang: Locale;
+  size?: 'sm' | 'md';
+  class?: string;
+}
+
+const { lang, size = 'md', class: className } = Astro.props;
+const t = useTranslations(lang);
+
+const entries: { name: string; icon: IconName; url: string | undefined }[] = [
+  { name: 'Facebook', icon: 'facebook', url: site.socials.facebook },
+  { name: 'Instagram', icon: 'instagram', url: site.socials.instagram },
+  { name: 'YouTube', icon: 'youtube', url: site.socials.youtube },
+  { name: 'TikTok', icon: 'tiktok', url: site.socials.tiktok },
+];
+const links = entries.filter((e): e is { name: string; icon: IconName; url: string } =>
+  Boolean(e.url),
+);
+---
+
+{links.length > 0 && (
+  <ul class:list={['socials', `socials--${size}`, className]} role="list">
+    {links.map((link) => (
+      <li>
+        <a class="socials__link" href={link.url} target="_blank" rel="noopener">
+          <Icon name={link.icon} size={size === 'sm' ? 18 : 22} />
+          <span class="visually-hidden">
+            {link.name} ({t('a11y.newTab')})
+          </span>
+        </a>
+      </li>
+    ))}
+  </ul>
+)}
+
+<style>
+  .socials {
+    display: flex;
+    gap: var(--space-1);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .socials__link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: var(--touch-target);
+    min-height: var(--touch-target);
+    border-radius: var(--radius-capsule);
+    color: inherit;
+    text-decoration: none;
+    transition:
+      background-color var(--duration-fast) var(--ease-out),
+      color var(--duration-fast) var(--ease-out);
+  }
+  .socials__link:hover {
+    background: var(--fill);
+    color: var(--accent);
+  }
+  .socials--sm .socials__link {
+    min-width: 2.25rem;
+    min-height: 2.25rem;
+  }
+  @media (pointer: coarse) {
+    .socials--sm .socials__link {
+      min-width: var(--touch-target);
+      min-height: var(--touch-target);
+    }
+  }
+</style>

@@ -1,0 +1,324 @@
+---
+/**
+ * Footer: useful links, company and legal links, contact, community CTA, socials,
+ * ANPC SAL badge, SOL note (TODO(legal)), disclaimer, copyright, cookie preferences.
+ */
+import { site, whatsappUrl } from '../config/site';
+import { footerLegalNav, footerUsefulNav, getRoute, useTranslations, type Locale } from '../i18n';
+import Button from './ui/Button.astro';
+import Container from './ui/Container.astro';
+import Icon from './ui/Icon.astro';
+import Logo from './Logo.astro';
+import OpeningHours from './OpeningHours.astro';
+import SocialLinks from './SocialLinks.astro';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const year = new Date().getFullYear();
+
+const usefulLinks = footerUsefulNav.map((key) => ({
+  href: getRoute(lang, key),
+  label: t(`nav.${key}`),
+}));
+const legalLinks = footerLegalNav.map((key) => ({
+  href: getRoute(lang, key),
+  label: t(`nav.${key}`),
+}));
+const addressLine = `${site.address.street}, ${site.address.city}`;
+const communityIcon = site.community.provider === 'telegram' ? 'send' : 'whatsapp';
+---
+
+<footer class="site-footer">
+  <Container>
+    <div class="site-footer__grid">
+      <div class="site-footer__brand">
+        <Logo />
+        <p class="site-footer__tagline">{site.tagline[lang]}</p>
+      </div>
+
+      <nav class="site-footer__col" aria-label={t('a11y.footerNavigation')}>
+        <h2 class="site-footer__heading">{t('footer.usefulLinks')}</h2>
+        <ul class="site-footer__list" role="list">
+          {usefulLinks.map((link) => (
+            <li>
+              <a class="site-footer__link" href={link.href}>
+                {link.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      <nav class="site-footer__col" aria-label={t('a11y.legalNavigation')}>
+        <h2 class="site-footer__heading">{t('footer.company')}</h2>
+        <ul class="site-footer__list" role="list">
+          {legalLinks.map((link) => (
+            <li>
+              <a class="site-footer__link" href={link.href}>
+                {link.label}
+              </a>
+            </li>
+          ))}
+          <li>
+            <button class="site-footer__link site-footer__button" type="button" data-consent-open>
+              {t('footer.cookiePreferences')}
+            </button>
+          </li>
+        </ul>
+        <p class="site-footer__legal">
+          {t('footer.legalDetails', {
+            legalName: site.legal.legalName,
+            cui: site.legal.cui,
+            regCom: site.legal.regCom,
+          })}
+        </p>
+      </nav>
+
+      <div class="site-footer__col">
+        <h2 class="site-footer__heading">{t('footer.contact')}</h2>
+        <address class="site-footer__contact">
+          <a class="site-footer__contact-line" href={site.mapUrl} target="_blank" rel="noopener">
+            <Icon name="map-pin" size={16} />
+            <span>
+              {addressLine} <span class="visually-hidden">({t('a11y.newTab')})</span>
+            </span>
+          </a>
+          <a class="site-footer__contact-line" href={`tel:${site.phoneHref}`}>
+            <Icon name="phone" size={16} />
+            <span>{site.phone}</span>
+          </a>
+          <a class="site-footer__contact-line" href={`mailto:${site.email}`}>
+            <Icon name="mail" size={16} />
+            <span>{site.email}</span>
+          </a>
+          <a class="site-footer__contact-line" href={whatsappUrl} target="_blank" rel="noopener">
+            <Icon name="whatsapp" size={16} />
+            <span>
+              {t('actions.whatsapp')} <span class="visually-hidden">({t('a11y.newTab')})</span>
+            </span>
+          </a>
+        </address>
+        <OpeningHours lang={lang} class="site-footer__hours" />
+      </div>
+
+      <div class="site-footer__col">
+        <h2 class="site-footer__heading">{t('footer.community')}</h2>
+        <p class="site-footer__text">{t('footer.communityText')}</p>
+        <Button
+          href={site.community.url}
+          variant="secondary"
+          size="sm"
+          icon={communityIcon}
+          iconPosition="start"
+          newTabLabel={t('a11y.newTab')}
+        >
+          {t('actions.joinCommunity')}
+        </Button>
+        <h2 class="site-footer__heading site-footer__heading--follow">{t('footer.follow')}</h2>
+        <SocialLinks lang={lang} size="sm" />
+      </div>
+    </div>
+
+    <div class="site-footer__bottom">
+      <div class="site-footer__badges">
+        <a
+          class="site-footer__badge"
+          href="https://anpc.ro/ce-este-sal/"
+          target="_blank"
+          rel="noopener"
+        >
+          <span class="visually-hidden">
+            {t('footer.anpcSal')} ({t('a11y.newTab')})
+          </span>
+          <!-- Locally drawn placeholder badge; not the official artwork. -->
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 160 48"
+            width="160"
+            height="48"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <rect
+              x="0.5"
+              y="0.5"
+              width="159"
+              height="47"
+              rx="10"
+              fill="none"
+              stroke="currentColor"
+            ></rect>
+            <path
+              d="M14 30 L24 12 L34 30 Z"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linejoin="round"
+            ></path>
+            <text
+              x="46"
+              y="21"
+              font-size="11"
+              font-weight="700"
+              fill="currentColor"
+              font-family="system-ui, sans-serif"
+            >
+              ANPC SAL
+            </text>
+            <text
+              x="46"
+              y="36"
+              font-size="9"
+              fill="currentColor"
+              font-family="system-ui, sans-serif"
+            >
+              anpc.ro/ce-este-sal
+            </text>
+          </svg>
+        </a>
+        {site.features.showSolBadge && (
+          <span class="site-footer__badge site-footer__badge--sol">
+            {/* TODO(legal): EU SOL badge placeholder; the platform closed in July 2025. */}
+            SOL
+          </span>
+        )}
+        <p class="site-footer__note">{t('footer.solNote')}</p>
+      </div>
+      <p class="site-footer__disclaimer">{t('footer.disclaimer')}</p>
+      <p class="site-footer__copyright">{t('footer.copyright', { year, brand: site.brandName })}</p>
+    </div>
+  </Container>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--bg-secondary);
+    color: var(--label-secondary);
+    font-size: var(--text-subheadline);
+    line-height: var(--leading-subheadline);
+    padding-block: var(--space-8) calc(var(--space-7) + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--separator);
+  }
+  .site-footer__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+    gap: var(--space-7) var(--space-6);
+  }
+  .site-footer__brand {
+    grid-column: 1 / -1;
+    display: grid;
+    gap: var(--space-3);
+  }
+  @media (min-width: 64em) {
+    .site-footer__grid {
+      grid-template-columns: 1.4fr repeat(4, 1fr);
+    }
+    .site-footer__brand {
+      grid-column: auto;
+    }
+  }
+  .site-footer__tagline {
+    max-width: 24ch;
+    font-size: var(--text-subheadline);
+  }
+  .site-footer__heading {
+    font-size: var(--text-footnote);
+    line-height: var(--leading-footnote);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--label);
+    margin-block-end: var(--space-3);
+  }
+  .site-footer__heading--follow {
+    margin-block-start: var(--space-5);
+  }
+  .site-footer__list {
+    display: grid;
+    gap: var(--space-1);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .site-footer__link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.25rem;
+    color: inherit;
+    text-decoration: none;
+  }
+  .site-footer__link:hover {
+    color: var(--accent);
+    text-decoration: underline;
+  }
+  .site-footer__button {
+    font: inherit;
+    text-align: start;
+  }
+  .site-footer__legal {
+    margin-block-start: var(--space-4);
+    font-size: var(--text-footnote);
+  }
+  .site-footer__contact {
+    display: grid;
+    gap: var(--space-1);
+    margin-block-end: var(--space-4);
+  }
+  .site-footer__contact-line {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    min-height: 2.25rem;
+    color: inherit;
+    text-decoration: none;
+  }
+  .site-footer__contact-line:hover {
+    color: var(--accent);
+  }
+  .site-footer__text {
+    font-size: var(--text-subheadline);
+    margin-block-end: var(--space-4);
+  }
+  .site-footer__bottom {
+    margin-block-start: var(--space-8);
+    padding-block-start: var(--space-6);
+    border-top: 1px solid var(--separator);
+    display: grid;
+    gap: var(--space-4);
+    font-size: var(--text-footnote);
+    line-height: var(--leading-footnote);
+  }
+  .site-footer__badges {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-4);
+  }
+  .site-footer__badge {
+    display: inline-flex;
+    color: var(--label);
+    border-radius: var(--radius-md);
+  }
+  .site-footer__badge--sol {
+    padding: var(--space-2) var(--space-4);
+    border: 1px solid var(--separator);
+    font-weight: 700;
+  }
+  .site-footer__note {
+    max-width: 48ch;
+    color: var(--warning);
+  }
+  .site-footer__disclaimer {
+    max-width: var(--measure);
+  }
+  @media (pointer: coarse) {
+    .site-footer__link,
+    .site-footer__contact-line {
+      min-height: var(--touch-target);
+    }
+  }
+</style>

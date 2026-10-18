@@ -24,7 +24,8 @@ export default defineConfig({
           en: 'en',
         },
       },
-      filter: (page) => !page.includes('/_styleguide'),
+      // The styleguide is an internal page: keep it out of the sitemap.
+      filter: (page) => !page.includes('/styleguide'),
     }),
   ],
 });
