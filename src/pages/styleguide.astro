@@ -1,0 +1,670 @@
+---
+/**
+ * Styleguide: internal, noindex reference for every token, text style and primitive.
+ * Excluded from the sitemap in astro.config.mjs.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Section from '../components/ui/Section.astro';
+import Container from '../components/ui/Container.astro';
+import Button from '../components/ui/Button.astro';
+import Card from '../components/ui/Card.astro';
+import Badge from '../components/ui/Badge.astro';
+import SegmentedControl from '../components/ui/SegmentedControl.astro';
+import Icon from '../components/ui/Icon.astro';
+import type { IconName } from '../components/ui/Icon.astro';
+import type { BadgeTone } from '../components/ui/Badge.astro';
+import { formatDate, formatPrice, useTranslations } from '../i18n';
+
+const t = useTranslations('ro');
+const tEn = useTranslations('en');
+
+const colourTokens = [
+  'bg',
+  'bg-secondary',
+  'bg-elevated',
+  'label',
+  'label-secondary',
+  'separator',
+  'fill',
+  'accent',
+  'accent-fill',
+  'on-accent',
+  'accent-tint',
+  'success',
+  'danger',
+  'warning',
+  'material',
+  'material-fallback',
+  'focus-ring',
+];
+
+const textStyles = [
+  ['display', 'Display (hero only)', 'clamp(2.75rem, 6vw, 5rem) / 1.05 / 700'],
+  ['large-title', 'Large title', '2.125rem / 1.2 / 700'],
+  ['title-1', 'Title 1', '1.75rem / 1.2 / 700'],
+  ['title-2', 'Title 2', '1.375rem / 1.27 / 600'],
+  ['title-3', 'Title 3', '1.25rem / 1.25 / 600'],
+  ['headline', 'Headline', '1.0625rem / 1.3 / 600'],
+  ['body', 'Body', '1.0625rem / 1.47 / 400'],
+  ['callout', 'Callout', '1rem / 1.31 / 400'],
+  ['subheadline', 'Subheadline', '0.9375rem / 1.33 / 400'],
+  ['footnote', 'Footnote', '0.8125rem / 1.38 / 400'],
+  ['caption', 'Caption', '0.75rem / 1.33 / 400'],
+] as const;
+
+const spacing = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const radii = ['sm', 'md', 'card', 'lg', 'capsule'];
+const shadows = ['sm', 'md', 'lg'];
+const badgeTones: BadgeTone[] = ['neutral', 'accent', 'success', 'warning', 'danger'];
+const evidenceTypes = [
+  'peer-reviewed',
+  'clinical-study',
+  'pilot-study',
+  'case-report',
+  'review',
+  'anecdotal-report',
+  'other',
+] as const;
+const evidenceTone: Record<(typeof evidenceTypes)[number], BadgeTone> = {
+  'peer-reviewed': 'success',
+  'clinical-study': 'accent',
+  'pilot-study': 'accent',
+  'case-report': 'neutral',
+  review: 'accent',
+  'anecdotal-report': 'warning',
+  other: 'neutral',
+};
+const icons: IconName[] = [
+  'arrow-right',
+  'arrow-up-right',
+  'calendar-check',
+  'check',
+  'chevron-down',
+  'chevron-left',
+  'chevron-right',
+  'circle-alert',
+  'circle-check',
+  'clock',
+  'cookie',
+  'external-link',
+  'file-text',
+  'globe',
+  'info',
+  'mail',
+  'map-pin',
+  'menu',
+  'message-circle',
+  'phone',
+  'search',
+  'send',
+  'settings-2',
+  'sparkles',
+  'star',
+  'x',
+  'facebook',
+  'instagram',
+  'youtube',
+  'tiktok',
+  'whatsapp',
+];
+const sampleDate = new Date('2026-03-14');
+---
+
+<BaseLayout
+  lang="ro"
+  pageKey="styleguide"
+  title={t('styleguide.title')}
+  description={t('styleguide.description')}
+  noindex
+  minimalChrome
+>
+  <Section spacing="compact" class="sg-intro">
+    <h1>{t('styleguide.title')}</h1>
+    <p class="text-secondary">
+      {t('styleguide.description')} Redă corect în ambele scheme de culoare.
+    </p>
+    <nav aria-label="Secțiuni" class="sg-toc">
+      <ul role="list">
+        <li>
+          <a href="#sg-colours">Culori</a>
+        </li>
+        <li>
+          <a href="#sg-type">Tipografie</a>
+        </li>
+        <li>
+          <a href="#sg-space">Spațiere, forme, umbre</a>
+        </li>
+        <li>
+          <a href="#sg-buttons">Butoane</a>
+        </li>
+        <li>
+          <a href="#sg-badges">Etichete</a>
+        </li>
+        <li>
+          <a href="#sg-cards">Carduri</a>
+        </li>
+        <li>
+          <a href="#sg-segmented">Control segmentat</a>
+        </li>
+        <li>
+          <a href="#sg-icons">Pictograme</a>
+        </li>
+        <li>
+          <a href="#sg-sections">Secțiuni și containere</a>
+        </li>
+        <li>
+          <a href="#sg-intl">Formatare</a>
+        </li>
+      </ul>
+    </nav>
+  </Section>
+
+  <Section id="sg-colours" aria-labelledby="sg-colours-h" spacing="compact">
+    <h2 id="sg-colours-h">Culori</h2>
+    <p class="text-secondary">
+      Fiecare token are o valoare pentru modul luminos și una pentru cel întunecat.
+    </p>
+    <ul class="sg-swatches" role="list">
+      {colourTokens.map((token) => (
+        <li class="sg-swatch">
+          <span class="sg-swatch__chip" style={`background: var(--${token})`} />
+          <code>--{token}</code>
+        </li>
+      ))}
+    </ul>
+    <h3>Text pe fundaluri</h3>
+    <div class="sg-grid-3">
+      {['bg', 'bg-secondary', 'bg-elevated'].map((bg) => (
+        <div class="sg-bgsample" style={`background: var(--${bg})`}>
+          <p class="text-footnote text-secondary">
+            <code>--{bg}</code>
+          </p>
+          <p style="color: var(--label)">Text principal (--label)</p>
+          <p style="color: var(--label-secondary)">Text secundar (--label-secondary)</p>
+          <p>
+            <a href="#sg-colours">Link (--accent)</a>
+          </p>
+          <p style="color: var(--success)">Succes (--success)</p>
+          <p style="color: var(--danger)">Eroare (--danger)</p>
+          <p style="color: var(--warning)">Atenție (--warning)</p>
+        </div>
+      ))}
+    </div>
+  </Section>
+
+  <Section id="sg-type" aria-labelledby="sg-type-h" tone="secondary" spacing="compact">
+    <h2 id="sg-type-h">Tipografie</h2>
+    <p class="text-secondary">
+      Font de sistem, scară în rem. Spațiere negativă doar pe Display și Large title.
+    </p>
+    <dl class="sg-type">
+      {textStyles.map(([cls, name, spec]) => (
+        <div class="sg-type__row">
+          <dt>
+            <span class="text-footnote text-secondary">
+              {name} · <code>.text-{cls}</code> · {spec}
+            </span>
+          </dt>
+          <dd class={`text-${cls}`}>Sesiuni de relaxare și stare de bine</dd>
+        </div>
+      ))}
+    </dl>
+    <h3>Elemente implicite</h3>
+    <div class="prose">
+      <h1>Titlu h1 cu diacritice: ș, ț, â, î, ă</h1>
+      <h2>Titlu h2</h2>
+      <h3>Titlu h3</h3>
+      <h4>Titlu h4</h4>
+      <p>
+        Paragraf de corp. Lorem ipsum nu se folosește; în schimb, acest text verifică lungimea
+        rândului (măsura de 60–75 de caractere), <a href="#sg-type">stilul linkurilor</a> și
+        <strong>textul îngroșat</strong>. <small>Text mic (footnote).</small>
+      </p>
+      <ul>
+        <li>Element de listă unu</li>
+        <li>Element de listă doi</li>
+      </ul>
+      <p>
+        <code>cod inline</code> și <kbd>Esc</kbd>
+      </p>
+    </div>
+  </Section>
+
+  <Section id="sg-space" aria-labelledby="sg-space-h" spacing="compact">
+    <h2 id="sg-space-h">Spațiere, forme, umbre</h2>
+    <h3>Spațiere</h3>
+    <ul class="sg-spacing" role="list">
+      {spacing.map((n) => (
+        <li>
+          <span class="sg-spacing__bar" style={`width: var(--space-${n})`} />
+          <code>--space-{n}</code>
+        </li>
+      ))}
+    </ul>
+    <h3>Raze</h3>
+    <div class="sg-row">
+      {radii.map((r) => (
+        <div class="sg-shape" style={`border-radius: var(--radius-${r})`}>
+          <code>--radius-{r}</code>
+        </div>
+      ))}
+    </div>
+    <h3>Umbre</h3>
+    <div class="sg-row">
+      {shadows.map((s) => (
+        <div class="sg-shadow" style={`box-shadow: var(--shadow-${s})`}>
+          <code>--shadow-{s}</code>
+        </div>
+      ))}
+    </div>
+    <h3>Material</h3>
+    <div class="sg-material-demo">
+      <div class="sg-material-demo__bg" aria-hidden="true"></div>
+      <div class="sg-material">
+        <code>--material</code> + <code>backdrop-filter</code>
+      </div>
+    </div>
+  </Section>
+
+  <Section id="sg-buttons" aria-labelledby="sg-buttons-h" tone="secondary" spacing="compact">
+    <h2 id="sg-buttons-h">Butoane</h2>
+    <p class="text-secondary">
+      Capsule; primar umplut cu accent, secundar cu umplere colorată, simplu ca link.
+    </p>
+    {(['primary', 'secondary', 'plain'] as const).map((variant) => (
+      <div class="sg-block">
+        <h3>
+          <code>variant="{variant}"</code>
+        </h3>
+        <div class="sg-row">
+          <Button variant={variant} size="sm">
+            {t('actions.book')}
+          </Button>
+          <Button variant={variant}>{t('actions.bookSession')}</Button>
+          <Button variant={variant} size="lg">
+            {tEn('actions.bookSession')}
+          </Button>
+          <Button variant={variant} icon="arrow-right">
+            {t('actions.howItWorks')}
+          </Button>
+          <Button variant={variant} icon="calendar-check" iconPosition="start">
+            {tEn('actions.book')}
+          </Button>
+          <Button variant={variant} href="https://example.com/" newTabLabel={t('a11y.newTab')}>
+            {t('actions.openPdf')}
+          </Button>
+          <Button variant={variant} href="https://example.com/" newTabLabel={tEn('a11y.newTab')}>
+            {tEn('actions.openPdf')}
+          </Button>
+          <Button variant={variant} href="#sg-buttons">
+            {t('actions.readMore')}
+          </Button>
+          <Button variant={variant} disabled>
+            {t('actions.send')}
+          </Button>
+        </div>
+      </div>
+    ))}
+    <div class="sg-block">
+      <h3>
+        <code>fullWidth</code>
+      </h3>
+      <div style="max-width: 20rem">
+        <Button fullWidth>{t('form.submit')}</Button>
+      </div>
+    </div>
+  </Section>
+
+  <Section id="sg-badges" aria-labelledby="sg-badges-h" spacing="compact">
+    <h2 id="sg-badges-h">Etichete</h2>
+    <div class="sg-row">
+      {badgeTones.map((tone) => (
+        <Badge tone={tone}>{tone}</Badge>
+      ))}
+      {badgeTones.map((tone) => (
+        <Badge tone={tone} size="sm" icon="check">
+          {tone} sm
+        </Badge>
+      ))}
+    </div>
+    <h3>Tipuri de dovezi</h3>
+    <div class="sg-row">
+      {evidenceTypes.map((type) => (
+        <Badge tone={evidenceTone[type]}>{t(`evidence.${type}`)}</Badge>
+      ))}
+    </div>
+    <div class="sg-row">
+      {evidenceTypes.map((type) => (
+        <Badge tone={evidenceTone[type]}>{tEn(`evidence.${type}`)}</Badge>
+      ))}
+    </div>
+  </Section>
+
+  <Section id="sg-cards" aria-labelledby="sg-cards-h" tone="secondary" spacing="compact">
+    <h2 id="sg-cards-h">Carduri</h2>
+    <div class="sg-grid-3">
+      <Card variant="elevated">
+        <Badge tone="accent">elevated</Badge>
+        <h3>Card ridicat</h3>
+        <p class="text-secondary">
+          Fundal --bg-elevated, umbră subtilă. Folosit pe fundaluri secundare.
+        </p>
+      </Card>
+      <Card variant="tinted">
+        <Badge>tinted</Badge>
+        <h3>Card colorat</h3>
+        <p class="text-secondary">
+          Fundal --bg-secondary, fără umbră. Folosit pe fundalul principal.
+        </p>
+      </Card>
+      <Card variant="outline">
+        <Badge tone="success">outline</Badge>
+        <h3>Card cu contur</h3>
+        <p class="text-secondary">Linie subțire --separator.</p>
+      </Card>
+      <Card variant="elevated" interactive as="article">
+        <svg
+          slot="media"
+          viewBox="0 0 400 200"
+          width="400"
+          height="200"
+          role="img"
+          aria-label="Imagine substituentă"
+        >
+          <rect width="400" height="200" fill="var(--accent-tint)"></rect>
+          <text
+            x="200"
+            y="108"
+            text-anchor="middle"
+            fill="var(--accent)"
+            font-size="18"
+            font-family="system-ui"
+          >
+            Imagine (TODO(content))
+          </text>
+        </svg>
+        <h3>
+          <a class="card__link" href="#sg-cards">
+            Card interactiv cu media
+          </a>
+        </h3>
+        <p class="text-secondary">Întregul card reacționează la link, cu inel de focus pe card.</p>
+        <p slot="footer" class="text-footnote text-secondary">
+          Subsol de card
+        </p>
+      </Card>
+      <Card variant="elevated" padding="sm">
+        <p>Padding mic</p>
+      </Card>
+      <Card variant="elevated" padding="lg">
+        <p>Padding mare</p>
+      </Card>
+    </div>
+  </Section>
+
+  <Section id="sg-segmented" aria-labelledby="sg-segmented-h" spacing="compact">
+    <h2 id="sg-segmented-h">Control segmentat</h2>
+    <p class="text-secondary">Radio nativ; săgețile schimbă selecția. Folosit pentru filtre.</p>
+    <div class="sg-block">
+      <SegmentedControl
+        name="evidence"
+        label={t('common.filterBy')}
+        showLabel
+        value="all"
+        options={[
+          { value: 'all', label: t('common.all'), count: 10 },
+          { value: 'peer-reviewed', label: t('evidence.peer-reviewed'), count: 4 },
+          { value: 'clinical-study', label: t('evidence.clinical-study'), count: 3 },
+          { value: 'anecdotal-report', label: t('evidence.anecdotal-report'), count: 3 },
+        ]}
+      />
+    </div>
+    <div class="sg-block">
+      <SegmentedControl
+        name="size"
+        label="Mărime mică"
+        size="sm"
+        options={[
+          { value: 'ro', label: 'Română' },
+          { value: 'en', label: 'English' },
+        ]}
+      />
+    </div>
+    <div class="sg-block" style="max-width: 24rem">
+      <SegmentedControl
+        name="full"
+        label="Lățime completă"
+        fullWidth
+        options={[
+          { value: 'a', label: tEn('common.all') },
+          { value: 'b', label: tEn('evidence.review') },
+          { value: 'c', label: tEn('evidence.other') },
+        ]}
+      />
+    </div>
+  </Section>
+
+  <Section id="sg-icons" aria-labelledby="sg-icons-h" tone="secondary" spacing="compact">
+    <h2 id="sg-icons-h">Pictograme</h2>
+    <p class="text-secondary">Lucide, contur, o singură grosime de linie. Decorative implicit.</p>
+    <ul class="sg-icons" role="list">
+      {icons.map((name) => (
+        <li>
+          <Icon name={name} size={24} />
+          <code>{name}</code>
+        </li>
+      ))}
+    </ul>
+    <p>
+      Cu etichetă accesibilă: <Icon name="circle-check" label="Succes" />
+      <Icon name="circle-alert" label="Atenție" />
+    </p>
+  </Section>
+
+  <Section id="sg-sections" aria-labelledby="sg-sections-h" spacing="compact">
+    <h2 id="sg-sections-h">Secțiuni și containere</h2>
+    <p class="text-secondary">
+      <code>Section</code> alternează fundalul (<code>tone</code>) și setează ritmul vertical;
+      <code>Container</code> limitează lățimea.
+    </p>
+  </Section>
+  <Section tone="secondary" spacing="compact" container="narrow">
+    <p>
+      <code>tone="secondary" container="narrow"</code>: măsura de ~72ch pentru text curent.
+    </p>
+  </Section>
+  <Section tone="accent" spacing="compact">
+    <h2>tone="accent"</h2>
+    <p>Bandă de apel la acțiune. Textul moștenește --on-accent.</p>
+  </Section>
+  <Section spacing="none" container="none">
+    <Container width="wide" class="sg-wide">
+      <p>
+        <code>Container width="wide"</code>
+      </p>
+    </Container>
+  </Section>
+
+  <Section id="sg-intl" aria-labelledby="sg-intl-h" spacing="compact">
+    <h2 id="sg-intl-h">Formatare</h2>
+    <dl class="sg-dl">
+      <dt>formatDate('ro')</dt>
+      <dd>{formatDate('ro', sampleDate)}</dd>
+      <dt>formatDate('en')</dt>
+      <dd>{formatDate('en', sampleDate)}</dd>
+      <dt>formatPrice('ro', 250)</dt>
+      <dd>{formatPrice('ro', 250)}</dd>
+      <dt>formatPrice('en', 1250.5)</dt>
+      <dd>{formatPrice('en', 1250.5)}</dd>
+    </dl>
+  </Section>
+</BaseLayout>
+
+<style>
+  .sg-toc ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-4);
+    margin-block-start: var(--space-4);
+  }
+  .sg-toc a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--touch-target);
+  }
+  h2 + p,
+  h2 + .sg-row,
+  h3 {
+    margin-block-start: var(--space-3);
+  }
+  h3 {
+    margin-block-start: var(--space-6);
+    margin-block-end: var(--space-3);
+  }
+  .sg-block {
+    margin-block-start: var(--space-5);
+  }
+  .sg-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+    margin-block-start: var(--space-3);
+  }
+  .sg-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+    gap: var(--space-4);
+    margin-block-start: var(--space-4);
+  }
+  .sg-swatches {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+    gap: var(--space-3);
+    margin-block-start: var(--space-4);
+  }
+  .sg-swatch {
+    display: grid;
+    gap: var(--space-2);
+    font-size: var(--text-footnote);
+  }
+  .sg-swatch__chip {
+    display: block;
+    height: 3.5rem;
+    border-radius: var(--radius-md);
+    box-shadow: inset 0 0 0 1px var(--separator);
+  }
+  .sg-bgsample {
+    padding: var(--space-5);
+    border-radius: var(--radius-card);
+    box-shadow: inset 0 0 0 1px var(--separator);
+    display: grid;
+    gap: var(--space-2);
+  }
+  .sg-type {
+    display: grid;
+    gap: var(--space-5);
+    margin-block-start: var(--space-5);
+  }
+  .sg-type__row dd {
+    margin: var(--space-1) 0 0;
+    overflow-wrap: anywhere;
+  }
+  .sg-spacing {
+    display: grid;
+    gap: var(--space-2);
+    margin-block-start: var(--space-3);
+  }
+  .sg-spacing li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-size: var(--text-footnote);
+  }
+  .sg-spacing__bar {
+    display: block;
+    height: 0.75rem;
+    background: var(--accent);
+    border-radius: 2px;
+  }
+  .sg-shape,
+  .sg-shadow {
+    display: grid;
+    place-items: center;
+    width: 8rem;
+    height: 5rem;
+    font-size: var(--text-caption);
+    background: var(--bg-elevated);
+    box-shadow: inset 0 0 0 1px var(--separator);
+  }
+  .sg-shadow {
+    border-radius: var(--radius-card);
+    box-shadow: none;
+  }
+  .sg-material-demo {
+    position: relative;
+    height: 8rem;
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    margin-block-start: var(--space-3);
+  }
+  .sg-material-demo__bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 20% 30%, var(--accent) 0, transparent 40%),
+      radial-gradient(circle at 80% 70%, var(--success) 0, transparent 40%), var(--bg-secondary);
+  }
+  .sg-material {
+    position: absolute;
+    inset: var(--space-4);
+    display: grid;
+    place-items: center;
+    background: var(--material);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: saturate(180%) blur(20px);
+    border-radius: var(--radius-md);
+    box-shadow: inset 0 0 0 1px var(--separator);
+  }
+  @supports not (backdrop-filter: blur(1px)) {
+    .sg-material {
+      background: var(--material-fallback);
+    }
+  }
+  .sg-icons {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
+    gap: var(--space-3);
+    margin-block: var(--space-4);
+  }
+  .sg-icons li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-caption);
+    overflow-wrap: anywhere;
+  }
+  .sg-wide {
+    padding-block: var(--space-4);
+    background: var(--fill);
+  }
+  .sg-dl {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: var(--space-2) var(--space-5);
+    margin-block-start: var(--space-4);
+  }
+  .sg-dl dt {
+    font-family: var(--font-mono);
+    font-size: var(--text-footnote);
+    color: var(--label-secondary);
+  }
+  .sg-dl dd {
+    margin: 0;
+  }
+  @media (max-width: 30em) {
+    .sg-dl {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,63 @@
+---
+/**
+ * Section: a full-bleed band with vertical rhythm and an optional alternating background.
+ * Wraps its content in a Container unless `container="none"`.
+ */
+import type { HTMLTag, Polymorphic } from 'astro/types';
+import Container from './Container.astro';
+
+type Props<Tag extends HTMLTag = 'section'> = Polymorphic<{ as: Tag }> & {
+  /** `secondary` gives the alternating --bg-secondary background. */
+  tone?: 'default' | 'secondary' | 'accent';
+  spacing?: 'default' | 'compact' | 'none';
+  container?: 'default' | 'narrow' | 'wide' | 'none';
+  class?: string;
+};
+
+const {
+  as: Tag = 'section',
+  tone = 'default',
+  spacing = 'default',
+  container = 'default',
+  class: className,
+  ...rest
+} = Astro.props;
+---
+
+<Tag class:list={['section', `section--${tone}`, `section--${spacing}`, className]} {...rest}>
+  {container === 'none' ? (
+    <slot />
+  ) : (
+    <Container width={container}>
+      <slot />
+    </Container>
+  )}
+</Tag>
+
+<style>
+  .section {
+    padding-block: var(--section-padding);
+  }
+  .section--compact {
+    padding-block: var(--space-7);
+  }
+  .section--none {
+    padding-block: 0;
+  }
+  .section--default {
+    background: var(--bg);
+  }
+  .section--secondary {
+    background: var(--bg-secondary);
+  }
+  .section--accent {
+    background: var(--accent-fill);
+    color: var(--on-accent);
+  }
+  .section--accent :global(h1),
+  .section--accent :global(h2),
+  .section--accent :global(h3),
+  .section--accent :global(p) {
+    color: inherit;
+  }
+</style>

@@ -1,0 +1,150 @@
+/*
+  Design tokens: Apple HIG semantic colours translated to the web.
+  See WEBSITE_PLAN.md section 5 and .claude/apple-design-context.md.
+
+  Rules:
+  - Components use tokens only, never raw hex.
+  - Every colour has a light value on :root and a dark value under prefers-color-scheme.
+  - tests/contrast.mjs checks every text/background pair; keep the hex values 6-digit so it can parse them.
+*/
+
+:root {
+  /* Backgrounds */
+  --bg: #ffffff;
+  --bg-secondary: #f5f5f7;
+  --bg-elevated: #ffffff;
+
+  /* Text */
+  --label: #1d1d1f;
+  --label-secondary: #6e6e73;
+
+  /* Lines and fills */
+  --separator: rgba(60, 60, 67, 0.29);
+  --fill: rgba(120, 120, 128, 0.12);
+  --fill-strong: rgba(120, 120, 128, 0.2);
+
+  /* Accent: links, tinted controls and the primary button fill. */
+  --accent: #0066cc;
+  --accent-fill: #0066cc;
+  --on-accent: #ffffff;
+  --accent-tint: rgba(0, 102, 204, 0.12);
+  /* "-strong" variants are the text colours used ON the matching tint (secondary button, badges):
+     the tint lightens the surface, so they are slightly darker than the plain token. */
+  --accent-strong: #005ebd;
+
+  /* Status: always paired with text or an icon, never colour alone. */
+  /* Success was darkened from Apple's #248A3D (4.40:1 on white) to reach 4.5:1 on all backgrounds. */
+  --success: #1f7a35;
+  --success-tint: rgba(31, 122, 53, 0.12);
+  --success-strong: #1c7031;
+  --danger: #d70015;
+  --danger-tint: rgba(215, 0, 21, 0.1);
+  --danger-strong: #c40013;
+  /* Warning is not in Apple's table; it exists for "anecdotal report" style labels. */
+  --warning: #9a4a00;
+  --warning-tint: rgba(154, 74, 0, 0.12);
+  --warning-strong: #9a4a00;
+
+  /* Materials (translucent header). Fallback is used when backdrop-filter is unavailable. */
+  --material: rgba(255, 255, 255, 0.72);
+  --material-fallback: #ffffff;
+
+  /* Focus ring (non-text contrast 3:1 on every background). */
+  --focus-ring: #0066cc;
+
+  /* Shadows: subtle, content over chrome. */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.12);
+
+  /* Spacing scale (rem so it follows browser text size). */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --space-9: 6rem;
+  --space-10: 8rem;
+
+  /* Layout */
+  --container: 75rem; /* ~1200px */
+  --container-narrow: 72ch;
+  --measure: 65ch;
+  --gutter: var(--space-4);
+  --section-padding: clamp(var(--space-7), 8vw, var(--space-9));
+  --header-height: 3.25rem; /* 52px */
+  --topbar-height: 2.25rem;
+
+  /* Shape */
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-card: 1.125rem; /* 18px: cards use 16 to 20px */
+  --radius-lg: 1.5rem;
+  --radius-capsule: 999px;
+
+  /* Motion: 200 to 400ms, ease-out. */
+  --duration-fast: 150ms;
+  --duration-base: 250ms;
+  --duration-slow: 400ms;
+  --ease-out: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --ease-in-out: cubic-bezier(0.42, 0, 0.58, 1);
+  --ease-spring: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  /* Z-index scale */
+  --z-base: 0;
+  --z-raised: 10;
+  --z-sticky: 100;
+  --z-overlay: 200;
+  --z-modal: 300;
+  --z-toast: 400;
+
+  /* Touch target */
+  --touch-target: 2.75rem; /* 44px */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #000000;
+    --bg-secondary: #1c1c1e;
+    --bg-elevated: #2c2c2e;
+
+    --label: #f5f5f7;
+    --label-secondary: #a1a1a6;
+
+    --separator: rgba(84, 84, 88, 0.6);
+    --fill: rgba(120, 120, 128, 0.24);
+    --fill-strong: rgba(120, 120, 128, 0.36);
+
+    /* Links stay the light blue; the button fill uses a deeper blue (#0071EE) so white text
+       reaches 4.5:1 and the fill itself keeps 3:1 against the elevated card surface. */
+    --accent: #2997ff;
+    --accent-fill: #0071ee;
+    --on-accent: #ffffff;
+    --accent-tint: rgba(41, 151, 255, 0.16);
+    /* In dark mode the tint lightens the surface, so on-tint text is lighter than the plain token. */
+    --accent-strong: #58aeff;
+
+    --success: #30d158;
+    --success-tint: rgba(48, 209, 88, 0.16);
+    --success-strong: #30d158;
+    /* Danger was lightened from Apple's #FF453A (4.10:1 on the elevated surface) to reach 4.5:1. */
+    --danger: #ff6961;
+    --danger-tint: rgba(255, 105, 97, 0.16);
+    --danger-strong: #ff8781;
+    --warning: #ffb340;
+    --warning-tint: rgba(255, 179, 64, 0.16);
+    --warning-strong: #ffb340;
+
+    --material: rgba(22, 22, 23, 0.72);
+    --material-fallback: #161617;
+
+    --focus-ring: #2997ff;
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
+    --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.6);
+  }
+}

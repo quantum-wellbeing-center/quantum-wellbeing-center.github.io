@@ -1,0 +1,38 @@
+---
+/**
+ * Container: centres content with side gutters.
+ * `default` is about 1200px, `narrow` about 72ch for running text, `wide` is the full width.
+ */
+import type { HTMLTag, Polymorphic } from 'astro/types';
+
+type Props<Tag extends HTMLTag = 'div'> = Polymorphic<{ as: Tag }> & {
+  width?: 'default' | 'narrow' | 'wide';
+  class?: string;
+};
+
+const { as: Tag = 'div', width = 'default', class: className, ...rest } = Astro.props;
+---
+
+<Tag class:list={['container', `container--${width}`, className]} {...rest}>
+  <slot />
+</Tag>
+
+<style>
+  .container {
+    width: 100%;
+    max-width: var(--container);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+  .container--narrow {
+    max-width: calc(var(--container-narrow) + 2 * var(--gutter));
+  }
+  .container--wide {
+    max-width: none;
+  }
+  @media (min-width: 48em) {
+    .container {
+      --gutter: var(--space-6);
+    }
+  }
+</style>

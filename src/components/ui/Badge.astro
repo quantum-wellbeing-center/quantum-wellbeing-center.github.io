@@ -1,0 +1,64 @@
+---
+/**
+ * Badge: a tinted capsule label, used for evidence-type labels, counts and statuses.
+ * Colour is never the only signal: the text itself carries the meaning.
+ */
+import type { HTMLAttributes } from 'astro/types';
+import Icon from './Icon.astro';
+import type { IconName } from './Icon.astro';
+
+export type BadgeTone = 'neutral' | 'accent' | 'success' | 'warning' | 'danger';
+
+export interface Props extends Omit<HTMLAttributes<'span'>, 'class'> {
+  tone?: BadgeTone;
+  size?: 'sm' | 'md';
+  icon?: IconName;
+  class?: string;
+}
+
+const { tone = 'neutral', size = 'md', icon, class: className, ...rest } = Astro.props;
+---
+
+<span class:list={['badge', `badge--${tone}`, `badge--${size}`, className]} {...rest}>
+  {icon && <Icon name={icon} size={size === 'sm' ? 12 : 14} />}
+  <slot />
+</span>
+
+<style>
+  .badge {
+    --badge-bg: var(--fill);
+    --badge-color: var(--label);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3em;
+    padding: 0.25em 0.75em;
+    border-radius: var(--radius-capsule);
+    background: var(--badge-bg);
+    color: var(--badge-color);
+    font-size: var(--text-footnote);
+    line-height: 1.4;
+    font-weight: 600;
+    white-space: nowrap;
+    vertical-align: middle;
+  }
+  .badge--sm {
+    font-size: var(--text-caption);
+    padding: 0.2em 0.6em;
+  }
+  .badge--accent {
+    --badge-bg: var(--accent-tint);
+    --badge-color: var(--accent-strong);
+  }
+  .badge--success {
+    --badge-bg: var(--success-tint);
+    --badge-color: var(--success-strong);
+  }
+  .badge--warning {
+    --badge-bg: var(--warning-tint);
+    --badge-color: var(--warning-strong);
+  }
+  .badge--danger {
+    --badge-bg: var(--danger-tint);
+    --badge-color: var(--danger-strong);
+  }
+</style>

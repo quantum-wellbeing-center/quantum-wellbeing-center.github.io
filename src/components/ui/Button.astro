@@ -1,0 +1,186 @@
+---
+/**
+ * Button: capsule shape, three variants, three sizes.
+ * Renders <a> when `href` is given, otherwise <button>.
+ * External links open in a new tab with a visible indicator and a visually-hidden note
+ * (`newTabLabel`, localized by the caller).
+ */
+import type { HTMLAttributes } from 'astro/types';
+import Icon from './Icon.astro';
+import type { IconName } from './Icon.astro';
+
+export type ButtonVariant = 'primary' | 'secondary' | 'plain';
+export type ButtonSize = 'sm' | 'md' | 'lg';
+
+interface BaseProps {
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+  /** Optional leading or trailing icon. */
+  icon?: IconName;
+  iconPosition?: 'start' | 'end';
+  /** Force or suppress external-link behaviour; by default, any http(s) href is external. */
+  external?: boolean;
+  /** Visually-hidden text appended to external links. Localize it via i18n. */
+  newTabLabel?: string;
+  fullWidth?: boolean;
+  class?: string;
+}
+
+type AnchorProps = BaseProps & { href: string } & Omit<HTMLAttributes<'a'>, 'href' | 'class'>;
+type NativeButtonProps = BaseProps & {
+  href?: undefined;
+  type?: 'button' | 'submit' | 'reset';
+} & Omit<HTMLAttributes<'button'>, 'type' | 'class'>;
+
+export type Props = AnchorProps | NativeButtonProps;
+
+const {
+  variant = 'primary',
+  size = 'md',
+  icon,
+  iconPosition = 'end',
+  external,
+  newTabLabel = 'se deschide într-o filă nouă',
+  fullWidth = false,
+  class: className,
+  href,
+  ...rest
+} = Astro.props as BaseProps & { href?: string } & Record<string, unknown>;
+
+const isExternal = external ?? (typeof href === 'string' && /^https?:\/\//i.test(href));
+const Tag = href ? 'a' : 'button';
+
+const attrs: Record<string, unknown> = { ...rest };
+if (href) {
+  attrs.href = href;
+  if (isExternal) {
+    attrs.target = '_blank';
+    attrs.rel = 'noopener';
+  }
+} else if (!('type' in attrs)) {
+  attrs.type = 'button';
+}
+
+const classes = [
+  'btn',
+  `btn--${variant}`,
+  `btn--${size}`,
+  { 'btn--full': fullWidth, 'btn--external': isExternal },
+  className,
+];
+const iconSize = size === 'sm' ? 16 : size === 'lg' ? 20 : 18;
+---
+
+<Tag class:list={classes} {...attrs}>
+  {icon && iconPosition === 'start' && <Icon name={icon} size={iconSize} class="btn__icon" />}
+  <span class="btn__label">
+    <slot />
+  </span>
+  {icon && iconPosition === 'end' && <Icon name={icon} size={iconSize} class="btn__icon" />}
+  {isExternal && (
+    <>
+      <Icon name="arrow-up-right" size={iconSize} class="btn__icon btn__ext" />
+      <span class="visually-hidden">({newTabLabel})</span>
+    </>
+  )}
+</Tag>
+
+<style>
+  .btn {
+    --btn-bg: transparent;
+    --btn-color: var(--accent);
+    --btn-bg-hover: var(--fill);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4em;
+    min-height: var(--touch-target);
+    padding: 0.625rem 1.25rem;
+    border-radius: var(--radius-capsule);
+    background: var(--btn-bg);
+    color: var(--btn-color);
+    font-size: var(--text-body);
+    line-height: 1.2;
+    font-weight: 600;
+    text-decoration: none;
+    text-align: center;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition:
+      background-color var(--duration-fast) var(--ease-out),
+      color var(--duration-fast) var(--ease-out),
+      transform var(--duration-fast) var(--ease-out),
+      opacity var(--duration-fast) var(--ease-out);
+  }
+  .btn:hover {
+    background: var(--btn-bg-hover);
+    text-decoration: none;
+  }
+  .btn:active {
+    transform: scale(0.98);
+  }
+  .btn:focus-visible {
+    outline-offset: 3px;
+    border-radius: var(--radius-capsule);
+  }
+  .btn[disabled],
+  .btn[aria-disabled='true'] {
+    opacity: 0.45;
+    pointer-events: none;
+  }
+
+  .btn--primary {
+    --btn-bg: var(--accent-fill);
+    --btn-color: var(--on-accent);
+    --btn-bg-hover: color-mix(in srgb, var(--accent-fill) 88%, var(--label));
+  }
+  .btn--secondary {
+    --btn-bg: var(--accent-tint);
+    --btn-color: var(--accent-strong);
+    --btn-bg-hover: color-mix(in srgb, var(--accent-tint) 100%, var(--fill));
+  }
+  .btn--plain {
+    --btn-bg: transparent;
+    --btn-color: var(--accent);
+    --btn-bg-hover: var(--fill);
+    padding-inline: 0.75rem;
+  }
+
+  .btn--sm {
+    font-size: var(--text-subheadline);
+    padding: 0.5rem 1rem;
+    min-height: 2.25rem;
+  }
+  .btn--lg {
+    font-size: var(--text-headline);
+    padding: 0.875rem 1.75rem;
+    min-height: 3.25rem;
+  }
+  .btn--full {
+    display: flex;
+    width: 100%;
+  }
+
+  .btn__icon {
+    flex-shrink: 0;
+  }
+  .btn__ext {
+    margin-inline-start: -0.15em;
+    opacity: 0.85;
+  }
+
+  /* Small buttons still get a 44px hit area on touch devices. */
+  @media (pointer: coarse) {
+    .btn--sm {
+      min-height: var(--touch-target);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .btn:active {
+      transform: none;
+    }
+  }
+</style>

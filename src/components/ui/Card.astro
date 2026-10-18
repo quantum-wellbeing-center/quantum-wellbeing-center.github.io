@@ -1,0 +1,130 @@
+---
+/**
+ * Card: 16 to 20px radius, hairline border or subtle shadow, no heavy chrome.
+ * Slots: default, `media` (flush at the top), `footer`.
+ */
+import type { HTMLTag, Polymorphic } from 'astro/types';
+
+type CardVariant = 'elevated' | 'tinted' | 'outline';
+
+type Props<Tag extends HTMLTag = 'div'> = Polymorphic<{ as: Tag }> & {
+  variant?: CardVariant;
+  padding?: 'none' | 'sm' | 'md' | 'lg';
+  /** Adds hover lift and makes the whole card react to a link inside. */
+  interactive?: boolean;
+  class?: string;
+};
+
+const {
+  as: Tag = 'div',
+  variant = 'elevated',
+  padding = 'md',
+  interactive = false,
+  class: className,
+  ...rest
+} = Astro.props;
+---
+
+<Tag
+  class:list={[
+    'card',
+    `card--${variant}`,
+    `card--pad-${padding}`,
+    { 'card--interactive': interactive },
+    className,
+  ]}
+  {...rest}
+>
+  {Astro.slots.has('media') && (
+    <div class="card__media">
+      <slot name="media" />
+    </div>
+  )}
+  <div class="card__body">
+    <slot />
+  </div>
+  {Astro.slots.has('footer') && (
+    <div class="card__footer">
+      <slot name="footer" />
+    </div>
+  )}
+</Tag>
+
+<style>
+  .card {
+    --card-pad: var(--space-5);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    color: var(--label);
+    transition:
+      transform var(--duration-base) var(--ease-out),
+      box-shadow var(--duration-base) var(--ease-out);
+  }
+  .card--elevated {
+    background: var(--bg-elevated);
+    box-shadow: var(--shadow-sm);
+  }
+  .card--tinted {
+    background: var(--bg-secondary);
+  }
+  .card--outline {
+    background: var(--bg);
+    box-shadow: inset 0 0 0 1px var(--separator);
+  }
+  .card--pad-none {
+    --card-pad: 0;
+  }
+  .card--pad-sm {
+    --card-pad: var(--space-4);
+  }
+  .card--pad-lg {
+    --card-pad: var(--space-6);
+  }
+
+  .card__body {
+    flex: 1;
+    padding: var(--card-pad);
+  }
+  .card__body > :global(* + *) {
+    margin-block-start: var(--space-3);
+  }
+  .card__footer {
+    padding: 0 var(--card-pad) var(--card-pad);
+  }
+  .card__media {
+    overflow: hidden;
+  }
+  .card__media :global(img),
+  .card__media :global(svg) {
+    width: 100%;
+    height: auto;
+  }
+
+  .card--interactive:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+  /* Stretch the first link inside an interactive card over the whole card. */
+  .card--interactive :global(a.card__link)::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+  .card--interactive:has(:global(a.card__link:focus-visible)) {
+    outline: 3px solid var(--focus-ring);
+    outline-offset: 3px;
+  }
+  .card--interactive :global(a.card__link:focus-visible) {
+    outline: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card--interactive:hover {
+      transform: none;
+    }
+  }
+</style>
