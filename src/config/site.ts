@@ -36,6 +36,21 @@ export interface CommunityChannel {
   url: string;
 }
 
+/** Quick-reply chips in the WhatsApp chat panel; also the topic of every booking link. */
+export type ChatTopic = 'booking' | 'pricing' | 'other';
+
+/** Building blocks of the prefilled WhatsApp message (see src/lib/whatsapp.ts). */
+export interface WhatsAppMessages {
+  /** Opening line of every message. */
+  greeting: string;
+  /** One sentence per chat topic. */
+  topics: Record<ChatTopic, string>;
+  /** Templates for the optional parts; `{value}` is replaced and the part is skipped when empty. */
+  service: string;
+  name: string;
+  preferredTime: string;
+}
+
 export interface SiteConfig {
   /** Public brand name shown in the header, titles and copyright. */
   brandName: string;
@@ -60,8 +75,12 @@ export interface SiteConfig {
   email: string;
   /** Digits only, international format, for wa.me links. */
   whatsappNumber: string;
+  /** Prefilled WhatsApp message parts per language. */
+  whatsappMessages: Record<Locale, WhatsAppMessages>;
   openingHours: OpeningHoursEntry[];
+  /** @deprecated Booking goes through the WhatsApp chat (BookingLink). Removed once nothing reads it. */
   bookingUrl: string;
+  /** @deprecated There is no contact form in the revised plan. Removed once nothing reads it. */
   form: {
     provider: FormProvider;
     endpoint: string;
@@ -105,10 +124,34 @@ export const site: SiteConfig = {
     postalCode: '000000', // TODO(content): postal code
     country: 'RO',
   },
-  phone: '+40 700 000 000', // TODO(content): phone number as displayed
-  phoneHref: '+40700000000', // TODO(content): phone number for tel: links
+  phone: '0748 011 259',
+  phoneHref: '+40748011259',
   email: 'contact@example.com', // TODO(content): email
-  whatsappNumber: '40700000000', // TODO(content): WhatsApp number, digits only
+  whatsappNumber: '40748011259',
+  whatsappMessages: {
+    ro: {
+      greeting: 'Bună ziua!',
+      topics: {
+        booking: 'Aș dori o programare.',
+        pricing: 'Aș avea o întrebare despre prețuri.',
+        other: 'Aș avea o întrebare.',
+      },
+      service: 'Serviciul: {value}.',
+      name: 'Nume: {value}.',
+      preferredTime: 'Ziua/ora preferată: {value}.',
+    },
+    en: {
+      greeting: 'Hello!',
+      topics: {
+        booking: 'I would like to book an appointment.',
+        pricing: 'I have a question about prices.',
+        other: 'I have a question.',
+      },
+      service: 'Service: {value}.',
+      name: 'Name: {value}.',
+      preferredTime: 'Preferred day/time: {value}.',
+    },
+  },
   openingHours: [
     // TODO(content): real opening hours
     { day: 'monday', opens: '09:00', closes: '20:00' },

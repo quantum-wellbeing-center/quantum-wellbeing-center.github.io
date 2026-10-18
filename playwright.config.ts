@@ -8,8 +8,9 @@ import { defineConfig, devices } from '@playwright/test';
  * Astro 7 runs `astro preview` as a managed background daemon with a lock file and refuses
  * a second instance. `--ignore-lock` makes it a plain foreground process that Playwright can
  * own and stop. If the port is busy from an earlier daemon, run `npx astro preview stop`.
+ * Set PW_PORT to run two suites side by side, e.g. from separate worktrees.
  */
-const PORT = 4322;
+const PORT = Number(process.env.PW_PORT ?? 4322);
 const BASE_URL = `http://localhost:${PORT}`;
 
 export default defineConfig({

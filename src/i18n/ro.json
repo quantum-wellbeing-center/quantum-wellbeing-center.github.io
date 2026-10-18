@@ -67,7 +67,13 @@
     "contactUs": "Contactează-ne",
     "openImage": "Deschide imaginea",
     "backToArticles": "Înapoi la articole",
-    "openDocument": "Deschide documentul"
+    "openDocument": "Deschide documentul",
+    "bookWhatsApp": "Programează-te pe WhatsApp",
+    "bookShort": "Programează-te",
+    "seeServices": "Vezi serviciile",
+    "writeWhatsApp": "Scrie-ne pe WhatsApp",
+    "callNumber": "Sună: {phone}",
+    "sendWhatsApp": "Trimite pe WhatsApp"
   },
   "topBar": {
     "hours": "Program",

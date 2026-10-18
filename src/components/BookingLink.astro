@@ -1,0 +1,66 @@
+---
+/**
+ * BookingLink: every "Rezervă" and "Programează-te" button on the site.
+ *
+ * Without JavaScript it is a plain wa.me link with a prefilled message, so booking always works.
+ * The WhatsApp chat island intercepts clicks on `[data-chat-open]` and opens the chat panel
+ * instead, preselecting `data-chat-topic` and adding `data-chat-service` to the message.
+ *
+ *   <BookingLink lang={lang}>{t('actions.book')}</BookingLink>
+ *   <BookingLink lang={lang} service={d.name} message={d.whatsappMessage} variant="secondary">…</BookingLink>
+ */
+import type { ChatTopic } from '../config/site';
+import { useTranslations, type Locale } from '../i18n';
+import { buildWhatsAppMessage, whatsappHref } from '../lib/whatsapp';
+import Button from './ui/Button.astro';
+import type { ButtonSize, ButtonVariant } from './ui/Button.astro';
+import type { IconName } from './ui/Icon.astro';
+
+interface Props {
+  lang: Locale;
+  /** Chip preselected in the chat and topic of the fallback message. Defaults to 'booking'. */
+  topic?: ChatTopic;
+  /** Service name added to the message. */
+  service?: string;
+  /** Full prefilled text for the no-JavaScript link; built from topic and service when omitted. */
+  message?: string;
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+  icon?: IconName;
+  iconPosition?: 'start' | 'end';
+  fullWidth?: boolean;
+  class?: string;
+}
+
+const {
+  lang,
+  topic = 'booking',
+  service,
+  message,
+  variant = 'primary',
+  size = 'md',
+  icon,
+  iconPosition,
+  fullWidth = false,
+  class: className,
+} = Astro.props;
+const t = useTranslations(lang);
+const href = whatsappHref(message ?? buildWhatsAppMessage(lang, { topic, service }));
+---
+
+<Button
+  href={href}
+  external={false}
+  variant={variant}
+  size={size}
+  icon={icon}
+  iconPosition={iconPosition}
+  fullWidth={fullWidth}
+  class={className}
+  newTabLabel={t('a11y.newTab')}
+  data-chat-open
+  data-chat-topic={topic}
+  data-chat-service={service}
+>
+  <slot />
+</Button>

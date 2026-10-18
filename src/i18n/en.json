@@ -67,7 +67,13 @@
     "contactUs": "Contact us",
     "openImage": "Open image",
     "backToArticles": "Back to articles",
-    "openDocument": "Open document"
+    "openDocument": "Open document",
+    "bookWhatsApp": "Book on WhatsApp",
+    "bookShort": "Book",
+    "seeServices": "See the services",
+    "writeWhatsApp": "Message us on WhatsApp",
+    "callNumber": "Call: {phone}",
+    "sendWhatsApp": "Send on WhatsApp"
   },
   "topBar": {
     "hours": "Hours",
