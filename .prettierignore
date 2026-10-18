@@ -1,0 +1,9 @@
+dist/
+node_modules/
+.astro/
+.netlify/
+test-results/
+playwright-report/
+lighthouse-report/
+public/research/
+package-lock.json
