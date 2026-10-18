@@ -1,0 +1,17 @@
+---
+/**
+ * Romanian article list: `/articole/` (page 1) and `/articole/<n>/`, 9 per page.
+ */
+import type { GetStaticPaths, Page } from 'astro';
+import ArticlesPage from '../../components/pages/ArticlesPage.astro';
+import { getArticles, type ArticleEntry } from '../../lib/content';
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const articles = await getArticles('ro');
+  return paginate(articles, { pageSize: 9 });
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props as { page: Page<ArticleEntry> };
+---
+
+<ArticlesPage lang="ro" page={page} />

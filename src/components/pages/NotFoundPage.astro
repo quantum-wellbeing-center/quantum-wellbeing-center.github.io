@@ -1,0 +1,61 @@
+---
+/**
+ * NotFoundPage: noindex 404 with links home, to contact and to the other language.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getRoute, otherLocale, useTranslations, type Locale } from '../../i18n';
+import { getPage } from '../../lib/content';
+import Button from '../ui/Button.astro';
+import PageIntro from '../sections/PageIntro.astro';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const other = otherLocale(lang);
+const { data: page } = await getPage(lang, 'not-found');
+---
+
+<BaseLayout
+  lang={lang}
+  pageKey="notFound"
+  title={page.title}
+  description={page.description}
+  noindex
+>
+  <PageIntro
+    title={page.title}
+    lead={page.subheading}
+    eyebrow={t('notFound.code')}
+    align="center"
+    class="not-found"
+  >
+    <div class="not-found__actions">
+      <Button href={getRoute(lang, 'home')} size="lg">
+        {t('actions.backHome')}
+      </Button>
+      <Button href={getRoute(lang, 'contact')} variant="secondary" size="lg">
+        {t('actions.contactUs')}
+      </Button>
+      <Button href={getRoute(other, 'home')} variant="plain" size="lg" hreflang={other} lang={other}>
+        {t('notFound.otherLanguage')}
+      </Button>
+    </div>
+  </PageIntro>
+</BaseLayout>
+
+<style>
+  .not-found {
+    padding-block: clamp(var(--space-8), 12vw, var(--space-10));
+    min-height: 50dvh;
+  }
+  .not-found__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-3);
+    margin-block-start: var(--space-3);
+  }
+</style>

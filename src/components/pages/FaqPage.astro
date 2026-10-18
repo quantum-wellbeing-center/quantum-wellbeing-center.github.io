@@ -1,0 +1,121 @@
+---
+/**
+ * FaqPage: questions grouped by category (i18n headings) as native details/summary accordions,
+ * plus FAQPage structured data with plain-text answers.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { FAQ_CATEGORIES } from '../../content.config';
+import { site } from '../../config/site';
+import { getRoute, useTranslations, type Locale } from '../../i18n';
+import { getFaqs, getPage, jsonLd, markdownToText } from '../../lib/content';
+import Section from '../ui/Section.astro';
+import CtaBand from '../sections/CtaBand.astro';
+import FaqAccordion from '../sections/FaqAccordion.astro';
+import PageIntro from '../sections/PageIntro.astro';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const { data: page } = await getPage(lang, 'faq');
+const faqs = await getFaqs(lang);
+
+const groups = FAQ_CATEGORIES.map((category) => ({
+  category,
+  heading: t(`faq.category.${category}`),
+  entries: faqs.filter((e) => e.data.category === category),
+})).filter((g) => g.entries.length > 0);
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  inLanguage: lang === 'ro' ? 'ro-RO' : 'en',
+  mainEntity: faqs.map((entry) => ({
+    '@type': 'Question',
+    name: entry.data.question,
+    acceptedAnswer: { '@type': 'Answer', text: markdownToText(entry.body ?? '') },
+  })),
+};
+---
+
+<BaseLayout lang={lang} pageKey="faq" title={page.title} description={page.description}>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={jsonLd(structuredData)} />
+  </Fragment>
+
+  <PageIntro title={page.title} lead={page.subheading}>
+    <nav class="faq-toc" aria-label={t('a11y.tableOfContents')}>
+      <ul class="faq-toc__list" role="list">
+        {groups.map((group) => (
+          <li>
+            <a class="faq-toc__link" href={`#faq-${group.category}`}>
+              {group.heading}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  </PageIntro>
+
+  {groups.map((group, index) => (
+    <Section
+      id={`faq-${group.category}`}
+      tone={index % 2 === 0 ? 'secondary' : 'default'}
+      spacing="compact"
+      aria-labelledby={`faq-${group.category}-heading`}
+    >
+      <div class="faq-group">
+        <h2 id={`faq-${group.category}-heading`} class="faq-group__title">
+          {group.heading}
+        </h2>
+        <FaqAccordion entries={group.entries} />
+      </div>
+    </Section>
+  ))}
+
+  <CtaBand
+    lang={lang}
+    heading={page.cta.heading}
+    text={page.cta.text}
+    primary={{ href: getRoute(lang, 'contact'), label: t('actions.contactUs') }}
+    secondary={{ href: site.bookingUrl, label: t('actions.bookSession') }}
+    tone={groups.length % 2 === 0 ? 'secondary' : 'default'}
+  />
+</BaseLayout>
+
+<style>
+  .faq-toc__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .faq-toc__link {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--touch-target);
+    padding: 0 var(--space-4);
+    border-radius: var(--radius-capsule);
+    background: var(--fill);
+    color: var(--label);
+    font-size: var(--text-subheadline);
+    font-weight: 500;
+    text-decoration: none;
+  }
+  .faq-toc__link:hover {
+    background: var(--fill-strong);
+    color: var(--accent);
+  }
+  .faq-group {
+    max-width: 48rem;
+  }
+  .faq-group__title {
+    font-size: var(--text-title-2);
+    line-height: var(--leading-title-2);
+    margin-block-end: var(--space-4);
+  }
+</style>

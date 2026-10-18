@@ -1,0 +1,104 @@
+---
+/**
+ * TestimonialsPage: disclaimer at the top, the consent-gated testimonials grid, the before/after
+ * gallery (links to full images; Phase 5 adds the dialog lightbox) and the reviews note.
+ * The Google reviews embed only renders when `site.features.reviewsEmbed` is on (Phase 5).
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { site } from '../../config/site';
+import type { Locale } from '../../i18n';
+import { getGallery, getPage, getTestimonials } from '../../lib/content';
+import Section from '../ui/Section.astro';
+import Disclaimer from '../sections/Disclaimer.astro';
+import GalleryGrid from '../sections/GalleryGrid.astro';
+import PageIntro from '../sections/PageIntro.astro';
+import SectionHeading from '../sections/SectionHeading.astro';
+import TestimonialCard from '../sections/TestimonialCard.astro';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const { data: page } = await getPage(lang, 'testimonials');
+const [testimonials, gallery] = await Promise.all([getTestimonials(lang), getGallery(lang)]);
+// Consent is enforced by the schema and by the query; filter once more where the content is shown.
+const published = testimonials.filter((e) => e.data.consent === true);
+const images = gallery.filter((e) => e.data.consent === true);
+---
+
+<BaseLayout
+  lang={lang}
+  pageKey="testimonials"
+  title={page.title}
+  description={page.description}
+>
+  <PageIntro title={page.title} lead={page.subheading}>
+    <Disclaimer lang={lang} variant="long" />
+  </PageIntro>
+
+  <Section spacing="compact" class="testimonials-list" aria-label={page.title}>
+    <ul class="testimonials-grid" role="list">
+      {published.map((entry) => (
+        <li>
+          <TestimonialCard lang={lang} entry={entry} />
+        </li>
+      ))}
+    </ul>
+  </Section>
+
+  <Section tone="secondary" aria-labelledby="gallery-heading">
+    <SectionHeading id="gallery-heading" title={page.gallery.heading} text={page.gallery.text} />
+    <GalleryGrid lang={lang} entries={images} />
+    <p class="gallery-note">{page.gallery.note}</p>
+  </Section>
+
+  <Section spacing="compact" aria-labelledby="reviews-heading" class="reviews">
+    <h2 id="reviews-heading" class="reviews__title">{page.reviews.heading}</h2>
+    {site.features.reviewsEmbed ? (
+      <div class="reviews__embed" data-reviews-embed hidden>
+        {/* Phase 5: consent-gated Google reviews widget mounts here after marketing consent. */}
+      </div>
+    ) : (
+      <p class="reviews__text">{page.reviews.text}</p>
+    )}
+  </Section>
+</BaseLayout>
+
+<style>
+  .testimonials-list {
+    padding-block-end: clamp(var(--space-7), 8vw, var(--space-9));
+  }
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
+    gap: var(--space-4);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .testimonials-grid > li {
+    display: flex;
+  }
+  .testimonials-grid > li > :global(*) {
+    width: 100%;
+  }
+  .gallery-note {
+    margin-block-start: var(--space-6);
+    max-width: var(--measure);
+    font-size: var(--text-subheadline);
+    line-height: var(--leading-subheadline);
+    color: var(--label-secondary);
+  }
+  .reviews :global(.container) > * {
+    max-width: var(--measure);
+  }
+  .reviews__title {
+    font-size: var(--text-title-2);
+    line-height: var(--leading-title-2);
+    margin-block-end: var(--space-3);
+  }
+  .reviews__text {
+    color: var(--label-secondary);
+  }
+</style>

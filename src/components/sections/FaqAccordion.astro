@@ -1,0 +1,86 @@
+---
+/**
+ * FaqAccordion: native `details`/`summary` items, one per FAQ entry, with the Markdown answer
+ * rendered as prose. Works by keyboard with no JavaScript. Items stay independently openable
+ * (no `name` grouping) so visitors can compare answers.
+ */
+import { render, type CollectionEntry } from 'astro:content';
+import Icon from '../ui/Icon.astro';
+
+interface Props {
+  entries: CollectionEntry<'faq'>[];
+  /** Heading level of each question; keep the document outline in order. */
+  headingLevel?: 'h2' | 'h3' | 'h4';
+  class?: string;
+}
+
+const { entries, headingLevel: Heading = 'h3', class: className } = Astro.props;
+
+const items = await Promise.all(
+  entries.map(async (entry) => ({ entry, Content: (await render(entry)).Content })),
+);
+---
+
+<div class={['faq', className].filter(Boolean).join(' ')}>
+  {items.map(({ entry, Content }) => (
+    <details class="faq__item" id={`faq-${entry.data.translationKey}`}>
+      <summary class="faq__summary">
+        <Heading class="faq__question">{entry.data.question}</Heading>
+        <Icon name="chevron-down" size={20} class="faq__chevron" />
+      </summary>
+      <div class="faq__answer prose">
+        <Content />
+      </div>
+    </details>
+  ))}
+</div>
+
+<style>
+  .faq {
+    border-top: 1px solid var(--separator);
+  }
+  .faq__item {
+    border-bottom: 1px solid var(--separator);
+  }
+  .faq__summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    min-height: var(--touch-target);
+    padding-block: var(--space-4);
+    cursor: pointer;
+    list-style: none;
+  }
+  .faq__summary::-webkit-details-marker {
+    display: none;
+  }
+  .faq__summary:focus-visible {
+    outline-offset: -3px;
+    border-radius: var(--radius-md);
+  }
+  .faq__question {
+    font-size: var(--text-headline);
+    line-height: var(--leading-headline);
+    font-weight: 600;
+    text-wrap: pretty;
+  }
+  .faq__summary:hover .faq__question {
+    color: var(--accent);
+  }
+  .faq__chevron {
+    color: var(--label-secondary);
+    transition: transform var(--duration-base) var(--ease-out);
+  }
+  .faq__item[open] .faq__chevron {
+    transform: rotate(180deg);
+  }
+  .faq__answer {
+    padding-block: 0 var(--space-5);
+    color: var(--label);
+  }
+  .faq__answer :global(p) {
+    font-size: var(--text-callout);
+    line-height: var(--leading-body);
+  }
+</style>

@@ -50,7 +50,8 @@ test('header renders exactly once with landmarks', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('header')).toHaveCount(1);
   await expect(page.locator('main#main')).toHaveCount(1);
-  await expect(page.locator('footer')).toHaveCount(1);
+  // Testimonial cards use <footer> for attribution; only the site footer is a landmark.
+  await expect(page.getByRole('contentinfo')).toHaveCount(1);
   await expect(page.locator('nav.primary-nav[aria-label]')).toHaveCount(1);
   await expect(page.locator('a[aria-current="page"]').first()).toBeAttached();
 });

@@ -1,0 +1,73 @@
+---
+/**
+ * ServicesGrid: a responsive grid of ServiceCards, with the heading and lead from page copy.
+ */
+import type { CollectionEntry } from 'astro:content';
+import type { Locale } from '../../i18n';
+import Section from '../ui/Section.astro';
+import SectionHeading from './SectionHeading.astro';
+import ServiceCard from './ServiceCard.astro';
+
+interface Props {
+  lang: Locale;
+  entries: CollectionEntry<'services'>[];
+  heading?: string;
+  text?: string;
+  action?: { href: string; label: string };
+  compact?: boolean;
+  tone?: 'default' | 'secondary';
+  id?: string;
+  /** Render the grid only (no Section wrapper), for pages that provide their own. */
+  bare?: boolean;
+}
+
+const {
+  lang,
+  entries,
+  heading,
+  text,
+  action,
+  compact = false,
+  tone = 'default',
+  id = 'services',
+  bare = false,
+} = Astro.props;
+---
+
+{bare ? (
+  <ul class="services-grid" role="list">
+    {entries.map((entry) => (
+      <li>
+        <ServiceCard lang={lang} entry={entry} compact={compact} />
+      </li>
+    ))}
+  </ul>
+) : (
+  <Section tone={tone} aria-labelledby={`${id}-heading`}>
+    {heading && <SectionHeading id={`${id}-heading`} title={heading} text={text} action={action} />}
+    <ul class="services-grid" role="list">
+      {entries.map((entry) => (
+        <li>
+          <ServiceCard lang={lang} entry={entry} compact={compact} />
+        </li>
+      ))}
+    </ul>
+  </Section>
+)}
+
+<style>
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+    gap: var(--space-4);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .services-grid > li {
+    display: flex;
+  }
+  .services-grid > li > :global(*) {
+    width: 100%;
+  }
+</style>

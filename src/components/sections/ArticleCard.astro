@@ -1,0 +1,77 @@
+---
+/**
+ * ArticleCard: cover image, date, reading time, title (the stretched card link) and description.
+ */
+import { Image } from 'astro:assets';
+import { formatDate, useTranslations, type Locale } from '../../i18n';
+import { articlePath, readingTimeMinutes, type ArticleEntry } from '../../lib/content';
+import { isoDate } from '../../lib/format';
+import Card from '../ui/Card.astro';
+
+interface Props {
+  lang: Locale;
+  entry: ArticleEntry;
+  /** The first card on a page may load eagerly. */
+  eager?: boolean;
+  headingLevel?: 'h2' | 'h3';
+}
+
+const { lang, entry, eager = false, headingLevel: Heading = 'h3' } = Astro.props;
+const t = useTranslations(lang);
+const d = entry.data;
+const minutes = readingTimeMinutes(entry.body);
+---
+
+<Card as="article" variant="elevated" interactive class="article-card">
+  <Image
+    slot="media"
+    src={d.cover}
+    alt={d.coverAlt}
+    width={720}
+    height={480}
+    loading={eager ? 'eager' : 'lazy'}
+    decoding="async"
+    class="article-card__cover"
+  />
+  <p class="article-card__meta">
+    <time datetime={isoDate(d.publishDate)}>{formatDate(lang, d.publishDate)}</time>
+    <span aria-hidden="true"> · </span>
+    <span>{t('common.readingTime', { minutes })}</span>
+  </p>
+  <Heading class="article-card__title">
+    <a class="card__link" href={articlePath(entry)}>
+      {d.title}
+    </a>
+  </Heading>
+  <p class="article-card__desc">{d.description}</p>
+</Card>
+
+<style>
+  .article-card__cover {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+  }
+  .article-card__meta {
+    font-size: var(--text-footnote);
+    line-height: var(--leading-footnote);
+    color: var(--label-secondary);
+  }
+  .article-card__title {
+    font-size: var(--text-title-3);
+    line-height: var(--leading-title-3);
+  }
+  .article-card__title a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .article-card__title a:hover {
+    color: var(--accent);
+  }
+  .article-card__desc {
+    font-size: var(--text-callout);
+    line-height: var(--leading-body);
+    color: var(--label-secondary);
+  }
+</style>

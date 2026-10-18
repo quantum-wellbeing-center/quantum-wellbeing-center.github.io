@@ -1,0 +1,67 @@
+---
+/**
+ * PageIntro: the h1 band at the top of every non-home page, with an optional lead paragraph.
+ * Extra content (a disclaimer, meta line, actions) goes in the default slot under the lead.
+ */
+import Section from '../ui/Section.astro';
+
+interface Props {
+  title: string;
+  lead?: string;
+  /** Small label above the title, e.g. "Eroare 404". */
+  eyebrow?: string;
+  align?: 'start' | 'center';
+  tone?: 'default' | 'secondary';
+  class?: string;
+}
+
+const {
+  title,
+  lead,
+  eyebrow,
+  align = 'start',
+  tone = 'default',
+  class: className,
+} = Astro.props;
+---
+
+<Section tone={tone} spacing="compact" class={['page-intro', className].filter(Boolean).join(' ')}>
+  <div class:list={['page-intro__inner', `page-intro__inner--${align}`]}>
+    {eyebrow && <p class="page-intro__eyebrow">{eyebrow}</p>}
+    <h1 class="page-intro__title">{title}</h1>
+    {lead && <p class="page-intro__lead">{lead}</p>}
+    <slot />
+  </div>
+</Section>
+
+<style>
+  .page-intro {
+    padding-block: clamp(var(--space-6), 6vw, var(--space-8)) var(--space-5);
+  }
+  .page-intro__inner {
+    display: grid;
+    gap: var(--space-4);
+    max-width: var(--measure);
+  }
+  .page-intro__inner--center {
+    margin-inline: auto;
+    text-align: center;
+    justify-items: center;
+  }
+  .page-intro__eyebrow {
+    font-size: var(--text-subheadline);
+    line-height: var(--leading-subheadline);
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .page-intro__title {
+    font-size: clamp(var(--text-large-title), 4.5vw, 3rem);
+    line-height: 1.1;
+  }
+  .page-intro__lead {
+    font-size: var(--text-title-3);
+    line-height: 1.4;
+    font-weight: 400;
+    color: var(--label-secondary);
+  }
+</style>

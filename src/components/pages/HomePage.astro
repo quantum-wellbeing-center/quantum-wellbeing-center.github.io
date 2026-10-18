@@ -1,0 +1,169 @@
+---
+/**
+ * HomePage: hero, technology intro, reported experiences, complementary services, research
+ * teaser, testimonials row, FAQ teaser and the booking CTA band (WEBSITE_PLAN.md section 6).
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { site } from '../../config/site';
+import { getRoute, useTranslations, type Locale } from '../../i18n';
+import {
+  getFeaturedFaqs,
+  getFeaturedResearch,
+  getPage,
+  getServices,
+  getTestimonials,
+} from '../../lib/content';
+import Section from '../ui/Section.astro';
+import Button from '../ui/Button.astro';
+import CtaBand from '../sections/CtaBand.astro';
+import FaqAccordion from '../sections/FaqAccordion.astro';
+import Hero from '../sections/Hero.astro';
+import ReportedExperiences from '../sections/ReportedExperiences.astro';
+import ResearchCard from '../sections/ResearchCard.astro';
+import SectionHeading from '../sections/SectionHeading.astro';
+import ServicesGrid from '../sections/ServicesGrid.astro';
+import TestimonialRow from '../sections/TestimonialRow.astro';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const { data: page } = await getPage(lang, 'home');
+
+const [services, research, testimonials, faqs] = await Promise.all([
+  getServices(lang),
+  getFeaturedResearch(lang, 3),
+  getTestimonials(lang),
+  getFeaturedFaqs(lang, 5),
+]);
+---
+
+<BaseLayout lang={lang} pageKey="home" title={page.title} description={page.description}>
+  <Hero
+    lang={lang}
+    headline={page.hero.headline}
+    subheading={page.hero.subheading}
+    primary={{ href: site.bookingUrl, label: t('actions.bookSession') }}
+    secondary={{ href: getRoute(lang, 'technology'), label: t('actions.howItWorks') }}
+  />
+
+  <Section tone="secondary" aria-labelledby="home-technology">
+    <div class="home-intro">
+      <h2 id="home-technology">{page.technology.heading}</h2>
+      <p class="home-intro__text">{page.technology.text}</p>
+      <Button href={getRoute(lang, 'technology')} variant="secondary" icon="arrow-right">
+        {t('actions.howItWorks')}
+      </Button>
+    </div>
+  </Section>
+
+  <ReportedExperiences
+    heading={page.experiences.heading}
+    intro={page.experiences.intro}
+    items={page.experiences.items}
+    note={page.experiences.note}
+    id="home-experiences"
+  />
+
+  <ServicesGrid
+    lang={lang}
+    entries={services}
+    heading={page.services.heading}
+    text={page.services.text}
+    action={{ href: getRoute(lang, 'pricing'), label: t('actions.seePricing') }}
+    tone="secondary"
+    compact
+    id="home-services"
+  />
+
+  <Section aria-labelledby="home-research-heading">
+    <SectionHeading
+      id="home-research-heading"
+      title={page.research.heading}
+      text={page.research.text}
+      action={{ href: getRoute(lang, 'research'), label: t('actions.seeAllResearch') }}
+    />
+    <ul class="home-research" role="list">
+      {research.map((entry) => (
+        <li>
+          <ResearchCard lang={lang} entry={entry} />
+        </li>
+      ))}
+    </ul>
+    <p class="home-research__note">{t('disclaimer.short')}</p>
+  </Section>
+
+  <Section tone="secondary" aria-labelledby="home-testimonials-heading">
+    <SectionHeading
+      id="home-testimonials-heading"
+      title={page.testimonials.heading}
+      text={page.testimonials.text}
+      action={{ href: getRoute(lang, 'testimonials'), label: t('actions.seeAllTestimonials') }}
+    />
+    <TestimonialRow lang={lang} entries={testimonials} />
+  </Section>
+
+  <Section aria-labelledby="home-faq-heading">
+    <div class="home-faq">
+      <SectionHeading id="home-faq-heading" title={page.faq.heading} text={page.faq.text} />
+      <FaqAccordion entries={faqs} />
+      <p class="home-faq__more">
+        <Button href={getRoute(lang, 'faq')} variant="plain" icon="arrow-right">
+          {t('actions.seeAllFaq')}
+        </Button>
+      </p>
+    </div>
+  </Section>
+
+  <CtaBand
+    lang={lang}
+    heading={page.cta.heading}
+    text={page.cta.text}
+    primary={{ href: site.bookingUrl, label: t('actions.bookSession') }}
+    secondary={{ href: getRoute(lang, 'contact'), label: t('actions.contactUs') }}
+  />
+</BaseLayout>
+
+<style>
+  .home-intro {
+    display: grid;
+    gap: var(--space-4);
+    justify-items: start;
+    max-width: var(--measure);
+  }
+  .home-intro__text {
+    font-size: var(--text-title-3);
+    line-height: 1.4;
+    font-weight: 400;
+    color: var(--label-secondary);
+  }
+  .home-research {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+    gap: var(--space-4);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .home-research > li {
+    display: flex;
+  }
+  .home-research > li > :global(*) {
+    width: 100%;
+  }
+  .home-research__note {
+    margin-block-start: var(--space-5);
+    font-size: var(--text-footnote);
+    line-height: var(--leading-footnote);
+    color: var(--label-secondary);
+  }
+  .home-faq {
+    max-width: 48rem;
+  }
+  .home-faq__more {
+    margin-block-start: var(--space-5);
+    margin-inline-start: calc(-1 * var(--space-3));
+  }
+</style>

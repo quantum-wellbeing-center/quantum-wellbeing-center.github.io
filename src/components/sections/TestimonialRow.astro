@@ -1,0 +1,70 @@
+---
+/**
+ * TestimonialRow: a horizontal scroll-snap row of testimonial cards. No autoplay, no JS:
+ * the scroller is a focusable region so keyboard users can scroll it with the arrow keys.
+ */
+import type { CollectionEntry } from 'astro:content';
+import { useTranslations, type Locale } from '../../i18n';
+import TestimonialCard from './TestimonialCard.astro';
+
+interface Props {
+  lang: Locale;
+  entries: CollectionEntry<'testimonials'>[];
+}
+
+const { lang, entries } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<div class="t-row" role="region" aria-label={t('a11y.testimonialsRow')} tabindex="0">
+  <ul class="t-row__list" role="list">
+    {entries.map((entry) => (
+      <li class="t-row__item">
+        <TestimonialCard lang={lang} entry={entry} class="t-row__card" />
+      </li>
+    ))}
+  </ul>
+</div>
+
+<style>
+  .t-row {
+    /* Bleed to the viewport edges so the row scrolls under the gutters. */
+    margin-inline: calc(-1 * var(--gutter));
+    padding-inline: var(--gutter);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--gutter);
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    /* Room for the focus ring and the card shadow. */
+    padding-block: var(--space-2) var(--space-4);
+  }
+  .t-row:focus-visible {
+    outline-offset: -3px;
+    border-radius: var(--radius-card);
+  }
+  .t-row__list {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: min(85%, 22rem);
+    gap: var(--space-4);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .t-row__item {
+    scroll-snap-align: start;
+    display: flex;
+  }
+  .t-row__item > :global(.t-row__card) {
+    width: 100%;
+  }
+  @media (min-width: 48em) {
+    .t-row {
+      margin-inline: calc(-1 * var(--space-6));
+      padding-inline: var(--space-6);
+      scroll-padding-inline: var(--space-6);
+    }
+  }
+</style>

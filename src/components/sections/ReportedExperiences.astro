@@ -1,0 +1,60 @@
+---
+/**
+ * ReportedExperiences: the "experiențe raportate de clienți" block. Every item is a reported
+ * experience in the content's own words ("clienții ne spun că…"), never an outcome, and the
+ * closing note repeats the guardrail wording (WEBSITE_PLAN.md section 9).
+ */
+import Icon from '../ui/Icon.astro';
+import Section from '../ui/Section.astro';
+import SectionHeading from './SectionHeading.astro';
+
+interface Props {
+  heading: string;
+  intro: string;
+  items: string[];
+  note: string;
+  tone?: 'default' | 'secondary';
+  id?: string;
+}
+
+const { heading, intro, items, note, tone = 'default', id = 'experiences' } = Astro.props;
+---
+
+<Section tone={tone} aria-labelledby={`${id}-heading`}>
+  <SectionHeading id={`${id}-heading`} title={heading} text={intro} />
+  <ul class="experiences" role="list">
+    {items.map((item) => (
+      <li class="experiences__item">
+        <Icon name="sparkles" size={20} class="experiences__icon" />
+        <span>{item}</span>
+      </li>
+    ))}
+  </ul>
+  <p class="experiences__note">{note}</p>
+</Section>
+
+<style>
+  .experiences {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+    gap: var(--space-3) var(--space-6);
+  }
+  .experiences__item {
+    display: flex;
+    gap: var(--space-3);
+    align-items: flex-start;
+    padding-block: var(--space-3);
+    border-top: 1px solid var(--separator);
+  }
+  .experiences__icon {
+    color: var(--accent);
+    margin-block-start: 0.15em;
+  }
+  .experiences__note {
+    margin-block-start: var(--space-6);
+    max-width: var(--measure);
+    font-size: var(--text-subheadline);
+    line-height: var(--leading-subheadline);
+    color: var(--label-secondary);
+  }
+</style>

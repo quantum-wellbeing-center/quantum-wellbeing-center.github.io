@@ -1,0 +1,130 @@
+---
+/**
+ * ResearchCard: one research item with its evidence-type badge, authors, year, source, DOI,
+ * neutral summary and the file link labelled with type and size.
+ *
+ * Data attributes (`data-research-item`, `data-title`, `data-authors`, `data-evidence-type`,
+ * `data-group`) are the hooks for the Phase 5 search and filter island.
+ */
+import type { CollectionEntry } from 'astro:content';
+import { useTranslations, type Locale } from '../../i18n';
+import { evidenceTone } from '../../lib/content';
+import { formatFileSize } from '../../lib/format';
+import Badge from '../ui/Badge.astro';
+import Card from '../ui/Card.astro';
+import Icon from '../ui/Icon.astro';
+
+interface Props {
+  lang: Locale;
+  entry: CollectionEntry<'research'>;
+  headingLevel?: 'h3' | 'h4';
+}
+
+const { lang, entry, headingLevel: Heading = 'h3' } = Astro.props;
+const t = useTranslations(lang);
+const d = entry.data;
+
+const isExternal = /^https?:\/\//i.test(d.pdf);
+const fileType = d.fileType ?? 'PDF';
+const linkLabel = fileType === 'PDF' ? t('actions.openPdf') : t('actions.openDocument');
+// The label already names the type for PDFs, so the meta shows only the size then.
+const fileMeta =
+  typeof d.fileSizeBytes === 'number'
+    ? fileType === 'PDF'
+      ? formatFileSize(lang, d.fileSizeBytes)
+      : t('research.fileMeta', { type: fileType, size: formatFileSize(lang, d.fileSizeBytes) })
+    : isExternal
+      ? t('research.externalLink')
+      : fileType;
+const isPlaceholder = /TODO\(content\)/.test(`${d.title} ${d.summary} ${d.source}`);
+const doiUrl = d.doi ? (/^https?:\/\//i.test(d.doi) ? d.doi : `https://doi.org/${d.doi}`) : null;
+const metaParts = [d.authors.join(', '), d.year ? String(d.year) : t('research.noYear'), d.source];
+---
+
+<Card
+  as="article"
+  variant="elevated"
+  class="research-card"
+  data-research-item
+  data-title={d.title}
+  data-authors={d.authors.join('; ')}
+  data-evidence-type={d.evidenceType}
+  data-group={d.group}
+>
+  <div class="research-card__badges">
+    <Badge tone={evidenceTone(d.evidenceType)}>{t(`evidence.${d.evidenceType}`)}</Badge>
+    {isPlaceholder && <Badge tone="neutral">{t('common.placeholder')}</Badge>}
+  </div>
+  <Heading class="research-card__title">{d.title}</Heading>
+  <p class="research-card__meta">
+    {metaParts.map((part, i) => (
+      <>
+        {i > 0 && <span aria-hidden="true"> · </span>}
+        <span>{part}</span>
+      </>
+    ))}
+  </p>
+  <p class="research-card__summary">{d.summary}</p>
+  {doiUrl && (
+    <p class="research-card__doi">
+      <span class="text-secondary">{t('research.doi')}: </span>
+      <a href={doiUrl} target="_blank" rel="noopener">
+        {d.doi}
+        <span class="visually-hidden"> ({t('a11y.newTab')})</span>
+      </a>
+    </p>
+  )}
+  <p slot="footer" class="research-card__file">
+    <a class="research-card__link" href={d.pdf} target="_blank" rel="noopener">
+      <Icon name={isExternal ? 'external-link' : 'file-text'} size={18} />
+      <span>{linkLabel}</span>
+      <span class="research-card__file-meta">{fileMeta}</span>
+      <span class="visually-hidden">({t('a11y.newTab')})</span>
+    </a>
+  </p>
+</Card>
+
+<style>
+  .research-card__badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .research-card__title {
+    font-size: var(--text-title-3);
+    line-height: var(--leading-title-3);
+  }
+  .research-card__meta {
+    font-size: var(--text-subheadline);
+    line-height: var(--leading-subheadline);
+    color: var(--label-secondary);
+  }
+  .research-card__summary {
+    font-size: var(--text-callout);
+    line-height: var(--leading-body);
+  }
+  .research-card__doi {
+    font-size: var(--text-subheadline);
+    overflow-wrap: anywhere;
+  }
+  .research-card__link {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4em;
+    min-height: var(--touch-target);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .research-card__link:hover span:first-of-type {
+    text-decoration: underline;
+  }
+  .research-card__file-meta {
+    font-size: var(--text-footnote);
+    font-weight: 500;
+    color: var(--label-secondary);
+  }
+  .research-card__file-meta::before {
+    content: '· ';
+  }
+</style>

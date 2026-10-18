@@ -32,7 +32,13 @@
     "newTab": "se deschide într-o filă nouă",
     "brandHome": "{brand}, pagina principală",
     "whatsappButton": "Scrie-ne pe WhatsApp",
-    "currentPage": "Pagina curentă"
+    "currentPage": "Pagina curentă",
+    "testimonialsRow": "Testimoniale, listă derulabilă orizontal",
+    "pagination": "Paginare",
+    "articleNav": "Articole alăturate",
+    "tableOfContents": "Cuprins",
+    "rss": "Flux RSS",
+    "decorative": "Element decorativ"
   },
   "actions": {
     "book": "Rezervă",
@@ -53,7 +59,15 @@
     "search": "Caută",
     "clear": "Șterge",
     "learnMore": "Află mai multe",
-    "joinCommunity": "Intră în comunitate"
+    "joinCommunity": "Intră în comunitate",
+    "seeAllResearch": "Vezi toată biblioteca",
+    "seeAllTestimonials": "Vezi toate testimonialele",
+    "seeAllFaq": "Vezi toate întrebările",
+    "seePricing": "Vezi prețurile",
+    "contactUs": "Contactează-ne",
+    "openImage": "Deschide imaginea",
+    "backToArticles": "Înapoi la articole",
+    "openDocument": "Deschide documentul"
   },
   "topBar": {
     "hours": "Program",
@@ -127,7 +141,13 @@
     "error": "Mesajul nu a putut fi trimis. Te rugăm să încerci din nou sau să ne suni.",
     "required": "Acest câmp este obligatoriu.",
     "invalidEmail": "Introdu o adresă de e-mail validă.",
-    "honeypot": "Lasă acest câmp gol"
+    "honeypot": "Lasă acest câmp gol",
+    "requiredNote": "Câmpurile marcate cu * sunt obligatorii.",
+    "requiredMark": "obligatoriu",
+    "nameHint": "Prenumele și numele tău.",
+    "emailHint": "Răspundem la această adresă.",
+    "phoneHint": "Doar dacă preferi să te sunăm.",
+    "messageHint": "Câteva propoziții sunt suficiente."
   },
   "common": {
     "readingTime": "{minutes} min de citit",
@@ -149,7 +169,8 @@
     "price": "Preț",
     "duration": "{minutes} min",
     "sessions": "{count} sesiuni",
-    "vatNote": "TODO(content): precizați dacă prețurile includ TVA."
+    "vatNote": "TODO(content): precizați dacă prețurile includ TVA.",
+    "placeholder": "Exemplu"
   },
   "evidence": {
     "peer-reviewed": "Evaluat de experți",
@@ -160,14 +181,78 @@
     "anecdotal-report": "Raport anecdotic",
     "other": "Altele"
   },
+  "research": {
+    "count": "{count} documente",
+    "countOne": "1 document",
+    "externalLink": "Link extern",
+    "fileMeta": "{type} · {size}",
+    "doi": "DOI",
+    "year": "Anul",
+    "source": "Sursa",
+    "authors": "Autori",
+    "evidenceLabel": "Tip de dovadă",
+    "noYear": "an nespecificat"
+  },
+  "testimonials": {
+    "rating": "{rating} din 5 stele",
+    "source": {
+      "google": "Recenzie Google",
+      "in-person": "Spus în centru"
+    }
+  },
+  "pricing": {
+    "recommended": "Recomandat",
+    "perSession": "{price} pe sesiune",
+    "package": "Pachet de {count} sesiuni",
+    "perSessionDuration": "{minutes} min pe sesiune"
+  },
+  "articles": {
+    "empty": "Nu există articole încă.",
+    "previous": "Articolul anterior",
+    "next": "Articolul următor",
+    "pageTitle": "{title} – pagina {page}",
+    "feedTitle": "{brand} – Articole",
+    "feedDescription": "Articole despre sesiuni, pregătirea pentru o vizită și cum citim cercetările."
+  },
+  "faq": {
+    "category": {
+      "sesiuni": "Sesiuni",
+      "rezervari": "Rezervări",
+      "siguranta": "Siguranță și date",
+      "preturi": "Prețuri și plată"
+    }
+  },
+  "contact": {
+    "address": "Adresă",
+    "phone": "Telefon",
+    "email": "E-mail",
+    "whatsapp": "WhatsApp",
+    "hours": "Program",
+    "mapAlt": "Hartă substituent spre adresa centrului. TODO(content): înlocuiți cu o imagine statică a hărții."
+  },
+  "legal": {
+    "draftNotice": "TODO(legal): acest text este o schiță structurală pentru revizuire de către consilierul juridic al centrului. Nu este încă un document cu valoare juridică.",
+    "lastUpdated": "Ultima actualizare: {date}",
+    "contents": "Cuprins",
+    "cookieTableCaption": "Cookie-urile și tehnologiile similare folosite de acest site",
+    "cookieName": "Nume",
+    "cookieCategory": "Categorie",
+    "cookiePurpose": "Scop",
+    "cookieDuration": "Durată",
+    "cookieProvider": "Furnizor",
+    "openPreferences": "Deschide preferințele cookie"
+  },
   "disclaimer": {
     "short": "Nu este un serviciu medical. Nu înlocuiește diagnosticul sau tratamentul. Consultați un medic.",
-    "long": "Informațiile de pe această pagină sunt oferite în scop informativ. Sesiunile noastre sunt experiențe de relaxare și stare de bine, nu servicii medicale, și nu înlocuiesc diagnosticul sau tratamentul stabilit de un medic. Pentru orice problemă de sănătate, consultați un medic."
+    "long": "Informațiile de pe această pagină sunt oferite în scop informativ. Sesiunile noastre sunt experiențe de relaxare și stare de bine, nu servicii medicale, și nu înlocuiesc diagnosticul sau tratamentul stabilit de un medic. Pentru orice problemă de sănătate, consultați un medic.",
+    "title": "Notă importantă"
   },
   "notFound": {
     "title": "Pagina nu a fost găsită",
     "text": "Linkul poate fi greșit sau pagina a fost mutată.",
-    "backHome": "Înapoi la pagina principală"
+    "backHome": "Înapoi la pagina principală",
+    "otherLanguage": "English version",
+    "code": "Eroare 404"
   },
   "styleguide": {
     "title": "Ghid de stil",

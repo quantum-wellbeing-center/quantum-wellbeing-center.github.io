@@ -1,0 +1,122 @@
+---
+/**
+ * ContactDetails: address, phone (tel:), email (mailto:), WhatsApp and the grouped opening
+ * hours, all from site config.
+ */
+import { site, whatsappUrl } from '../../config/site';
+import { useTranslations, type Locale } from '../../i18n';
+import OpeningHours from '../OpeningHours.astro';
+import Icon from '../ui/Icon.astro';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const addressLines = [
+  site.address.street,
+  `${site.address.postalCode} ${site.address.city}, ${site.address.county}`,
+];
+---
+
+<dl class="contact-details">
+  <div class="contact-details__row">
+    <dt>
+      <Icon name="map-pin" size={18} />
+      <span>{t('contact.address')}</span>
+    </dt>
+    <dd>
+      <address>
+        {addressLines.map((line) => (
+          <span class="contact-details__line">{line}</span>
+        ))}
+      </address>
+    </dd>
+  </div>
+  <div class="contact-details__row">
+    <dt>
+      <Icon name="phone" size={18} />
+      <span>{t('contact.phone')}</span>
+    </dt>
+    <dd>
+      <a class="contact-details__link" href={`tel:${site.phoneHref}`}>
+        {site.phone}
+      </a>
+    </dd>
+  </div>
+  <div class="contact-details__row">
+    <dt>
+      <Icon name="mail" size={18} />
+      <span>{t('contact.email')}</span>
+    </dt>
+    <dd>
+      <a class="contact-details__link" href={`mailto:${site.email}`}>
+        {site.email}
+      </a>
+    </dd>
+  </div>
+  <div class="contact-details__row">
+    <dt>
+      <Icon name="whatsapp" size={18} />
+      <span>{t('contact.whatsapp')}</span>
+    </dt>
+    <dd>
+      <a class="contact-details__link" href={whatsappUrl} target="_blank" rel="noopener">
+        {t('a11y.whatsappButton')}
+        <span class="visually-hidden"> ({t('a11y.newTab')})</span>
+      </a>
+    </dd>
+  </div>
+  <div class="contact-details__row">
+    <dt>
+      <Icon name="clock" size={18} />
+      <span>{t('contact.hours')}</span>
+    </dt>
+    <dd>
+      <OpeningHours lang={lang} class="contact-details__hours" />
+    </dd>
+  </div>
+</dl>
+
+<style>
+  .contact-details {
+    display: grid;
+    gap: var(--space-4);
+    margin: 0;
+  }
+  .contact-details__row {
+    display: grid;
+    gap: var(--space-1);
+    padding-block-start: var(--space-4);
+    border-top: 1px solid var(--separator);
+  }
+  .contact-details__row:first-child {
+    border-top: 0;
+    padding-block-start: 0;
+  }
+  .contact-details dt {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    font-size: var(--text-subheadline);
+    line-height: var(--leading-subheadline);
+    font-weight: 600;
+    color: var(--label-secondary);
+  }
+  .contact-details dd {
+    margin: 0;
+  }
+  .contact-details__line {
+    display: block;
+  }
+  .contact-details__link {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--touch-target);
+    font-weight: 500;
+  }
+  .contact-details__hours {
+    max-width: 22rem;
+  }
+</style>

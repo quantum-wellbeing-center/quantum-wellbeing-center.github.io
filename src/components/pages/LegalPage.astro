@@ -1,0 +1,203 @@
+---
+/**
+ * LegalPage: renders one `legal` entry (terms, privacy or cookies) with a visible draft notice
+ * (TODO(legal)), the "last updated" date, a table of contents from the h2 headings and the
+ * Markdown body. The cookie policy also gets the cookie table and a `data-consent-open` button.
+ */
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { formatDate, useTranslations, type Locale } from '../../i18n';
+import { getLegal, type LegalKey } from '../../lib/content';
+import { isoDate } from '../../lib/format';
+import Button from '../ui/Button.astro';
+import Icon from '../ui/Icon.astro';
+import Section from '../ui/Section.astro';
+import PageIntro from '../sections/PageIntro.astro';
+
+interface Props {
+  lang: Locale;
+  legalKey: LegalKey;
+}
+
+const { lang, legalKey } = Astro.props;
+const t = useTranslations(lang);
+const entry = await getLegal(lang, legalKey);
+const { Content, headings } = await render(entry);
+const toc = headings.filter((h) => h.depth === 2);
+const cookies = entry.data.cookies ?? [];
+---
+
+<BaseLayout
+  lang={lang}
+  pageKey={legalKey}
+  title={entry.data.title}
+  description={entry.data.description}
+>
+  <PageIntro title={entry.data.title}>
+    <p class="legal__updated">
+      {t('legal.lastUpdated', { date: formatDate(lang, entry.data.updated) })}
+      <span class="visually-hidden">
+        (<time datetime={isoDate(entry.data.updated)}>{isoDate(entry.data.updated)}</time>)
+      </span>
+    </p>
+    <p class="legal__draft" role="note">
+      <Icon name="circle-alert" size={20} />
+      <span>{t('legal.draftNotice')}</span>
+    </p>
+  </PageIntro>
+
+  <Section spacing="compact" class="legal">
+    <div class="legal__inner">
+    {toc.length > 1 && (
+      <nav class="legal__toc" aria-label={t('a11y.tableOfContents')}>
+        <p class="legal__toc-title">{t('legal.contents')}</p>
+        <ol class="legal__toc-list">
+          {toc.map((h) => (
+            <li>
+              <a href={`#${h.slug}`}>{h.text}</a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+    )}
+
+    <div class="prose legal__body">
+      <Content />
+    </div>
+
+    {legalKey === 'cookies' && (
+      <div class="legal__cookies">
+        <div class="legal__table-wrap">
+          <table class="legal__table">
+            <caption class="legal__caption">{t('legal.cookieTableCaption')}</caption>
+            <thead>
+              <tr>
+                <th scope="col">{t('legal.cookieName')}</th>
+                <th scope="col">{t('legal.cookieCategory')}</th>
+                <th scope="col">{t('legal.cookiePurpose')}</th>
+                <th scope="col">{t('legal.cookieDuration')}</th>
+                <th scope="col">{t('legal.cookieProvider')}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {cookies.map((c) => (
+                <tr>
+                  <th scope="row">
+                    <code>{c.name}</code>
+                  </th>
+                  <td>{t(`cookie.${c.category}`)}</td>
+                  <td>{c.purpose}</td>
+                  <td>{c.duration}</td>
+                  <td>{c.provider}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <Button variant="secondary" icon="cookie" iconPosition="start" data-consent-open>
+          {t('legal.openPreferences')}
+        </Button>
+      </div>
+    )}
+    </div>
+  </Section>
+</BaseLayout>
+
+<style>
+  .legal__updated {
+    font-size: var(--text-subheadline);
+    color: var(--label-secondary);
+  }
+  .legal__draft {
+    display: flex;
+    gap: var(--space-3);
+    align-items: flex-start;
+    padding: var(--space-4) var(--space-5);
+    border-radius: var(--radius-card);
+    background: var(--warning-tint);
+    color: var(--warning-strong);
+    font-size: var(--text-subheadline);
+    line-height: var(--leading-subheadline);
+    font-weight: 500;
+  }
+  .legal__draft :global(.icon) {
+    flex-shrink: 0;
+    margin-block-start: 0.1em;
+  }
+  .legal {
+    padding-block-end: clamp(var(--space-7), 8vw, var(--space-9));
+  }
+  .legal__inner {
+    max-width: 48rem;
+  }
+  .legal__toc {
+    margin-block-end: var(--space-7);
+    padding: var(--space-5);
+    border-radius: var(--radius-card);
+    background: var(--bg-secondary);
+  }
+  .legal__toc-title {
+    font-size: var(--text-footnote);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--label-secondary);
+    margin-block-end: var(--space-3);
+  }
+  .legal__toc-list {
+    display: grid;
+    gap: var(--space-1);
+    padding-inline-start: 1.25em;
+    margin: 0;
+    font-size: var(--text-subheadline);
+  }
+  .legal__toc-list a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2rem;
+  }
+  .legal__body :global(h2) {
+    font-size: var(--text-title-2);
+    line-height: var(--leading-title-2);
+    scroll-margin-top: calc(var(--header-height) + var(--space-5));
+  }
+  .legal__cookies {
+    display: grid;
+    gap: var(--space-5);
+    justify-items: start;
+    margin-block-start: var(--space-7);
+    padding-block-start: var(--space-6);
+    border-top: 1px solid var(--separator);
+  }
+  .legal__table-wrap {
+    width: 100%;
+    overflow-x: auto;
+  }
+  .legal__table {
+    width: 100%;
+    min-width: 40rem;
+    font-size: var(--text-subheadline);
+    line-height: var(--leading-subheadline);
+  }
+  .legal__caption {
+    text-align: start;
+    font-weight: 600;
+    padding-block-end: var(--space-3);
+  }
+  .legal__table th,
+  .legal__table td {
+    padding: var(--space-3) var(--space-3);
+    text-align: start;
+    vertical-align: top;
+    border-bottom: 1px solid var(--separator);
+  }
+  .legal__table thead th {
+    font-weight: 600;
+    color: var(--label-secondary);
+    border-bottom-width: 2px;
+  }
+  .legal__table tbody th {
+    font-weight: 500;
+    white-space: nowrap;
+  }
+</style>

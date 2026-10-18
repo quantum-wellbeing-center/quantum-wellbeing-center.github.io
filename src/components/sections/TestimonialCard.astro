@@ -1,0 +1,95 @@
+---
+/**
+ * TestimonialCard: quote, first name and initial, date, optional rating (stars plus text) and
+ * the source label. Only entries with `consent: true` reach this component.
+ */
+import type { CollectionEntry } from 'astro:content';
+import { formatDate, useTranslations, type Locale } from '../../i18n';
+import { isoDate } from '../../lib/format';
+import Badge from '../ui/Badge.astro';
+import Card from '../ui/Card.astro';
+import Icon from '../ui/Icon.astro';
+
+interface Props {
+  lang: Locale;
+  entry: CollectionEntry<'testimonials'>;
+  class?: string;
+}
+
+const { lang, entry, class: className } = Astro.props;
+const t = useTranslations(lang);
+const d = entry.data;
+const stars = [1, 2, 3, 4, 5];
+---
+
+<Card as="article" variant="elevated" class={['testimonial', className].filter(Boolean).join(' ')}>
+  {typeof d.rating === 'number' && (
+    <p class="testimonial__rating">
+      <span class="testimonial__stars" aria-hidden="true">
+        {stars.map((n) => (
+          <Icon
+            name="star"
+            size={16}
+            class={n <= d.rating! ? 'testimonial__star is-filled' : 'testimonial__star'}
+          />
+        ))}
+      </span>
+      <span class="visually-hidden">{t('testimonials.rating', { rating: d.rating })}</span>
+    </p>
+  )}
+  <blockquote class="testimonial__quote">
+    <p>{d.quote}</p>
+  </blockquote>
+  <footer class="testimonial__footer">
+    <span class="testimonial__name">{d.name}</span>
+    <span class="testimonial__meta">
+      <time datetime={isoDate(d.date)}>
+        {formatDate(lang, d.date, { year: 'numeric', month: 'long' })}
+      </time>
+      <span aria-hidden="true"> · </span>
+      <Badge size="sm">{t(`testimonials.source.${d.source}`)}</Badge>
+    </span>
+  </footer>
+</Card>
+
+<style>
+  .testimonial__rating {
+    line-height: 1;
+  }
+  .testimonial__stars {
+    display: inline-flex;
+    gap: 2px;
+    color: var(--label-secondary);
+  }
+  .testimonial__star.is-filled {
+    color: var(--warning);
+    fill: currentColor;
+  }
+  .testimonial__quote {
+    font-size: var(--text-callout);
+    line-height: var(--leading-body);
+  }
+  .testimonial__quote p {
+    font-size: inherit;
+    line-height: inherit;
+  }
+  .testimonial__footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-1) var(--space-3);
+    font-size: var(--text-subheadline);
+    line-height: var(--leading-subheadline);
+    color: var(--label-secondary);
+  }
+  .testimonial__name {
+    font-weight: 600;
+    color: var(--label);
+  }
+  .testimonial__meta {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-1);
+  }
+</style>

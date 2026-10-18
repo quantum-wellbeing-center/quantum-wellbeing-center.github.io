@@ -1,0 +1,111 @@
+---
+/**
+ * Pagination: previous, numbered pages and next, for paginated lists. Page 1 lives at
+ * `basePath`, page N at `${basePath}${N}/` (trailingSlash: 'always'). Renders nothing for a
+ * single page.
+ */
+import { useTranslations, type Locale } from '../../i18n';
+import Icon from '../ui/Icon.astro';
+
+interface Props {
+  lang: Locale;
+  currentPage: number;
+  lastPage: number;
+  basePath: string;
+}
+
+const { lang, currentPage, lastPage, basePath } = Astro.props;
+const t = useTranslations(lang);
+const pageHref = (n: number) => (n === 1 ? basePath : `${basePath}${n}/`);
+const pages = Array.from({ length: lastPage }, (_, i) => i + 1);
+---
+
+{lastPage > 1 && (
+  <nav class="pagination" aria-label={t('a11y.pagination')}>
+    <p class="pagination__status">{t('common.page', { current: currentPage, total: lastPage })}</p>
+    <ul class="pagination__list" role="list">
+      <li>
+        {currentPage > 1 ? (
+          <a class="pagination__link pagination__link--arrow" href={pageHref(currentPage - 1)}>
+            <Icon name="chevron-left" size={18} />
+            <span class="visually-hidden">{t('common.previous')}</span>
+          </a>
+        ) : (
+          <span class="pagination__link pagination__link--arrow is-disabled" aria-hidden="true">
+            <Icon name="chevron-left" size={18} />
+          </span>
+        )}
+      </li>
+      {pages.map((n) => (
+        <li>
+          <a
+            class="pagination__link"
+            href={pageHref(n)}
+            aria-current={n === currentPage ? 'page' : undefined}
+          >
+            {n}
+          </a>
+        </li>
+      ))}
+      <li>
+        {currentPage < lastPage ? (
+          <a class="pagination__link pagination__link--arrow" href={pageHref(currentPage + 1)}>
+            <Icon name="chevron-right" size={18} />
+            <span class="visually-hidden">{t('common.next')}</span>
+          </a>
+        ) : (
+          <span class="pagination__link pagination__link--arrow is-disabled" aria-hidden="true">
+            <Icon name="chevron-right" size={18} />
+          </span>
+        )}
+      </li>
+    </ul>
+  </nav>
+)}
+
+<style>
+  .pagination {
+    display: grid;
+    gap: var(--space-3);
+    justify-items: center;
+    margin-block-start: var(--space-7);
+  }
+  .pagination__status {
+    font-size: var(--text-footnote);
+    color: var(--label-secondary);
+  }
+  .pagination__list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-1);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .pagination__link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: var(--touch-target);
+    min-height: var(--touch-target);
+    padding-inline: var(--space-3);
+    border-radius: var(--radius-capsule);
+    color: var(--label);
+    font-weight: 500;
+    text-decoration: none;
+    font-variant-numeric: tabular-nums;
+  }
+  .pagination__link:hover {
+    background: var(--fill);
+  }
+  .pagination__link[aria-current='page'] {
+    background: var(--accent-fill);
+    color: var(--on-accent);
+    font-weight: 600;
+  }
+  .pagination__link.is-disabled {
+    color: var(--label-secondary);
+    opacity: 0.45;
+  }
+</style>

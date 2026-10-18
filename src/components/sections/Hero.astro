@@ -1,0 +1,105 @@
+---
+/**
+ * Hero: display headline, subheading, a primary and a secondary action, and a decorative
+ * placeholder visual (concentric rings in the brand accent; no stock photography).
+ */
+import { useTranslations, type Locale } from '../../i18n';
+import Button from '../ui/Button.astro';
+import Section from '../ui/Section.astro';
+
+interface Props {
+  lang: Locale;
+  headline: string;
+  subheading: string;
+  primary: { href: string; label: string };
+  secondary?: { href: string; label: string };
+}
+
+const { lang, headline, subheading, primary, secondary } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<Section class="hero" spacing="compact">
+  <div class="hero__inner">
+    <div class="hero__copy">
+      <h1 class="hero__title text-display">{headline}</h1>
+      <p class="hero__lead">{subheading}</p>
+      <div class="hero__actions">
+        <Button href={primary.href} size="lg" newTabLabel={t('a11y.newTab')}>
+          {primary.label}
+        </Button>
+        {secondary && (
+          <Button href={secondary.href} variant="secondary" size="lg" icon="arrow-right">
+            {secondary.label}
+          </Button>
+        )}
+      </div>
+    </div>
+    <div class="hero__visual" aria-hidden="true">
+      <svg viewBox="0 0 400 400" width="400" height="400" focusable="false">
+        <defs>
+          <radialGradient id="hero-glow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.22"></stop>
+            <stop offset="100%" stop-color="var(--accent)" stop-opacity="0"></stop>
+          </radialGradient>
+        </defs>
+        <circle cx="200" cy="200" r="200" fill="url(#hero-glow)"></circle>
+        <g fill="none" stroke="var(--accent)" stroke-linecap="round">
+          <circle cx="200" cy="200" r="150" stroke-width="1" opacity="0.25"></circle>
+          <circle cx="200" cy="200" r="112" stroke-width="1.5" opacity="0.4"></circle>
+          <circle cx="200" cy="200" r="74" stroke-width="2" opacity="0.6"></circle>
+          <circle cx="200" cy="200" r="36" stroke-width="2.5" opacity="0.85"></circle>
+        </g>
+        <circle cx="200" cy="200" r="10" fill="var(--accent)"></circle>
+      </svg>
+    </div>
+  </div>
+</Section>
+
+<style>
+  .hero {
+    padding-block: clamp(var(--space-7), 7vw, var(--space-9));
+    overflow: hidden;
+  }
+  .hero__inner {
+    display: grid;
+    gap: var(--space-7);
+    align-items: center;
+  }
+  .hero__copy {
+    display: grid;
+    gap: var(--space-5);
+    max-width: 38rem;
+  }
+  .hero__title {
+    max-width: 14ch;
+  }
+  .hero__lead {
+    font-size: var(--text-title-3);
+    line-height: 1.4;
+    font-weight: 400;
+    color: var(--label-secondary);
+    max-width: 48ch;
+  }
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+  .hero__visual {
+    display: none;
+    justify-self: center;
+  }
+  .hero__visual svg {
+    width: min(100%, 26rem);
+    height: auto;
+  }
+  @media (min-width: 48em) {
+    .hero__inner {
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+    }
+    .hero__visual {
+      display: block;
+    }
+  }
+</style>

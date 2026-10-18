@@ -1,0 +1,44 @@
+# Netlify configuration for the static Astro site.
+# Any host that serves the dist/ folder works too (Cloudflare Pages, Vercel, GitHub Pages).
+#
+# URLs: the site is built with trailingSlash: 'always' (every page is dist/<route>/index.html).
+# Netlify serves /tehnologie/ from that folder and, with the default "Pretty URLs" setting on,
+# redirects /tehnologie to /tehnologie/. No custom redirect rule is needed.
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  # Keep in sync with .nvmrc. Astro 7 needs Node 22.22 or newer.
+  NODE_VERSION = "24"
+
+# Not-found pages. Netlify serves dist/404.html (Romanian) for any unknown path by default;
+# this rule serves the English 404 page for unknown paths under /en/ instead.
+[[redirects]]
+  from = "/en/*"
+  to = "/en/404/index.html"
+  status = 404
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+    # TODO(deploy): add a Content-Security-Policy once the final list of third-party
+    # scripts (booking widget, analytics, reviews embed) is known.
+
+# Long cache for hashed build assets.
+[[headers]]
+  for = "/_astro/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Research PDFs change rarely; let browsers cache them for a day.
+[[headers]]
+  for = "/research/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"

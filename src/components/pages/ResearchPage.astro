@@ -1,0 +1,201 @@
+---
+/**
+ * ResearchPage: disclaimer at the top, an intro that explains the evidence-type labels, and the
+ * items grouped into three sections with counts. Everything renders statically; the Phase 5
+ * search and filter island hooks into:
+ *   [data-research-controls]           placeholder slot above the groups
+ *   [data-research-status]             aria-live region for result counts
+ *   [data-research-empty]              hidden empty state
+ *   [data-research-group][data-count]  each group section
+ *   [data-research-item] + data-title / data-authors / data-evidence-type / data-group
+ */
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { RESEARCH_GROUPS } from '../../content.config';
+import { useTranslations, type Locale } from '../../i18n';
+import { evidenceTone, getPage, getResearch } from '../../lib/content';
+import Badge from '../ui/Badge.astro';
+import Section from '../ui/Section.astro';
+import Disclaimer from '../sections/Disclaimer.astro';
+import PageIntro from '../sections/PageIntro.astro';
+import ResearchCard from '../sections/ResearchCard.astro';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const { entry, data: page } = await getPage(lang, 'research');
+const { Content } = await render(entry);
+const items = await getResearch(lang);
+
+const groups = RESEARCH_GROUPS.map((group) => ({
+  group,
+  ...page.groups[group],
+  items: items.filter((item) => item.data.group === group),
+}));
+const countLabel = (n: number) =>
+  n === 1 ? t('research.countOne') : t('research.count', { count: n });
+---
+
+<BaseLayout lang={lang} pageKey="research" title={page.title} description={page.description}>
+  <PageIntro title={page.title} lead={page.subheading}>
+    <Disclaimer lang={lang} variant="long" />
+  </PageIntro>
+
+  <Section tone="secondary" spacing="compact" aria-labelledby="research-legend-heading">
+    <div class="research-intro">
+      <div class="prose">
+        <Content />
+      </div>
+      <div class="research-legend">
+        <h2 id="research-legend-heading" class="research-legend__title">{page.legend.heading}</h2>
+        <dl class="research-legend__list">
+          {page.legend.items.map((item) => (
+            <div class="research-legend__row">
+              <dt>
+                <Badge tone={evidenceTone(item.type)}>{t(`evidence.${item.type}`)}</Badge>
+              </dt>
+              <dd>{item.text}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </div>
+  </Section>
+
+  <Section class="research-library">
+    <div data-research-controls></div>
+    <p class="research-status" aria-live="polite" data-research-status></p>
+    <p class="research-empty" data-research-empty hidden>{t('common.noResults')}</p>
+
+    {groups.map(({ group, heading, text, items: groupItems }) => (
+      <section
+        class="research-group"
+        data-research-group={group}
+        data-count={groupItems.length}
+        aria-labelledby={`research-${group}-heading`}
+      >
+        <div class="research-group__head">
+          <h2 id={`research-${group}-heading`} class="research-group__title">
+            {heading}
+            <span class="research-group__count" data-research-group-count>
+              {countLabel(groupItems.length)}
+            </span>
+          </h2>
+          <p class="research-group__text">{text}</p>
+        </div>
+        <ul class="research-group__list" role="list">
+          {groupItems.map((item) => (
+            <li>
+              <ResearchCard lang={lang} entry={item} />
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))}
+  </Section>
+</BaseLayout>
+
+<style>
+  .research-intro {
+    display: grid;
+    gap: var(--space-6);
+    align-items: start;
+  }
+  @media (min-width: 60em) {
+    .research-intro {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: var(--space-8);
+    }
+  }
+  .research-legend__title {
+    font-size: var(--text-title-3);
+    line-height: var(--leading-title-3);
+    margin-block-end: var(--space-4);
+  }
+  .research-legend__list {
+    display: grid;
+    gap: var(--space-3);
+    margin: 0;
+  }
+  .research-legend__row {
+    display: grid;
+    gap: var(--space-2);
+    padding-block-start: var(--space-3);
+    border-top: 1px solid var(--separator);
+  }
+  .research-legend__row dd {
+    margin: 0;
+    font-size: var(--text-subheadline);
+    line-height: var(--leading-subheadline);
+    color: var(--label-secondary);
+  }
+  @media (min-width: 40em) {
+    .research-legend__row {
+      grid-template-columns: 11rem minmax(0, 1fr);
+      gap: var(--space-4);
+    }
+  }
+  .research-status:empty,
+  .research-empty[hidden] {
+    display: none;
+  }
+  .research-status {
+    margin-block-end: var(--space-4);
+    font-size: var(--text-subheadline);
+    color: var(--label-secondary);
+  }
+  .research-empty {
+    padding: var(--space-6);
+    border-radius: var(--radius-card);
+    background: var(--bg-secondary);
+    text-align: center;
+    color: var(--label-secondary);
+  }
+  .research-group + .research-group {
+    margin-block-start: var(--space-8);
+    padding-block-start: var(--space-7);
+    border-top: 1px solid var(--separator);
+  }
+  .research-group[hidden] {
+    display: none;
+  }
+  .research-group__head {
+    display: grid;
+    gap: var(--space-3);
+    max-width: var(--measure);
+    margin-block-end: var(--space-5);
+  }
+  .research-group__title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-2) var(--space-3);
+  }
+  .research-group__count {
+    font-size: var(--text-subheadline);
+    line-height: var(--leading-subheadline);
+    font-weight: 500;
+    color: var(--label-secondary);
+    font-variant-numeric: tabular-nums;
+  }
+  .research-group__text {
+    color: var(--label-secondary);
+  }
+  .research-group__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
+    gap: var(--space-4);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .research-group__list > li {
+    display: flex;
+  }
+  .research-group__list > li > :global(*) {
+    width: 100%;
+  }
+</style>

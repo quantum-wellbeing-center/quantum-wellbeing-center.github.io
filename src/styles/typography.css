@@ -218,3 +218,46 @@ b {
 .prose li + li {
   margin-block-start: var(--space-2);
 }
+.prose blockquote {
+  padding-inline-start: var(--space-5);
+  border-inline-start: 3px solid var(--accent);
+  color: var(--label-secondary);
+}
+.prose blockquote > * + * {
+  margin-block-start: var(--space-3);
+}
+.prose img,
+.prose picture,
+.prose video {
+  border-radius: var(--radius-card);
+}
+.prose figure {
+  margin-inline: 0;
+}
+.prose figcaption {
+  margin-block-start: var(--space-2);
+}
+.prose pre {
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--bg-secondary);
+  overflow-x: auto;
+}
+.prose hr {
+  margin-block: var(--space-7);
+}
+.prose table {
+  width: 100%;
+  font-size: var(--text-subheadline);
+  line-height: var(--leading-subheadline);
+}
+.prose th,
+.prose td {
+  padding: var(--space-2) var(--space-3);
+  text-align: start;
+  vertical-align: top;
+  border-bottom: 1px solid var(--separator);
+}
+.prose th {
+  font-weight: 600;
+}

@@ -1,0 +1,55 @@
+---
+/**
+ * Disclaimer: the visible "not a medical service" note required at the top of the research
+ * and testimonials pages (WEBSITE_PLAN.md section 9), reusable anywhere.
+ */
+import { useTranslations, type Locale } from '../../i18n';
+import Icon from '../ui/Icon.astro';
+
+interface Props {
+  lang: Locale;
+  variant?: 'long' | 'short';
+  class?: string;
+}
+
+const { lang, variant = 'long', class: className } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<aside class:list={['disclaimer', className]} role="note" aria-label={t('disclaimer.title')}>
+  <Icon name="info" size={22} class="disclaimer__icon" />
+  <div class="disclaimer__body">
+    <p class="disclaimer__title">{t('disclaimer.title')}</p>
+    <p class="disclaimer__text">{t(`disclaimer.${variant}`)}</p>
+  </div>
+</aside>
+
+<style>
+  .disclaimer {
+    display: flex;
+    gap: var(--space-3);
+    align-items: flex-start;
+    padding: var(--space-4) var(--space-5);
+    border-radius: var(--radius-card);
+    background: var(--accent-tint);
+    color: var(--label);
+    max-width: var(--measure);
+  }
+  .disclaimer__icon {
+    color: var(--accent-strong);
+    margin-block-start: 0.1em;
+  }
+  .disclaimer__body {
+    display: grid;
+    gap: var(--space-1);
+  }
+  .disclaimer__title {
+    font-size: var(--text-headline);
+    line-height: var(--leading-headline);
+    font-weight: 600;
+  }
+  .disclaimer__text {
+    font-size: var(--text-subheadline);
+    line-height: var(--leading-subheadline);
+  }
+</style>

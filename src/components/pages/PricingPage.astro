@@ -1,0 +1,78 @@
+---
+/**
+ * PricingPage: service cards sorted by `order` with the highlighted card emphasised, the VAT
+ * note (TODO(content) in the dictionaries), what every session includes, and a CTA.
+ */
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { site } from '../../config/site';
+import { getRoute, useTranslations, type Locale } from '../../i18n';
+import { getPage, getServices } from '../../lib/content';
+import Icon from '../ui/Icon.astro';
+import Section from '../ui/Section.astro';
+import CtaBand from '../sections/CtaBand.astro';
+import PageIntro from '../sections/PageIntro.astro';
+import ServicesGrid from '../sections/ServicesGrid.astro';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const { entry, data: page } = await getPage(lang, 'pricing');
+const { Content } = await render(entry);
+const services = await getServices(lang);
+const hasBody = Boolean(entry.body && entry.body.trim());
+---
+
+<BaseLayout lang={lang} pageKey="pricing" title={page.title} description={page.description}>
+  <PageIntro title={page.title} lead={page.subheading} />
+
+  <Section spacing="compact" class="pricing" aria-label={page.title}>
+    <ServicesGrid lang={lang} entries={services} bare />
+    <p class="pricing__vat" role="note">
+      <Icon name="info" size={18} />
+      <span>{t('common.vatNote')}</span>
+    </p>
+    {hasBody && (
+      <div class="prose pricing__includes">
+        <Content />
+      </div>
+    )}
+  </Section>
+
+  <CtaBand
+    lang={lang}
+    heading={page.cta.heading}
+    text={page.cta.text}
+    primary={{ href: getRoute(lang, 'contact'), label: t('actions.contactUs') }}
+    secondary={{ href: site.bookingUrl, label: t('actions.bookSession') }}
+  />
+</BaseLayout>
+
+<style>
+  .pricing {
+    padding-block-end: clamp(var(--space-7), 8vw, var(--space-9));
+  }
+  .pricing__vat {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    margin-block-start: var(--space-5);
+    max-width: var(--measure);
+    font-size: var(--text-subheadline);
+    line-height: var(--leading-subheadline);
+    color: var(--warning);
+  }
+  .pricing__vat :global(.icon) {
+    flex-shrink: 0;
+    margin-block-start: 0.1em;
+  }
+  .pricing__includes {
+    margin-block-start: var(--space-6);
+    padding-block-start: var(--space-6);
+    border-top: 1px solid var(--separator);
+    color: var(--label-secondary);
+  }
+</style>

@@ -32,7 +32,13 @@
     "newTab": "opens in a new tab",
     "brandHome": "{brand}, home page",
     "whatsappButton": "Message us on WhatsApp",
-    "currentPage": "Current page"
+    "currentPage": "Current page",
+    "testimonialsRow": "Testimonials, horizontally scrollable list",
+    "pagination": "Pagination",
+    "articleNav": "Neighbouring articles",
+    "tableOfContents": "Contents",
+    "rss": "RSS feed",
+    "decorative": "Decorative element"
   },
   "actions": {
     "book": "Book",
@@ -53,7 +59,15 @@
     "search": "Search",
     "clear": "Clear",
     "learnMore": "Learn more",
-    "joinCommunity": "Join the community"
+    "joinCommunity": "Join the community",
+    "seeAllResearch": "See the whole library",
+    "seeAllTestimonials": "See all testimonials",
+    "seeAllFaq": "See all questions",
+    "seePricing": "See prices",
+    "contactUs": "Contact us",
+    "openImage": "Open image",
+    "backToArticles": "Back to articles",
+    "openDocument": "Open document"
   },
   "topBar": {
     "hours": "Hours",
@@ -127,7 +141,13 @@
     "error": "The message could not be sent. Please try again or call us.",
     "required": "This field is required.",
     "invalidEmail": "Enter a valid email address.",
-    "honeypot": "Leave this field empty"
+    "honeypot": "Leave this field empty",
+    "requiredNote": "Fields marked with * are required.",
+    "requiredMark": "required",
+    "nameHint": "Your first and last name.",
+    "emailHint": "We reply to this address.",
+    "phoneHint": "Only if you would rather we call you.",
+    "messageHint": "A few sentences are enough."
   },
   "common": {
     "readingTime": "{minutes} min read",
@@ -149,7 +169,8 @@
     "price": "Price",
     "duration": "{minutes} min",
     "sessions": "{count} sessions",
-    "vatNote": "TODO(content): state whether prices include VAT."
+    "vatNote": "TODO(content): state whether prices include VAT.",
+    "placeholder": "Example"
   },
   "evidence": {
     "peer-reviewed": "Peer-reviewed",
@@ -160,14 +181,78 @@
     "anecdotal-report": "Anecdotal report",
     "other": "Other"
   },
+  "research": {
+    "count": "{count} documents",
+    "countOne": "1 document",
+    "externalLink": "External link",
+    "fileMeta": "{type} · {size}",
+    "doi": "DOI",
+    "year": "Year",
+    "source": "Source",
+    "authors": "Authors",
+    "evidenceLabel": "Type of evidence",
+    "noYear": "year not given"
+  },
+  "testimonials": {
+    "rating": "{rating} out of 5 stars",
+    "source": {
+      "google": "Google review",
+      "in-person": "Said at the centre"
+    }
+  },
+  "pricing": {
+    "recommended": "Recommended",
+    "perSession": "{price} per session",
+    "package": "Package of {count} sessions",
+    "perSessionDuration": "{minutes} min per session"
+  },
+  "articles": {
+    "empty": "No articles yet.",
+    "previous": "Previous article",
+    "next": "Next article",
+    "pageTitle": "{title} – page {page}",
+    "feedTitle": "{brand} – Articles",
+    "feedDescription": "Articles about sessions, preparing for a visit and how we read the research."
+  },
+  "faq": {
+    "category": {
+      "sesiuni": "Sessions",
+      "rezervari": "Bookings",
+      "siguranta": "Safety and data",
+      "preturi": "Prices and payment"
+    }
+  },
+  "contact": {
+    "address": "Address",
+    "phone": "Phone",
+    "email": "Email",
+    "whatsapp": "WhatsApp",
+    "hours": "Opening hours",
+    "mapAlt": "Placeholder map pointing to the centre's address. TODO(content): replace with a static map image."
+  },
+  "legal": {
+    "draftNotice": "TODO(legal): this text is a structural draft for review by the centre's legal adviser. It is not yet a legally binding document.",
+    "lastUpdated": "Last updated: {date}",
+    "contents": "Contents",
+    "cookieTableCaption": "Cookies and similar technologies used by this website",
+    "cookieName": "Name",
+    "cookieCategory": "Category",
+    "cookiePurpose": "Purpose",
+    "cookieDuration": "Duration",
+    "cookieProvider": "Provider",
+    "openPreferences": "Open cookie preferences"
+  },
   "disclaimer": {
     "short": "Not a medical service. Does not replace diagnosis or treatment. Consult a doctor.",
-    "long": "The information on this page is provided for general information. Our sessions are relaxation and wellbeing experiences, not medical services, and do not replace a diagnosis or treatment set by a doctor. For any health concern, consult a doctor."
+    "long": "The information on this page is provided for general information. Our sessions are relaxation and wellbeing experiences, not medical services, and do not replace a diagnosis or treatment set by a doctor. For any health concern, consult a doctor.",
+    "title": "Important note"
   },
   "notFound": {
     "title": "Page not found",
     "text": "The link may be wrong or the page may have moved.",
-    "backHome": "Back to the home page"
+    "backHome": "Back to the home page",
+    "otherLanguage": "Versiunea în română",
+    "code": "Error 404"
   },
   "styleguide": {
     "title": "Style guide",

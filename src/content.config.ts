@@ -327,4 +327,163 @@ const blog = defineCollection({
     }),
 });
 
-export const collections = { research, testimonials, gallery, faq, services, blog };
+/* ------------------------------------------------------------------- pages */
+
+/**
+ * Page copy: one Markdown file per page and language (`src/content/pages/<lang>/<page>.md`).
+ * `translationKey` doubles as the page id, so the schema is a discriminated union: each page
+ * has its own typed frontmatter and the Markdown body carries the long text where a page has
+ * one. UI strings (button labels, column headings, status messages) live in the i18n files.
+ */
+export const PAGE_KEYS = [
+  'home',
+  'technology',
+  'research',
+  'testimonials',
+  'pricing',
+  'articles',
+  'faq',
+  'contact',
+  'not-found',
+] as const;
+export type PageContentKey = (typeof PAGE_KEYS)[number];
+
+const pageBase = {
+  lang: z.enum(LANGS),
+  /** Page title (h1 unless a `headline` is given) and the first part of the <title>. */
+  title: z.string().min(1),
+  /** Meta description, 50 to 160 characters. */
+  description: z.string().min(1),
+};
+
+/** A heading plus a short lead paragraph, the pattern most sections start with. */
+const headed = z.object({
+  heading: z.string().min(1),
+  text: z.string().min(1),
+});
+
+/** A heading, an intro, a list of short items and a closing note (guardrail wording). */
+const list = z.object({
+  heading: z.string().min(1),
+  intro: z.string().min(1),
+  items: z.array(z.string().min(1)).min(1),
+  note: z.string().min(1),
+});
+
+const pages = defineCollection({
+  loader: localizedGlob('pages', 'md'),
+  schema: z.discriminatedUnion('translationKey', [
+    z.object({
+      ...pageBase,
+      translationKey: z.literal('home'),
+      hero: z.object({ headline: z.string().min(1), subheading: z.string().min(1) }),
+      technology: headed,
+      experiences: list,
+      services: headed,
+      research: headed,
+      testimonials: headed,
+      faq: headed,
+      cta: headed,
+    }),
+    z.object({
+      ...pageBase,
+      translationKey: z.literal('technology'),
+      subheading: z.string().min(1),
+      /** The Markdown body is the "how it works" explainer. */
+      reports: list,
+      services: headed,
+      cta: headed,
+    }),
+    z.object({
+      ...pageBase,
+      translationKey: z.literal('research'),
+      subheading: z.string().min(1),
+      /** The Markdown body explains how to read the library. */
+      legend: z.object({
+        heading: z.string().min(1),
+        items: z.array(z.object({ type: z.enum(EVIDENCE_TYPES), text: z.string().min(1) })),
+      }),
+      groups: z.object({
+        'published-clinical': headed,
+        'research-studies': headed,
+        additional: headed,
+      }),
+    }),
+    z.object({
+      ...pageBase,
+      translationKey: z.literal('testimonials'),
+      subheading: z.string().min(1),
+      gallery: headed.extend({ note: z.string().min(1) }),
+      reviews: headed,
+    }),
+    z.object({
+      ...pageBase,
+      translationKey: z.literal('pricing'),
+      subheading: z.string().min(1),
+      /** The Markdown body (optional) describes what every session includes. */
+      cta: headed,
+    }),
+    z.object({
+      ...pageBase,
+      translationKey: z.literal('articles'),
+      subheading: z.string().min(1),
+    }),
+    z.object({
+      ...pageBase,
+      translationKey: z.literal('faq'),
+      subheading: z.string().min(1),
+      cta: headed,
+    }),
+    z.object({
+      ...pageBase,
+      translationKey: z.literal('contact'),
+      subheading: z.string().min(1),
+      /** The Markdown body is the short intro above the contact details. */
+      details: z.object({ heading: z.string().min(1) }),
+      map: z.object({ heading: z.string().min(1), text: z.string().min(1) }),
+      form: headed,
+    }),
+    z.object({
+      ...pageBase,
+      translationKey: z.literal('not-found'),
+      subheading: z.string().min(1),
+    }),
+  ]),
+});
+
+/* ------------------------------------------------------------------- legal */
+
+export const LEGAL_KEYS = ['terms', 'privacy', 'cookies'] as const;
+export const COOKIE_CATEGORIES = ['necessary', 'statistics', 'marketing'] as const;
+
+/**
+ * Legal pages (`src/content/legal/<lang>/<terms|privacy|cookies>.md`). The Markdown body is the
+ * document itself, structured with `##` headings that become the table of contents. Every
+ * paragraph of actual legal wording is a placeholder marked TODO(legal) until the owner's
+ * adviser reviews it.
+ */
+const legal = defineCollection({
+  loader: localizedGlob('legal', 'md'),
+  schema: z.object({
+    ...localized,
+    translationKey: z.enum(LEGAL_KEYS),
+    title: z.string().min(1),
+    description: z.string().min(1),
+    /** Date of the last change to the text; shown as "last updated". */
+    updated: z.coerce.date(),
+    /** Cookie inventory, shown as a table on the cookie policy page only. */
+    cookies: z
+      .array(
+        z.object({
+          name: z.string().min(1),
+          category: z.enum(COOKIE_CATEGORIES),
+          purpose: z.string().min(1),
+          duration: z.string().min(1),
+          provider: z.string().min(1),
+        }),
+      )
+      .optional(),
+  }),
+});
+
+export const collections = { research, testimonials, gallery, faq, services, blog, pages, legal };

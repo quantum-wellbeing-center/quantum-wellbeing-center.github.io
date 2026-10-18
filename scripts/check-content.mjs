@@ -7,9 +7,11 @@
  *
  * Checks:
  *   1. Every entry sits in `src/content/<collection>/<ro|en>/` and its `lang` field matches.
+ *      This covers every collection, including the `pages` and `legal` copy collections.
  *   2. Every `translationKey` exists in both languages, within one collection, exactly once each.
  *   3. No cedilla characters (ş ţ Ş Ţ) anywhere in the content: Romanian uses comma-below ș ț.
  *   4. No forbidden claim words or disease names (section 9 of WEBSITE_PLAN.md), in either language.
+ *   5. Checks 3 and 4 also run over the UI dictionaries in `src/i18n/*.json`.
  */
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { dirname, join, relative, sep } from 'node:path';
@@ -17,6 +19,7 @@ import { fileURLToPath } from 'node:url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const contentDir = join(root, 'src', 'content');
+const i18nDir = join(root, 'src', 'i18n');
 const LANGS = ['ro', 'en'];
 const listTodos = process.argv.includes('--todos');
 
@@ -120,6 +123,11 @@ for (const file of walk(contentDir)) {
     byKey.get(data.translationKey)[lang].push(display);
   }
 
+  scanText(display, text, collection);
+}
+
+/** Diacritics, claim words and TODO markers; shared by content files and the i18n dictionaries. */
+function scanText(display, text, group) {
   for (const m of text.matchAll(CEDILLA)) {
     errors.push(
       `${display}:${lineOf(text, m.index)}: cedilla character "${m[0]}" (U+${m[0].codePointAt(0).toString(16).toUpperCase().padStart(4, '0')}); use comma-below ș/ț`,
@@ -133,14 +141,29 @@ for (const file of walk(contentDir)) {
   }
 
   for (const m of text.matchAll(/TODO\((?:content|legal)\)[^\n]*/gu)) {
-    if (!todos.has(collection)) todos.set(collection, []);
+    if (!todos.has(group)) todos.set(group, []);
     // Strip the JSON string terminator and unescape quotes so the marker reads as written.
     const marker = m[0]
       .replace(/["”„“]?,?\s*$/u, '')
       .replace(/\\"/g, '"')
       .trim();
-    todos.get(collection).push({ file: display, line: lineOf(text, m.index), text: marker });
+    todos.get(group).push({ file: display, line: lineOf(text, m.index), text: marker });
   }
+}
+
+/* UI dictionaries: same diacritics and claim-word rules (key parity is asserted at build time). */
+let i18nCount = 0;
+for (const name of readdirSync(i18nDir).filter((n) => /^(ro|en)\.json$/.test(n))) {
+  const file = join(i18nDir, name);
+  const text = readFileSync(file, 'utf8');
+  try {
+    JSON.parse(text);
+  } catch (error) {
+    errors.push(`${relative(root, file)}: cannot parse (${error.message})`);
+    continue;
+  }
+  i18nCount += 1;
+  scanText(relative(root, file), text, 'i18n');
 }
 
 for (const [collection, byKey] of keys) {
@@ -165,7 +188,7 @@ for (const [collection, byKey] of keys) {
 const summary = [...keys.entries()]
   .map(([collection, byKey]) => `${collection}: ${byKey.size} keys`)
   .join(', ');
-console.log(`Checked ${fileCount} content files (${summary}).`);
+console.log(`Checked ${fileCount} content files (${summary}) and ${i18nCount} i18n dictionaries.`);
 
 if (listTodos) {
   let total = 0;
@@ -184,4 +207,6 @@ if (errors.length > 0) {
   for (const error of errors) console.error(`  - ${error}`);
   process.exit(1);
 }
-console.log('All content checks passed: lang folders, translation twins, diacritics, claim words.');
+console.log(
+  'All content checks passed: lang folders, translation twins, diacritics, claim words (content and i18n).',
+);

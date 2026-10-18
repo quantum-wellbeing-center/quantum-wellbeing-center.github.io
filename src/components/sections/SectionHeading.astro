@@ -1,0 +1,73 @@
+---
+/**
+ * SectionHeading: an h2 (or other level) with an optional lead and an optional action link
+ * aligned to the end of the row on wide screens.
+ */
+import Button from '../ui/Button.astro';
+
+interface Props {
+  title: string;
+  text?: string;
+  id?: string;
+  as?: 'h2' | 'h3';
+  action?: { href: string; label: string };
+  align?: 'start' | 'center';
+  class?: string;
+}
+
+const {
+  title,
+  text,
+  id,
+  as: Tag = 'h2',
+  action,
+  align = 'start',
+  class: className,
+} = Astro.props;
+---
+
+<div class:list={['section-heading', `section-heading--${align}`, className]}>
+  <div class="section-heading__text">
+    <Tag id={id}>{title}</Tag>
+    {text && <p class="section-heading__lead">{text}</p>}
+  </div>
+  {action && (
+    <Button href={action.href} variant="plain" icon="arrow-right" class="section-heading__action">
+      {action.label}
+    </Button>
+  )}
+</div>
+
+<style>
+  .section-heading {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-3) var(--space-6);
+    margin-block-end: var(--space-6);
+  }
+  .section-heading__text {
+    display: grid;
+    gap: var(--space-3);
+    max-width: var(--measure);
+  }
+  .section-heading__lead {
+    color: var(--label-secondary);
+  }
+  .section-heading--center {
+    justify-content: center;
+    text-align: center;
+  }
+  .section-heading--center .section-heading__text {
+    justify-items: center;
+  }
+  .section-heading__action {
+    margin-inline-start: calc(-1 * var(--space-3));
+  }
+  @media (min-width: 48em) {
+    .section-heading__action {
+      margin-inline-start: 0;
+    }
+  }
+</style>

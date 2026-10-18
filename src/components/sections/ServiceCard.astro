@@ -1,0 +1,132 @@
+---
+/**
+ * ServiceCard: name, description, duration, price (Intl, RON), package details with the
+ * per-session price, and a booking button. `highlighted` services get an accent ring and label.
+ */
+import type { CollectionEntry } from 'astro:content';
+import { site } from '../../config/site';
+import { formatPrice, useTranslations, type Locale } from '../../i18n';
+import Badge from '../ui/Badge.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+import Icon from '../ui/Icon.astro';
+
+interface Props {
+  lang: Locale;
+  entry: CollectionEntry<'services'>;
+  /** `compact` hides the description's booking button (used in teasers). */
+  compact?: boolean;
+  headingLevel?: 'h3' | 'h4';
+}
+
+const { lang, entry, compact = false, headingLevel: Heading = 'h3' } = Astro.props;
+const t = useTranslations(lang);
+const d = entry.data;
+const price = formatPrice(lang, d.price, d.currency);
+const perSession =
+  d.sessionsPerPackage && d.sessionsPerPackage > 1
+    ? formatPrice(lang, Math.round((d.price / d.sessionsPerPackage) * 100) / 100, d.currency)
+    : null;
+---
+
+<Card
+  as="article"
+  variant="elevated"
+  class={d.highlighted ? 'service service--highlighted' : 'service'}
+  data-service={entry.data.translationKey}
+>
+  <div class="service__head">
+    {d.highlighted && (
+      <Badge tone="accent" icon="sparkles">
+        {t('pricing.recommended')}
+      </Badge>
+    )}
+    <Heading class="service__name">{d.name}</Heading>
+  </div>
+  <p class="service__price">
+    <span class="service__amount">{price}</span>
+    {perSession && (
+      <span class="service__per">{t('pricing.perSession', { price: perSession })}</span>
+    )}
+  </p>
+  <ul class="service__facts" role="list">
+    <li>
+      <Icon name="clock" size={16} />
+      <span>
+        {d.sessionsPerPackage
+          ? t('pricing.perSessionDuration', { minutes: d.durationMinutes })
+          : t('common.duration', { minutes: d.durationMinutes })}
+      </span>
+    </li>
+    {d.sessionsPerPackage && (
+      <li>
+        <Icon name="calendar-check" size={16} />
+        <span>{t('pricing.package', { count: d.sessionsPerPackage })}</span>
+      </li>
+    )}
+  </ul>
+  <p class="service__desc">{d.description}</p>
+  {!compact && (
+    <div slot="footer">
+      <Button
+        href={site.bookingUrl}
+        variant={d.highlighted ? 'primary' : 'secondary'}
+        fullWidth
+        newTabLabel={t('a11y.newTab')}
+      >
+        {t('actions.bookSession')}
+      </Button>
+    </div>
+  )}
+</Card>
+
+<style>
+  .service--highlighted {
+    box-shadow:
+      var(--shadow-sm),
+      inset 0 0 0 2px var(--accent);
+  }
+  .service__head {
+    display: grid;
+    gap: var(--space-3);
+    justify-items: start;
+  }
+  .service__name {
+    font-size: var(--text-title-3);
+    line-height: var(--leading-title-3);
+  }
+  .service__price {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-2);
+  }
+  .service__amount {
+    font-size: var(--text-title-1);
+    line-height: var(--leading-title-1);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    font-variant-numeric: tabular-nums;
+  }
+  .service__per {
+    font-size: var(--text-subheadline);
+    color: var(--label-secondary);
+  }
+  .service__facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-4);
+    font-size: var(--text-subheadline);
+    line-height: var(--leading-subheadline);
+    color: var(--label-secondary);
+  }
+  .service__facts li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+  }
+  .service__desc {
+    font-size: var(--text-callout);
+    line-height: var(--leading-body);
+  }
+</style>

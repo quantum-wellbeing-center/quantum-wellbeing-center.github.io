@@ -1,0 +1,73 @@
+---
+/**
+ * CtaBand: a centred call-to-action band with a heading, a line of text and one or two buttons.
+ * Tinted (secondary) by default so it stays subtle; `tone="accent"` for a filled band.
+ */
+import { useTranslations, type Locale } from '../../i18n';
+import Button from '../ui/Button.astro';
+import Section from '../ui/Section.astro';
+
+interface Props {
+  lang: Locale;
+  heading: string;
+  text: string;
+  primary: { href: string; label: string };
+  secondary?: { href: string; label: string };
+  tone?: 'default' | 'secondary' | 'accent';
+}
+
+const { lang, heading, text, primary, secondary, tone = 'secondary' } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<Section tone={tone} class="cta-band" aria-labelledby="cta-heading">
+  <div class="cta-band__inner">
+    <h2 id="cta-heading" class="cta-band__title">{heading}</h2>
+    <p class="cta-band__text">{text}</p>
+    <div class="cta-band__actions">
+      <Button
+        href={primary.href}
+        size="lg"
+        variant={tone === 'accent' ? 'secondary' : 'primary'}
+        newTabLabel={t('a11y.newTab')}
+      >
+        {primary.label}
+      </Button>
+      {secondary && (
+        <Button
+          href={secondary.href}
+          variant={tone === 'accent' ? 'plain' : 'secondary'}
+          size="lg"
+          newTabLabel={t('a11y.newTab')}
+        >
+          {secondary.label}
+        </Button>
+      )}
+    </div>
+  </div>
+</Section>
+
+<style>
+  .cta-band__inner {
+    display: grid;
+    gap: var(--space-4);
+    justify-items: center;
+    text-align: center;
+    max-width: 40rem;
+    margin-inline: auto;
+  }
+  .cta-band__title {
+    font-size: var(--text-title-1);
+    line-height: var(--leading-title-1);
+  }
+  .cta-band__text {
+    color: var(--label-secondary);
+  }
+  .cta-band__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-3);
+    margin-block-start: var(--space-2);
+  }
+</style>
