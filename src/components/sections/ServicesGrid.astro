@@ -43,7 +43,7 @@ const {
     ))}
   </ul>
 ) : (
-  <Section tone={tone} aria-labelledby={`${id}-heading`}>
+  <Section tone={tone} id={id} aria-labelledby={`${id}-heading`}>
     {heading && <SectionHeading id={`${id}-heading`} title={heading} text={text} action={action} />}
     <ul class="services-grid" role="list">
       {entries.map((entry) => (

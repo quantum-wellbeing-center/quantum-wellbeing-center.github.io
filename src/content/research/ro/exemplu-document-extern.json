@@ -1,0 +1,13 @@
+{
+  "lang": "ro",
+  "translationKey": "example-external-document",
+  "title": "Document exemplu 10: document găzduit pe un site terț",
+  "authors": ["Organizație Exemplu"],
+  "year": 2017,
+  "documentType": "other",
+  "source": "TODO(content): sursa reală",
+  "pdf": "https://example.com/TODO-content/placeholder.pdf",
+  "description": "Document găzduit în afara site-ului; linkul se deschide pe site-ul terț, iar mărimea fișierului nu poate fi afișată. TODO(content): adresa reală.",
+  "group": "other-documents",
+  "featured": false
+}

@@ -1,0 +1,12 @@
+{
+  "lang": "en",
+  "translationKey": "session-120",
+  "name": "Individual session – 120 minutes",
+  "description": "Two hours in the same quiet room, for anyone who wants a longer slot. It goes exactly like the one-hour session: an armchair, a blanket and water within reach, and nothing you have to do. TODO(content): confirm the price and duration.",
+  "durationMinutes": 120,
+  "price": 250,
+  "currency": "RON",
+  "highlighted": false,
+  "order": 2,
+  "whatsappMessage": "Hello! I would like to book an appointment. Service: Individual session – 120 minutes."
+}

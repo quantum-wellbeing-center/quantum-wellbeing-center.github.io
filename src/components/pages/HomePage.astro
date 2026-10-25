@@ -1,25 +1,26 @@
 ---
 /**
- * HomePage: hero, technology intro, reported experiences, complementary services, research
- * teaser, testimonials row, FAQ teaser and the booking CTA band (WEBSITE_PLAN.md section 6).
+ * HomePage: the eight sections of WEBSITE_PLAN.md section 6, in order: hero, factual intro,
+ * service cards, "Cum te programezi" in three steps, gallery strip, testimonials row, FAQ
+ * teaser and the CTA band with the WhatsApp BookingLink and the phone number.
  */
+import { render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { site } from '../../config/site';
 import { getRoute, useTranslations, type Locale } from '../../i18n';
 import {
   getFeaturedFaqs,
-  getFeaturedResearch,
+  getGallery,
   getPage,
   getServices,
   getTestimonials,
 } from '../../lib/content';
 import Section from '../ui/Section.astro';
 import Button from '../ui/Button.astro';
+import BookingSteps from '../sections/BookingSteps.astro';
 import CtaBand from '../sections/CtaBand.astro';
 import FaqAccordion from '../sections/FaqAccordion.astro';
+import GalleryGrid from '../sections/GalleryGrid.astro';
 import Hero from '../sections/Hero.astro';
-import ReportedExperiences from '../sections/ReportedExperiences.astro';
-import ResearchCard from '../sections/ResearchCard.astro';
 import SectionHeading from '../sections/SectionHeading.astro';
 import ServicesGrid from '../sections/ServicesGrid.astro';
 import TestimonialRow from '../sections/TestimonialRow.astro';
@@ -30,72 +31,70 @@ interface Props {
 
 const { lang } = Astro.props;
 const t = useTranslations(lang);
-const { data: page } = await getPage(lang, 'home');
+const { entry, data: page } = await getPage(lang, 'home');
+const { Content } = await render(entry);
+const hasBody = Boolean(entry.body && entry.body.trim());
 
-const [services, research, testimonials, faqs] = await Promise.all([
+const [services, gallery, testimonials, faqs] = await Promise.all([
   getServices(lang),
-  getFeaturedResearch(lang, 3),
+  getGallery(lang),
   getTestimonials(lang),
   getFeaturedFaqs(lang, 5),
 ]);
+const galleryHref = `${getRoute(lang, 'testimonials')}#gallery`;
 ---
 
 <BaseLayout lang={lang} pageKey="home" title={page.title} description={page.description}>
   <Hero
     lang={lang}
+    eyebrow={page.hero.eyebrow}
     headline={page.hero.headline}
     subheading={page.hero.subheading}
-    primary={{ href: site.bookingUrl, label: t('actions.bookSession') }}
-    secondary={{ href: getRoute(lang, 'technology'), label: t('actions.howItWorks') }}
+    bookingLabel={t('actions.bookWhatsApp')}
+    secondary={{ href: getRoute(lang, 'services'), label: t('actions.seeServices') }}
   />
 
-  <Section tone="secondary" aria-labelledby="home-technology">
+  <Section tone="secondary" id="home-intro" aria-labelledby="home-intro-heading">
     <div class="home-intro">
-      <h2 id="home-technology">{page.technology.heading}</h2>
-      <p class="home-intro__text">{page.technology.text}</p>
-      <Button href={getRoute(lang, 'technology')} variant="secondary" icon="arrow-right">
-        {t('actions.howItWorks')}
-      </Button>
+      <h2 id="home-intro-heading">{page.intro.heading}</h2>
+      <p class="home-intro__text">{page.intro.text}</p>
+      {hasBody && (
+        <div class="prose home-intro__body">
+          <Content />
+        </div>
+      )}
     </div>
   </Section>
-
-  <ReportedExperiences
-    heading={page.experiences.heading}
-    intro={page.experiences.intro}
-    items={page.experiences.items}
-    note={page.experiences.note}
-    id="home-experiences"
-  />
 
   <ServicesGrid
     lang={lang}
     entries={services}
     heading={page.services.heading}
     text={page.services.text}
-    action={{ href: getRoute(lang, 'pricing'), label: t('actions.seePricing') }}
-    tone="secondary"
+    action={{ href: getRoute(lang, 'services'), label: t('actions.seeServices') }}
     compact
     id="home-services"
   />
 
-  <Section aria-labelledby="home-research-heading">
+  <BookingSteps
+    heading={page.steps.heading}
+    text={page.steps.text}
+    items={page.steps.items}
+    id="home-steps"
+    tone="secondary"
+  />
+
+  <Section id="home-gallery" aria-labelledby="home-gallery-heading">
     <SectionHeading
-      id="home-research-heading"
-      title={page.research.heading}
-      text={page.research.text}
-      action={{ href: getRoute(lang, 'research'), label: t('actions.seeAllResearch') }}
+      id="home-gallery-heading"
+      title={page.gallery.heading}
+      text={page.gallery.text}
+      action={{ href: galleryHref, label: t('actions.seeGallery') }}
     />
-    <ul class="home-research" role="list">
-      {research.map((entry) => (
-        <li>
-          <ResearchCard lang={lang} entry={entry} />
-        </li>
-      ))}
-    </ul>
-    <p class="home-research__note">{t('disclaimer.short')}</p>
+    <GalleryGrid lang={lang} entries={gallery} layout="strip" />
   </Section>
 
-  <Section tone="secondary" aria-labelledby="home-testimonials-heading">
+  <Section tone="secondary" id="home-testimonials" aria-labelledby="home-testimonials-heading">
     <SectionHeading
       id="home-testimonials-heading"
       title={page.testimonials.heading}
@@ -105,7 +104,7 @@ const [services, research, testimonials, faqs] = await Promise.all([
     <TestimonialRow lang={lang} entries={testimonials} />
   </Section>
 
-  <Section aria-labelledby="home-faq-heading">
+  <Section id="home-faq" aria-labelledby="home-faq-heading">
     <div class="home-faq">
       <SectionHeading id="home-faq-heading" title={page.faq.heading} text={page.faq.text} />
       <FaqAccordion entries={faqs} />
@@ -117,13 +116,7 @@ const [services, research, testimonials, faqs] = await Promise.all([
     </div>
   </Section>
 
-  <CtaBand
-    lang={lang}
-    heading={page.cta.heading}
-    text={page.cta.text}
-    primary={{ href: site.bookingUrl, label: t('actions.bookSession') }}
-    secondary={{ href: getRoute(lang, 'contact'), label: t('actions.contactUs') }}
-  />
+  <CtaBand lang={lang} heading={page.cta.heading} text={page.cta.text} id="home-cta" />
 </BaseLayout>
 
 <style>
@@ -139,24 +132,7 @@ const [services, research, testimonials, faqs] = await Promise.all([
     font-weight: 400;
     color: var(--label-secondary);
   }
-  .home-research {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
-    gap: var(--space-4);
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  .home-research > li {
-    display: flex;
-  }
-  .home-research > li > :global(*) {
-    width: 100%;
-  }
-  .home-research__note {
-    margin-block-start: var(--space-5);
-    font-size: var(--text-footnote);
-    line-height: var(--leading-footnote);
+  .home-intro__body {
     color: var(--label-secondary);
   }
   .home-faq {

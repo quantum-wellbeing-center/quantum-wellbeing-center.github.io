@@ -3,7 +3,7 @@
   "translationKey": "placeholder-03",
   "image": "../../../assets/gallery/placeholder-03.svg",
   "alt": "Solid-colour placeholder image labelled “Placeholder image 3”",
-  "caption": "TODO(content): “before” photo – pair 2. Replace with the real, unedited photo, published only with the written consent of the person shown.",
-  "consent": true,
+  "caption": "An armchair ready for a visit, with a blanket and water. TODO(content): Replace with a real photo.",
+  "identifiablePeople": false,
   "order": 3
 }

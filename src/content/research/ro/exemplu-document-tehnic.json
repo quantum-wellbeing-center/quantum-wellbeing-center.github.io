@@ -1,12 +1,12 @@
 {
   "lang": "ro",
   "translationKey": "example-technical-document",
-  "title": "Exemplu de document tehnic: descrierea echipamentului și a condițiilor de funcționare",
+  "title": "Document exemplu 9: fișă tehnică a unui echipament, fără an de publicare",
   "authors": ["Producător Exemplu SRL"],
-  "evidenceType": "other",
-  "source": "TODO(content): sursă reală",
-  "pdf": "/research/placeholder-07.pdf",
-  "summary": "TODO(content): rezumat real. Substituent pentru un document tehnic al producătorului. Nu este un studiu; descrie echipamentul, instalarea și condițiile de funcționare.",
-  "group": "research-studies",
+  "documentType": "other",
+  "source": "TODO(content): sursa reală",
+  "pdf": "/research/placeholder-09.pdf",
+  "description": "Fișă tehnică a producătorului: dimensiuni, instalare și condiții de funcționare. TODO(content): înlocuiți cu fișa reală și numele producătorului.",
+  "group": "other-documents",
   "featured": false
 }

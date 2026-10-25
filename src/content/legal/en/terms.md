@@ -2,40 +2,44 @@
 lang: en
 translationKey: terms
 title: Terms and conditions
-description: The terms and conditions for using the website and booking sessions at our centre. Draft for legal review.
+description: The terms of use of the website and the conditions for booking on WhatsApp or by phone, cancelling and paying for sessions at the centre. Draft for legal review.
 updated: 2026-10-18
 ---
 
 ## The parties
 
-TODO(legal): identification of the provider (legal name, CUI, trade register number, registered office) and of the client (the person who books or attends a session), and the moment these terms start to apply (making a booking or using the website).
+TODO(legal): identification of the provider (legal name, CUI, Reg. Com., registered office) and of the client (the person who books or attends a session), and when these terms start to apply (the confirmation of a booking or the use of the website).
 
 ## The services
 
-TODO(legal): description of the services offered – relaxation and wellbeing sessions of 60 or 120 minutes, session packages and complementary services – with the express statement that they are not medical services, do not replace a consultation, a diagnosis or a treatment, and are not the subject of any claim about effects on health.
+TODO(legal): description of the services offered – individual sessions of 60 or 120 minutes, the session for two and the package of five sessions – described factually: what happens during the visit, the duration, the price and what each service includes.
 
-TODO(legal): conditions of participation (minimum age, accompanying minors, situations in which the centre may refuse access) and rules of conduct at the centre.
+TODO(legal): the conditions for attending (minimum age, accompanying minors, situations in which the centre may refuse entry) and the rules of conduct at the centre.
 
-## Bookings and cancellations
+## Bookings
 
-TODO(legal): how to book (the external booking platform, phone, WhatsApp), booking confirmation, the deadline for free cancellation or rescheduling (for example 24 hours), the consequences of a no-show, and the conditions under which the centre may cancel or move an appointment.
+TODO(legal): bookings are made by WhatsApp message to the number shown on the website or by phone, during opening hours. A booking is confirmed only by the centre's reply, in the same conversation or by phone. No advance payment is taken. State the details needed for a booking (first name, service, preferred day and time).
+
+## Cancellations and rescheduling
+
+TODO(legal): a booking is cancelled or moved by WhatsApp message or by phone, at no cost, at least 24 hours before the agreed time. State the consequences of late cancellations and no-shows (including for sessions in a package), the rule for late arrivals and the conditions under which the centre may cancel or move a booking.
 
 ## Payment and prices
 
-TODO(legal): prices shown in lei, the VAT statement, accepted payment methods, package validity, the refund policy for unused sessions and the issuing of invoices.
+TODO(legal): prices shown in lei, the VAT statement, the payment methods accepted at reception, the validity of packages, the refund policy for unused sessions and the issuing of fiscal receipts and invoices.
 
 ## Liability
 
-TODO(legal): the limits of the provider's liability, the client's duty to inform the team of anything relevant to their safety, liability for personal belongings and the force majeure clause.
+TODO(legal): the limits of the provider's liability, liability for personal belongings left in the cloakroom and the force majeure clause.
 
 ## Intellectual property
 
-TODO(legal): rights over the website content (text, images, logo) and the conditions for reuse.
+TODO(legal): the rights over the website content (texts, images, logo) and the conditions for reuse.
 
 ## Dispute resolution
 
-TODO(legal): governing law, competent courts, the consumer's right to turn to ANPC and to alternative dispute resolution (SAL), noting that the EU ODR (SOL) platform closed in July 2025.
+TODO(legal): the applicable law, the competent courts, the consumer's right to turn to ANPC and to alternative dispute resolution (SAL), noting that the EU ODR (SOL) platform closed in July 2025.
 
 ## Contact
 
-TODO(legal): contact details for questions about these terms (postal address, email, phone).
+TODO(legal): contact details for questions about these terms (postal address, email, phone, WhatsApp).

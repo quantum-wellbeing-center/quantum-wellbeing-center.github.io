@@ -1,0 +1,251 @@
+---
+/**
+ * ServicesPage: every service described factually (what it is, how long it takes, what it
+ * costs), each with a BookingLink that preselects the service in the WhatsApp chat and
+ * prefills the service's own message without JavaScript. Then "Cum decurge o vizită" from the
+ * Markdown body and the CTA band.
+ */
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { formatPrice, getRoute, useTranslations, type Locale } from '../../i18n';
+import { getPage, getServices, serviceAnchor } from '../../lib/content';
+import BookingLink from '../BookingLink.astro';
+import Badge from '../ui/Badge.astro';
+import Icon from '../ui/Icon.astro';
+import Section from '../ui/Section.astro';
+import CtaBand from '../sections/CtaBand.astro';
+import PageIntro from '../sections/PageIntro.astro';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const { entry, data: page } = await getPage(lang, 'services');
+const { Content } = await render(entry);
+const hasBody = Boolean(entry.body && entry.body.trim());
+const services = await getServices(lang);
+
+const items = services.map((service) => {
+  const d = service.data;
+  const perSession =
+    d.sessionsPerPackage && d.sessionsPerPackage > 1
+      ? formatPrice(lang, Math.round((d.price / d.sessionsPerPackage) * 100) / 100, d.currency)
+      : null;
+  return {
+    entry: service,
+    d,
+    anchor: serviceAnchor(service),
+    price: formatPrice(lang, d.price, d.currency),
+    perSession,
+  };
+});
+---
+
+<BaseLayout lang={lang} pageKey="services" title={page.title} description={page.description}>
+  <PageIntro title={page.title} lead={page.subheading} />
+
+  <Section spacing="compact" class="services" aria-label={page.title}>
+    <ul class="services__list" role="list">
+      {items.map(({ d, anchor, price, perSession }) => (
+        <li>
+          <article
+            class:list={['service-detail', { 'service-detail--highlighted': d.highlighted }]}
+            id={anchor}
+            data-service={d.translationKey}
+          >
+            <div class="service-detail__main">
+              <div class="service-detail__head">
+                {d.highlighted && (
+                  <Badge tone="accent" icon="sparkles">
+                    {t('pricing.recommended')}
+                  </Badge>
+                )}
+                <h2 class="service-detail__name">{d.name}</h2>
+              </div>
+              <ul class="service-detail__facts" role="list">
+                <li>
+                  <Icon name="clock" size={16} />
+                  <span>
+                    {d.sessionsPerPackage
+                      ? t('pricing.perSessionDuration', { minutes: d.durationMinutes })
+                      : t('common.duration', { minutes: d.durationMinutes })}
+                  </span>
+                </li>
+                {d.sessionsPerPackage && (
+                  <li>
+                    <Icon name="calendar-check" size={16} />
+                    <span>{t('pricing.package', { count: d.sessionsPerPackage })}</span>
+                  </li>
+                )}
+              </ul>
+              <p class="service-detail__desc">{d.description}</p>
+            </div>
+            <div class="service-detail__aside">
+              <p class="service-detail__price">
+                <span class="visually-hidden">{t('common.price')}: </span>
+                <span class="service-detail__amount">{price}</span>
+                {perSession && (
+                  <span class="service-detail__per">
+                    {t('pricing.perSession', { price: perSession })}
+                  </span>
+                )}
+              </p>
+              <BookingLink
+                lang={lang}
+                service={d.name}
+                message={d.whatsappMessage}
+                variant={d.highlighted ? 'primary' : 'secondary'}
+                icon="whatsapp"
+                iconPosition="start"
+                fullWidth
+              >
+                {t('actions.bookWhatsApp')}
+              </BookingLink>
+            </div>
+          </article>
+        </li>
+      ))}
+    </ul>
+    <p class="services__pricing">
+      <a href={getRoute(lang, 'pricing')}>{t('actions.seePricing')}</a>
+    </p>
+  </Section>
+
+  {hasBody && (
+    <Section tone="secondary" aria-labelledby="services-visit-heading">
+      <div class="services__visit">
+        <h2 id="services-visit-heading">{page.visit.heading}</h2>
+        <div class="prose services__visit-body">
+          <Content />
+        </div>
+      </div>
+    </Section>
+  )}
+
+  <CtaBand
+    lang={lang}
+    heading={page.cta.heading}
+    text={page.cta.text}
+    id="services-cta"
+    tone={hasBody ? 'default' : 'secondary'}
+  />
+</BaseLayout>
+
+<style>
+  .services {
+    padding-block-end: clamp(var(--space-7), 8vw, var(--space-9));
+  }
+  .services__list {
+    display: grid;
+    gap: var(--space-4);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .service-detail {
+    display: grid;
+    gap: var(--space-5);
+    padding: var(--space-5);
+    border-radius: var(--radius-card);
+    background: var(--bg-elevated);
+    box-shadow: var(--shadow-sm);
+    scroll-margin-top: calc(var(--header-height) + var(--space-5));
+  }
+  .service-detail--highlighted {
+    box-shadow:
+      var(--shadow-sm),
+      inset 0 0 0 2px var(--accent);
+  }
+  @media (min-width: 48em) {
+    .service-detail {
+      grid-template-columns: minmax(0, 1fr) minmax(14rem, 18rem);
+      gap: var(--space-7);
+      padding: var(--space-6);
+    }
+  }
+  .service-detail__main {
+    display: grid;
+    gap: var(--space-3);
+    align-content: start;
+  }
+  .service-detail__head {
+    display: grid;
+    gap: var(--space-3);
+    justify-items: start;
+  }
+  .service-detail__name {
+    font-size: var(--text-title-2);
+    line-height: var(--leading-title-2);
+  }
+  .service-detail__facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-4);
+    font-size: var(--text-subheadline);
+    line-height: var(--leading-subheadline);
+    color: var(--label-secondary);
+  }
+  .service-detail__facts li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+  }
+  .service-detail__desc {
+    max-width: var(--measure);
+    font-size: var(--text-callout);
+    line-height: var(--leading-body);
+  }
+  .service-detail__aside {
+    display: grid;
+    gap: var(--space-4);
+    align-content: start;
+    padding-block-start: var(--space-4);
+    border-top: 1px solid var(--separator);
+  }
+  @media (min-width: 48em) {
+    .service-detail__aside {
+      padding-block-start: 0;
+      padding-inline-start: var(--space-6);
+      border-top: 0;
+      border-inline-start: 1px solid var(--separator);
+    }
+  }
+  /* The full-width booking label wraps instead of overflowing at 320px. */
+  .service-detail__aside :global(.btn) {
+    white-space: normal;
+  }
+  .service-detail__price {
+    display: grid;
+    gap: var(--space-1);
+  }
+  .service-detail__amount {
+    font-size: var(--text-title-1);
+    line-height: var(--leading-title-1);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    font-variant-numeric: tabular-nums;
+  }
+  .service-detail__per {
+    font-size: var(--text-subheadline);
+    color: var(--label-secondary);
+  }
+  .services__pricing {
+    margin-block-start: var(--space-5);
+    font-size: var(--text-subheadline);
+  }
+  .services__pricing a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--touch-target);
+    font-weight: 500;
+  }
+  .services__visit {
+    display: grid;
+    gap: var(--space-4);
+  }
+  .services__visit-body {
+    color: var(--label-secondary);
+  }
+</style>

@@ -1,11 +1,16 @@
 ---
 /**
- * ServiceCard: name, description, duration, price (Intl, RON), package details with the
- * per-session price, and a booking button. `highlighted` services get an accent ring and label.
+ * ServiceCard: name, duration, price (Intl, RON), package details with the per-session price,
+ * the factual description and a "Programează-te" BookingLink that preselects this service in
+ * the WhatsApp chat (and prefills the service's own message without JavaScript).
+ *
+ * `compact` is the home-page teaser: name, duration, "price from" and a link to the service on
+ * the services page instead of the description and the booking button.
  */
 import type { CollectionEntry } from 'astro:content';
-import { site } from '../../config/site';
-import { formatPrice, useTranslations, type Locale } from '../../i18n';
+import { formatPrice, getRoute, useTranslations, type Locale } from '../../i18n';
+import { serviceAnchor } from '../../lib/content';
+import BookingLink from '../BookingLink.astro';
 import Badge from '../ui/Badge.astro';
 import Button from '../ui/Button.astro';
 import Card from '../ui/Card.astro';
@@ -14,7 +19,7 @@ import Icon from '../ui/Icon.astro';
 interface Props {
   lang: Locale;
   entry: CollectionEntry<'services'>;
-  /** `compact` hides the description's booking button (used in teasers). */
+  /** Teaser: duration, "price from" and a details link; no description or booking button. */
   compact?: boolean;
   headingLevel?: 'h3' | 'h4';
 }
@@ -27,13 +32,14 @@ const perSession =
   d.sessionsPerPackage && d.sessionsPerPackage > 1
     ? formatPrice(lang, Math.round((d.price / d.sessionsPerPackage) * 100) / 100, d.currency)
     : null;
+const detailsHref = `${getRoute(lang, 'services')}#${serviceAnchor(entry)}`;
 ---
 
 <Card
   as="article"
   variant="elevated"
   class={d.highlighted ? 'service service--highlighted' : 'service'}
-  data-service={entry.data.translationKey}
+  data-service={d.translationKey}
 >
   <div class="service__head">
     {d.highlighted && (
@@ -44,8 +50,12 @@ const perSession =
     <Heading class="service__name">{d.name}</Heading>
   </div>
   <p class="service__price">
-    <span class="service__amount">{price}</span>
-    {perSession && (
+    {compact ? (
+      <span class="service__amount service__amount--from">{t('pricing.from', { price })}</span>
+    ) : (
+      <span class="service__amount">{price}</span>
+    )}
+    {!compact && perSession && (
       <span class="service__per">{t('pricing.perSession', { price: perSession })}</span>
     )}
   </p>
@@ -65,19 +75,26 @@ const perSession =
       </li>
     )}
   </ul>
-  <p class="service__desc">{d.description}</p>
-  {!compact && (
-    <div slot="footer">
-      <Button
-        href={site.bookingUrl}
-        variant={d.highlighted ? 'primary' : 'secondary'}
-        fullWidth
-        newTabLabel={t('a11y.newTab')}
-      >
-        {t('actions.bookSession')}
+  {!compact && <p class="service__desc">{d.description}</p>}
+  <div slot="footer" class="service__footer">
+    {compact ? (
+      <Button href={detailsHref} variant="plain" icon="arrow-right" class="service__details">
+        {t('actions.details')}
       </Button>
-    </div>
-  )}
+    ) : (
+      <BookingLink
+        lang={lang}
+        service={d.name}
+        message={d.whatsappMessage}
+        variant={d.highlighted ? 'primary' : 'secondary'}
+        icon="whatsapp"
+        iconPosition="start"
+        fullWidth
+      >
+        {t('actions.bookShort')}
+      </BookingLink>
+    )}
+  </div>
 </Card>
 
 <style>
@@ -108,6 +125,10 @@ const perSession =
     letter-spacing: -0.01em;
     font-variant-numeric: tabular-nums;
   }
+  .service__amount--from {
+    font-size: var(--text-title-2);
+    line-height: var(--leading-title-2);
+  }
   .service__per {
     font-size: var(--text-subheadline);
     color: var(--label-secondary);
@@ -128,5 +149,12 @@ const perSession =
   .service__desc {
     font-size: var(--text-callout);
     line-height: var(--leading-body);
+  }
+  .service__details {
+    margin-inline-start: calc(-1 * var(--space-3));
+  }
+  /* The full-width booking label wraps instead of overflowing in narrow cards. */
+  .service__footer :global(.btn) {
+    white-space: normal;
   }
 </style>

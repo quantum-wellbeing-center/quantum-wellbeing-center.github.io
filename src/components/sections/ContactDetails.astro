@@ -1,11 +1,13 @@
 ---
 /**
- * ContactDetails: address, phone (tel:), email (mailto:), WhatsApp and the grouped opening
- * hours, all from site config.
+ * ContactDetails: address, phone (tel:), email (mailto:), the grouped opening hours and the
+ * social profiles, all from site config. The WhatsApp trigger lives in its own section of the
+ * contact page (a BookingLink), so it is not repeated here.
  */
-import { site, whatsappUrl } from '../../config/site';
+import { site } from '../../config/site';
 import { useTranslations, type Locale } from '../../i18n';
 import OpeningHours from '../OpeningHours.astro';
+import SocialLinks from '../SocialLinks.astro';
 import Icon from '../ui/Icon.astro';
 
 interface Props {
@@ -18,6 +20,7 @@ const addressLines = [
   site.address.street,
   `${site.address.postalCode} ${site.address.city}, ${site.address.county}`,
 ];
+const hasSocials = Object.values(site.socials).some(Boolean);
 ---
 
 <dl class="contact-details">
@@ -58,18 +61,6 @@ const addressLines = [
   </div>
   <div class="contact-details__row">
     <dt>
-      <Icon name="whatsapp" size={18} />
-      <span>{t('contact.whatsapp')}</span>
-    </dt>
-    <dd>
-      <a class="contact-details__link" href={whatsappUrl} target="_blank" rel="noopener">
-        {t('a11y.whatsappButton')}
-        <span class="visually-hidden"> ({t('a11y.newTab')})</span>
-      </a>
-    </dd>
-  </div>
-  <div class="contact-details__row">
-    <dt>
       <Icon name="clock" size={18} />
       <span>{t('contact.hours')}</span>
     </dt>
@@ -77,6 +68,17 @@ const addressLines = [
       <OpeningHours lang={lang} class="contact-details__hours" />
     </dd>
   </div>
+  {hasSocials && (
+    <div class="contact-details__row">
+      <dt>
+        <Icon name="globe" size={18} />
+        <span>{t('contact.socials')}</span>
+      </dt>
+      <dd>
+        <SocialLinks lang={lang} class="contact-details__socials" />
+      </dd>
+    </div>
+  )}
 </dl>
 
 <style>
@@ -118,5 +120,8 @@ const addressLines = [
   }
   .contact-details__hours {
     max-width: 22rem;
+  }
+  .contact-details__socials {
+    margin-inline-start: calc(-1 * var(--space-3));
   }
 </style>

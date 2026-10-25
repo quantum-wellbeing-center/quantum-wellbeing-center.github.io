@@ -103,6 +103,39 @@ for (const [themeName, theme] of [
       ok: r >= 3,
     });
   }
+  // WhatsApp buttons: the glyph on the floating button is a UI part (3:1); the text label on
+  // the send button needs 4.5:1 over `--whatsapp-fill`; both fills need 3:1 against the page.
+  const waGlyph = ratio(hexToRgb(theme['on-whatsapp']), hexToRgb(theme.whatsapp));
+  if (waGlyph < 3) failed = true;
+  rows.push({
+    theme: themeName,
+    pair: 'on-whatsapp on whatsapp (floating button glyph, UI)',
+    ratio: waGlyph.toFixed(2),
+    target: 3,
+    ok: waGlyph >= 3,
+  });
+  const waText = ratio(hexToRgb(theme['on-whatsapp']), hexToRgb(theme['whatsapp-fill']));
+  if (waText < 4.5) failed = true;
+  rows.push({
+    theme: themeName,
+    pair: 'on-whatsapp on whatsapp-fill (send button text)',
+    ratio: waText.toFixed(2),
+    target: 4.5,
+    ok: waText >= 4.5,
+  });
+  for (const token of ['whatsapp', 'whatsapp-fill']) {
+    for (const bg of backgrounds) {
+      const r = ratio(hexToRgb(theme[token]), hexToRgb(theme[bg]));
+      if (r < 3) failed = true;
+      rows.push({
+        theme: themeName,
+        pair: `${token} on ${bg} (UI)`,
+        ratio: r.toFixed(2),
+        target: 3,
+        ok: r >= 3,
+      });
+    }
+  }
   // Text on tinted fills (secondary button, badges): the "-strong" token over the tint
   // composited onto each background.
   for (const tone of ['accent', 'success', 'danger', 'warning']) {

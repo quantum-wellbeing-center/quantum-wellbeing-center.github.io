@@ -1,0 +1,12 @@
+{
+  "lang": "ro",
+  "translationKey": "session-for-two",
+  "name": "Sesiune pentru două persoane – 60 de minute",
+  "description": "O oră în aceeași încăpere, pe două fotolii alăturate, pentru cine preferă să vină cu cineva. Rezervi un singur interval, iar prețul este pentru ambele persoane. TODO(content): confirmați prețul și numărul de locuri.",
+  "durationMinutes": 60,
+  "price": 260,
+  "currency": "RON",
+  "highlighted": false,
+  "order": 3,
+  "whatsappMessage": "Bună ziua! Aș dori o programare. Serviciul: Sesiune pentru două persoane – 60 de minute."
+}

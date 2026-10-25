@@ -1,0 +1,13 @@
+{
+  "lang": "ro",
+  "translationKey": "example-pilot-study-1",
+  "title": "Document exemplu 5: studiu pilot cu un număr mic de participanți",
+  "authors": ["Cercetător Exemplu, G."],
+  "year": 2024,
+  "documentType": "pilot-study",
+  "source": "TODO(content): sursa reală",
+  "pdf": "/research/placeholder-05.pdf",
+  "description": "Studiu exploratoriu pe un grup mic, publicat ca raport preliminar. TODO(content): înlocuiți cu studiul real, autorii și sursa.",
+  "group": "studies",
+  "featured": false
+}

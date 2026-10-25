@@ -1,17 +1,17 @@
 /**
  * Content helpers shared by the page components: typed access to the `pages` and `legal`
  * collections, sorted and filtered queries for the other collections, article slugs and twins,
- * reading time, and the evidence-type badge tone.
+ * reading time, and the document-type badge tone.
  *
- * Every query filters on `lang`, and testimonials and gallery entries are additionally filtered
- * on `consent === true` here (as well as by the schema) so the rule is visible where content is
- * read for display.
+ * Every query filters on `lang`. Testimonials are additionally filtered on `consent === true`
+ * and gallery images on the consent rule (consent needed only when people are identifiable),
+ * here as well as by the schema, so the rule is visible where content is read for display.
  */
 import { getCollection, getEntry, type CollectionEntry } from 'astro:content';
 import type { Locale } from '../config/site';
 import { getRoute, otherLocale } from '../i18n';
 import type { BadgeTone } from '../components/ui/Badge.astro';
-import type { EVIDENCE_TYPES, LEGAL_KEYS, PageContentKey } from '../content.config';
+import type { DocumentType, LEGAL_KEYS, PageContentKey } from '../content.config';
 
 /* ------------------------------------------------------------------- pages */
 
@@ -40,9 +40,16 @@ export async function getLegal(lang: Locale, key: LegalKey): Promise<CollectionE
 
 /* ------------------------------------------------------------- collections */
 
-export async function getServices(lang: Locale) {
+export type ServiceEntry = CollectionEntry<'services'>;
+
+export async function getServices(lang: Locale): Promise<ServiceEntry[]> {
   const entries = await getCollection('services', (e) => e.data.lang === lang);
   return entries.sort((a, b) => a.data.order - b.data.order);
+}
+
+/** Anchor id of a service on the services page, shared by the home teaser links. */
+export function serviceAnchor(entry: ServiceEntry): string {
+  return `service-${entry.data.translationKey}`;
 }
 
 export async function getFaqs(lang: Locale) {
@@ -64,11 +71,18 @@ export async function getTestimonials(lang: Locale) {
   return entries.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 }
 
-/** Gallery images: consent-gated, in display order. */
-export async function getGallery(lang: Locale) {
+export type GalleryEntry = CollectionEntry<'gallery'>;
+
+/** The gallery consent rule: a photo with recognisable people needs written consent. */
+export function canShowGalleryImage(entry: GalleryEntry): boolean {
+  return !entry.data.identifiablePeople || entry.data.consent === true;
+}
+
+/** Gallery images of the space and team: consent rule applied, in display order. */
+export async function getGallery(lang: Locale): Promise<GalleryEntry[]> {
   const entries = await getCollection(
     'gallery',
-    (e) => e.data.lang === lang && e.data.consent === true,
+    (e) => e.data.lang === lang && canShowGalleryImage(e),
   );
   return entries.sort((a, b) => a.data.order - b.data.order);
 }
@@ -81,22 +95,15 @@ export async function getResearch(lang: Locale) {
   );
 }
 
-export async function getFeaturedResearch(lang: Locale, limit = 3) {
-  const entries = await getResearch(lang);
-  return entries.filter((e) => e.data.featured).slice(0, limit);
-}
-
-/** Badge tone per evidence type (WEBSITE_PLAN.md section 8): stronger evidence, calmer colour. */
-export function evidenceTone(type: (typeof EVIDENCE_TYPES)[number]): BadgeTone {
+/** Badge tone per document type: a neutral palette, the text carries the meaning. */
+export function documentTypeTone(type: DocumentType): BadgeTone {
   switch (type) {
     case 'peer-reviewed':
     case 'clinical-study':
-      return 'accent';
-    case 'pilot-study':
     case 'review':
-      return 'neutral';
+      return 'accent';
     default:
-      return 'warning';
+      return 'neutral';
   }
 }
 

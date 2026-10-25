@@ -7,7 +7,7 @@
   },
   "nav": {
     "home": "Acasă",
-    "technology": "Tehnologia",
+    "services": "Servicii",
     "research": "Cercetări științifice",
     "testimonials": "Testimoniale",
     "pricing": "Prețuri",
@@ -23,44 +23,32 @@
     "mainNavigation": "Navigare principală",
     "footerNavigation": "Linkuri utile",
     "legalNavigation": "Linkuri legale",
-    "socialLinks": "Rețele sociale",
     "topBar": "Informații de contact",
     "openMenu": "Deschide meniul",
     "closeMenu": "Închide meniul",
-    "menuTitle": "Meniu",
     "languageSwitcher": "Limbă",
     "newTab": "se deschide într-o filă nouă",
     "brandHome": "{brand}, pagina principală",
     "whatsappButton": "Scrie-ne pe WhatsApp",
-    "currentPage": "Pagina curentă",
     "testimonialsRow": "Testimoniale, listă derulabilă orizontal",
     "pagination": "Paginare",
     "articleNav": "Articole alăturate",
     "tableOfContents": "Cuprins",
-    "rss": "Flux RSS",
-    "decorative": "Element decorativ"
+    "rss": "Flux RSS"
   },
   "actions": {
     "book": "Rezervă",
     "bookSession": "Rezervă o sesiune",
-    "howItWorks": "Cum funcționează",
-    "call": "Sună-ne",
-    "writeEmail": "Scrie-ne",
     "whatsapp": "WhatsApp",
     "openPdf": "Deschide PDF",
     "openInMaps": "Deschide în Google Maps",
     "readMore": "Citește mai mult",
-    "seeAll": "Vezi toate",
-    "back": "Înapoi",
     "backHome": "Înapoi la pagina principală",
     "send": "Trimite",
     "close": "Închide",
-    "ok": "Am înțeles",
     "search": "Caută",
     "clear": "Șterge",
-    "learnMore": "Află mai multe",
     "joinCommunity": "Intră în comunitate",
-    "seeAllResearch": "Vezi toată biblioteca",
     "seeAllTestimonials": "Vezi toate testimonialele",
     "seeAllFaq": "Vezi toate întrebările",
     "seePricing": "Vezi prețurile",
@@ -73,7 +61,9 @@
     "seeServices": "Vezi serviciile",
     "writeWhatsApp": "Scrie-ne pe WhatsApp",
     "callNumber": "Sună: {phone}",
-    "sendWhatsApp": "Trimite pe WhatsApp"
+    "sendWhatsApp": "Trimite pe WhatsApp",
+    "details": "Detalii",
+    "seeGallery": "Vezi galeria"
   },
   "topBar": {
     "hours": "Program",
@@ -107,22 +97,34 @@
     "follow": "Urmărește-ne",
     "legalDetails": "{legalName} · CUI {cui} · {regCom}",
     "anpcSal": "ANPC SAL: soluționarea alternativă a litigiilor",
-    "anpcSalBadge": "ANPC SAL",
     "solNote": "TODO(legal): platforma europeană SOL s-a închis în iulie 2025. Confirmați cu consilierul juridic dacă insigna mai este necesară.",
-    "disclaimer": "Sesiunile noastre sunt experiențe de relaxare și stare de bine. Nu oferim servicii medicale, iar sesiunile nu înlocuiesc un diagnostic sau un tratament. Pentru orice problemă de sănătate, consultați un medic.",
     "copyright": "© {year} {brand}. Toate drepturile rezervate.",
     "cookiePreferences": "Preferințe cookie"
+  },
+  "chat": {
+    "dialogLabel": "Conversație WhatsApp cu {brand}",
+    "hoursLine": "Îți răspundem în timpul programului:",
+    "greeting": "Bună! Cu ce te putem ajuta?",
+    "topicLegend": "Alege un subiect",
+    "topicBooking": "Vreau o programare",
+    "topicPricing": "Întrebare despre prețuri",
+    "topicOther": "Altă întrebare",
+    "serviceLabel": "Serviciul ales",
+    "nameLabel": "Nume",
+    "timeLabel": "Ziua și ora preferată",
+    "timeHint": "De exemplu: joi după-amiază",
+    "messageLabel": "Mesaj",
+    "optional": "opțional",
+    "previewLabel": "Mesajul tău",
+    "note": "Mesajul se deschide în aplicația WhatsApp. Nimic nu se trimite până nu apeși „Trimite pe WhatsApp”."
   },
   "cookie": {
     "title": "Cookie-uri și confidențialitate",
     "intro": "Folosim cookie-uri necesare pentru funcționarea site-ului. Cu acordul tău, folosim și cookie-uri de statistică și marketing. Poți schimba alegerea oricând din subsolul paginii.",
-    "noticeTitle": "Despre cookie-uri",
-    "noticeText": "Acest site folosește doar cookie-uri strict necesare funcționării. Nu urmărim vizitatorii și nu folosim cookie-uri de marketing.",
     "acceptAll": "Acceptă tot",
     "rejectAll": "Respinge tot",
     "preferences": "Preferințe",
     "save": "Salvează preferințele",
-    "ok": "Am înțeles",
     "necessary": "Strict necesare",
     "necessaryDesc": "Necesare pentru funcționarea de bază a site-ului, de exemplu pentru a reține alegerea ta privind cookie-urile.",
     "alwaysOn": "Mereu active",
@@ -132,28 +134,6 @@
     "marketingDesc": "Folosite pentru conținut încorporat de la terți, cum ar fi recenziile Google.",
     "policyLink": "Politica de cookies",
     "close": "Închide"
-  },
-  "form": {
-    "name": "Nume",
-    "email": "E-mail",
-    "phone": "Telefon",
-    "optional": "opțional",
-    "message": "Mesaj",
-    "consent": "Am citit {privacyLink} și sunt de acord cu prelucrarea datelor.",
-    "consentLinkLabel": "politica de confidențialitate",
-    "submit": "Trimite mesajul",
-    "sending": "Se trimite…",
-    "success": "Mulțumim! Mesajul a fost trimis. Revenim în cel mai scurt timp.",
-    "error": "Mesajul nu a putut fi trimis. Te rugăm să încerci din nou sau să ne suni.",
-    "required": "Acest câmp este obligatoriu.",
-    "invalidEmail": "Introdu o adresă de e-mail validă.",
-    "honeypot": "Lasă acest câmp gol",
-    "requiredNote": "Câmpurile marcate cu * sunt obligatorii.",
-    "requiredMark": "obligatoriu",
-    "nameHint": "Prenumele și numele tău.",
-    "emailHint": "Răspundem la această adresă.",
-    "phoneHint": "Doar dacă preferi să te sunăm.",
-    "messageHint": "Câteva propoziții sunt suficiente."
   },
   "common": {
     "readingTime": "{minutes} min de citit",
@@ -170,22 +150,19 @@
     "filterBy": "Filtrează după tip",
     "searchPlaceholder": "Caută după titlu sau autori",
     "all": "Toate",
-    "pdf": "PDF",
-    "fileSize": "{size}",
     "price": "Preț",
     "duration": "{minutes} min",
-    "sessions": "{count} sesiuni",
     "vatNote": "TODO(content): precizați dacă prețurile includ TVA.",
     "placeholder": "Exemplu"
   },
-  "evidence": {
-    "peer-reviewed": "Evaluat de experți",
+  "documentType": {
+    "peer-reviewed": "Articol evaluat de specialiști",
     "clinical-study": "Studiu clinic",
     "pilot-study": "Studiu pilot",
     "case-report": "Raport de caz",
     "review": "Sinteză",
-    "anecdotal-report": "Raport anecdotic",
-    "other": "Altele"
+    "report": "Raport",
+    "other": "Alt document"
   },
   "research": {
     "count": "{count} documente",
@@ -193,11 +170,9 @@
     "externalLink": "Link extern",
     "fileMeta": "{type} · {size}",
     "doi": "DOI",
-    "year": "Anul",
-    "source": "Sursa",
-    "authors": "Autori",
-    "evidenceLabel": "Tip de dovadă",
-    "noYear": "an nespecificat"
+    "typeLabel": "Tip de document",
+    "noYear": "an nespecificat",
+    "searchLabel": "Caută în bibliotecă"
   },
   "testimonials": {
     "rating": "{rating} din 5 stele",
@@ -208,6 +183,7 @@
   },
   "pricing": {
     "recommended": "Recomandat",
+    "from": "de la {price}",
     "perSession": "{price} pe sesiune",
     "package": "Pachet de {count} sesiuni",
     "perSessionDuration": "{minutes} min pe sesiune"
@@ -218,22 +194,23 @@
     "next": "Articolul următor",
     "pageTitle": "{title} – pagina {page}",
     "feedTitle": "{brand} – Articole",
-    "feedDescription": "Articole despre sesiuni, pregătirea pentru o vizită și cum citim cercetările."
+    "feedDescription": "Articole despre vizita la centru, programarea pe WhatsApp și echipa."
   },
   "faq": {
     "category": {
-      "sesiuni": "Sesiuni",
-      "rezervari": "Rezervări",
-      "siguranta": "Siguranță și date",
-      "preturi": "Prețuri și plată"
+      "booking": "Programare",
+      "cancellation": "Anulare și reprogramare",
+      "visit": "Vizita",
+      "payment": "Plată și prețuri",
+      "location": "Locație și parcare"
     }
   },
   "contact": {
     "address": "Adresă",
     "phone": "Telefon",
     "email": "E-mail",
-    "whatsapp": "WhatsApp",
     "hours": "Program",
+    "socials": "Rețele sociale",
     "mapAlt": "Hartă substituent spre adresa centrului. TODO(content): înlocuiți cu o imagine statică a hărții."
   },
   "legal": {
@@ -246,17 +223,10 @@
     "cookiePurpose": "Scop",
     "cookieDuration": "Durată",
     "cookieProvider": "Furnizor",
+    "noCookies": "În configurația implicită, acest site nu setează cookie-uri. Inventarul este gol.",
     "openPreferences": "Deschide preferințele cookie"
   },
-  "disclaimer": {
-    "short": "Nu este un serviciu medical. Nu înlocuiește diagnosticul sau tratamentul. Consultați un medic.",
-    "long": "Informațiile de pe această pagină sunt oferite în scop informativ. Sesiunile noastre sunt experiențe de relaxare și stare de bine, nu servicii medicale, și nu înlocuiesc diagnosticul sau tratamentul stabilit de un medic. Pentru orice problemă de sănătate, consultați un medic.",
-    "title": "Notă importantă"
-  },
   "notFound": {
-    "title": "Pagina nu a fost găsită",
-    "text": "Linkul poate fi greșit sau pagina a fost mutată.",
-    "backHome": "Înapoi la pagina principală",
     "otherLanguage": "English version",
     "code": "Eroare 404"
   },

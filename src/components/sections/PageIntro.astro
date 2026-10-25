@@ -1,7 +1,7 @@
 ---
 /**
  * PageIntro: the h1 band at the top of every non-home page, with an optional lead paragraph.
- * Extra content (a disclaimer, meta line, actions) goes in the default slot under the lead.
+ * Extra content (a meta line, a note, actions) goes in the default slot under the lead.
  */
 import Section from '../ui/Section.astro';
 
@@ -15,14 +15,7 @@ interface Props {
   class?: string;
 }
 
-const {
-  title,
-  lead,
-  eyebrow,
-  align = 'start',
-  tone = 'default',
-  class: className,
-} = Astro.props;
+const { title, lead, eyebrow, align = 'start', tone = 'default', class: className } = Astro.props;
 ---
 
 <Section tone={tone} spacing="compact" class={['page-intro', className].filter(Boolean).join(' ')}>

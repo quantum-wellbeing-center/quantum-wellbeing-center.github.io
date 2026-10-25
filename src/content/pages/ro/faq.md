@@ -2,9 +2,9 @@
 lang: ro
 translationKey: faq
 title: Întrebări frecvente
-description: Răspunsuri la întrebările despre sesiuni, rezervări, siguranță, date personale și prețuri. TODO(content) – text substituent.
-subheading: Dacă nu găsești răspunsul aici, scrie-ne. Răspundem în aceeași zi lucrătoare.
+description: Răspunsuri la întrebările practice despre programare, anulare, vizită, plată, locație și parcare. TODO(content) – text substituent.
+subheading: Dacă nu găsești răspunsul aici, scrie-ne pe WhatsApp. Răspundem în timpul programului.
 cta:
   heading: Mai ai o întrebare?
-  text: Scrie-ne pe WhatsApp, pe e-mail sau prin formularul de contact. Răspundem cu plăcere.
+  text: Scrie-ne pe WhatsApp sau sună-ne în timpul programului. Răspundem cu plăcere.
 ---

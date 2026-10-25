@@ -1,33 +1,40 @@
 ---
 /**
- * Hero: display headline, subheading, a primary and a secondary action, and a decorative
- * placeholder visual (concentric rings in the brand accent; no stock photography).
+ * Hero: the "Centru de wellness" eyebrow, display headline, subheading, the
+ * "Programează-te pe WhatsApp" BookingLink, a secondary link and a decorative placeholder
+ * visual (concentric rings in the brand accent; no stock photography).
  */
-import { useTranslations, type Locale } from '../../i18n';
+import type { Locale } from '../../i18n';
+import BookingLink from '../BookingLink.astro';
 import Button from '../ui/Button.astro';
 import Section from '../ui/Section.astro';
 
 interface Props {
   lang: Locale;
+  eyebrow: string;
   headline: string;
   subheading: string;
-  primary: { href: string; label: string };
+  /** Label of the BookingLink. */
+  bookingLabel: string;
   secondary?: { href: string; label: string };
+  id?: string;
 }
 
-const { lang, headline, subheading, primary, secondary } = Astro.props;
-const t = useTranslations(lang);
+const { lang, eyebrow, headline, subheading, bookingLabel, secondary, id = 'hero' } = Astro.props;
 ---
 
-<Section class="hero" spacing="compact">
+<Section class="hero" spacing="compact" id={id} aria-labelledby={`${id}-title`}>
   <div class="hero__inner">
     <div class="hero__copy">
-      <h1 class="hero__title text-display">{headline}</h1>
+      <p class="hero__eyebrow">{eyebrow}</p>
+      <h1 id={`${id}-title`} class="hero__title text-display">
+        {headline}
+      </h1>
       <p class="hero__lead">{subheading}</p>
       <div class="hero__actions">
-        <Button href={primary.href} size="lg" newTabLabel={t('a11y.newTab')}>
-          {primary.label}
-        </Button>
+        <BookingLink lang={lang} size="lg" icon="whatsapp" iconPosition="start">
+          {bookingLabel}
+        </BookingLink>
         {secondary && (
           <Button href={secondary.href} variant="secondary" size="lg" icon="arrow-right">
             {secondary.label}
@@ -71,6 +78,14 @@ const t = useTranslations(lang);
     gap: var(--space-5);
     max-width: 38rem;
   }
+  .hero__eyebrow {
+    font-size: var(--text-subheadline);
+    line-height: var(--leading-subheadline);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
   .hero__title {
     max-width: 14ch;
   }
@@ -85,6 +100,11 @@ const t = useTranslations(lang);
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-3);
+  }
+  /* Long verb-led labels ("Programează-te pe WhatsApp") wrap instead of overflowing at 320px. */
+  .hero__actions :global(.btn) {
+    white-space: normal;
+    max-width: 100%;
   }
   .hero__visual {
     display: none;

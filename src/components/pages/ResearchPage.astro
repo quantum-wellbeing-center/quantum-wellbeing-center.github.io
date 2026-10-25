@@ -1,22 +1,21 @@
 ---
 /**
- * ResearchPage: disclaimer at the top, an intro that explains the evidence-type labels, and the
- * items grouped into three sections with counts. Everything renders statically; the Phase 5
- * search and filter island hooks into:
+ * ResearchPage: a neutral document library. The intro says the documents are listed for
+ * information and that some are not peer-reviewed; the items are grouped into sections with
+ * counts. No editorial commentary. Everything renders statically; the Phase 5 search and filter
+ * island hooks into:
  *   [data-research-controls]           placeholder slot above the groups
  *   [data-research-status]             aria-live region for result counts
  *   [data-research-empty]              hidden empty state
  *   [data-research-group][data-count]  each group section
- *   [data-research-item] + data-title / data-authors / data-evidence-type / data-group
+ *   [data-research-item] + data-title / data-authors / data-document-type / data-group
  */
 import { render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { RESEARCH_GROUPS } from '../../content.config';
 import { useTranslations, type Locale } from '../../i18n';
-import { evidenceTone, getPage, getResearch } from '../../lib/content';
-import Badge from '../ui/Badge.astro';
+import { getPage, getResearch } from '../../lib/content';
 import Section from '../ui/Section.astro';
-import Disclaimer from '../sections/Disclaimer.astro';
 import PageIntro from '../sections/PageIntro.astro';
 import ResearchCard from '../sections/ResearchCard.astro';
 
@@ -28,47 +27,34 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 const { entry, data: page } = await getPage(lang, 'research');
 const { Content } = await render(entry);
+const hasBody = Boolean(entry.body && entry.body.trim());
 const items = await getResearch(lang);
 
 const groups = RESEARCH_GROUPS.map((group) => ({
   group,
   ...page.groups[group],
   items: items.filter((item) => item.data.group === group),
-}));
+})).filter((group) => group.items.length > 0);
 const countLabel = (n: number) =>
   n === 1 ? t('research.countOne') : t('research.count', { count: n });
 ---
 
 <BaseLayout lang={lang} pageKey="research" title={page.title} description={page.description}>
   <PageIntro title={page.title} lead={page.subheading}>
-    <Disclaimer lang={lang} variant="long" />
-  </PageIntro>
-
-  <Section tone="secondary" spacing="compact" aria-labelledby="research-legend-heading">
-    <div class="research-intro">
-      <div class="prose">
+    {hasBody && (
+      <div class="prose research-intro">
         <Content />
       </div>
-      <div class="research-legend">
-        <h2 id="research-legend-heading" class="research-legend__title">{page.legend.heading}</h2>
-        <dl class="research-legend__list">
-          {page.legend.items.map((item) => (
-            <div class="research-legend__row">
-              <dt>
-                <Badge tone={evidenceTone(item.type)}>{t(`evidence.${item.type}`)}</Badge>
-              </dt>
-              <dd>{item.text}</dd>
-            </div>
-          ))}
-        </dl>
-      </div>
-    </div>
-  </Section>
+    )}
+    <p class="research-total">{countLabel(items.length)}</p>
+  </PageIntro>
 
-  <Section class="research-library">
+  <Section class="research-library" spacing="compact">
     <div data-research-controls></div>
     <p class="research-status" aria-live="polite" data-research-status></p>
-    <p class="research-empty" data-research-empty hidden>{t('common.noResults')}</p>
+    <p class="research-empty" data-research-empty hidden>
+      {t('common.noResults')}
+    </p>
 
     {groups.map(({ group, heading, text, items: groupItems }) => (
       <section
@@ -100,43 +86,17 @@ const countLabel = (n: number) =>
 
 <style>
   .research-intro {
-    display: grid;
-    gap: var(--space-6);
-    align-items: start;
-  }
-  @media (min-width: 60em) {
-    .research-intro {
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      gap: var(--space-8);
-    }
-  }
-  .research-legend__title {
-    font-size: var(--text-title-3);
-    line-height: var(--leading-title-3);
-    margin-block-end: var(--space-4);
-  }
-  .research-legend__list {
-    display: grid;
-    gap: var(--space-3);
-    margin: 0;
-  }
-  .research-legend__row {
-    display: grid;
-    gap: var(--space-2);
-    padding-block-start: var(--space-3);
-    border-top: 1px solid var(--separator);
-  }
-  .research-legend__row dd {
-    margin: 0;
-    font-size: var(--text-subheadline);
-    line-height: var(--leading-subheadline);
     color: var(--label-secondary);
   }
-  @media (min-width: 40em) {
-    .research-legend__row {
-      grid-template-columns: 11rem minmax(0, 1fr);
-      gap: var(--space-4);
-    }
+  .research-total {
+    font-size: var(--text-subheadline);
+    line-height: var(--leading-subheadline);
+    font-weight: 500;
+    color: var(--label-secondary);
+    font-variant-numeric: tabular-nums;
+  }
+  .research-library {
+    padding-block-end: clamp(var(--space-7), 8vw, var(--space-9));
   }
   .research-status:empty,
   .research-empty[hidden] {

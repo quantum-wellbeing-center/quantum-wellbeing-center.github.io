@@ -2,7 +2,7 @@
 lang: en
 translationKey: privacy
 title: Privacy policy
-description: How we collect, use and protect the personal data of website visitors and clients of the centre, under the GDPR. Draft for legal review.
+description: How the personal data of website visitors and clients of the centre is processed – WhatsApp messages, bookings, invoicing – under the GDPR. Draft for legal review.
 updated: 2026-10-18
 ---
 
@@ -10,11 +10,21 @@ updated: 2026-10-18
 
 TODO(legal): identification of the controller (legal name, CUI, registered office, contact email for data protection) and, where applicable, of the data protection officer.
 
-## What data we collect
+## What this site does and does not do
 
-TODO(legal): the categories of data processed – identification and contact data (name, email, phone) from the contact form and from bookings, booking data (date, time, service), invoicing data, messages sent on WhatsApp or by email and, where applicable, written consent for testimonials and photos.
+The site has no forms. It collects nothing from you through the page and sends nothing anywhere until you tap "Send" in WhatsApp. The booking buttons open the WhatsApp app with a ready-made message, which you can change before sending.
 
-TODO(legal): a statement that we do not ask for health data and that any such information volunteered by a client is used only for the safety of the visit and is not stored beyond what is necessary.
+In its default configuration, the site sets no cookies and loads no third-party scripts. The details are in the cookie policy. TODO(legal): confirm the wording and update it if analytics tools or embedded content are enabled.
+
+## WhatsApp messages
+
+The messages you send us are transmitted and stored through the WhatsApp service, operated by Meta Platforms. Meta processes these messages under its own privacy policy, which we do not control. We see your messages in the centre's WhatsApp account and use them only to reply, confirm and manage the booking.
+
+TODO(legal): state the legal basis (performance of a contract or pre-contractual steps), how long conversations are kept in the centre's account, and the link to WhatsApp's privacy policy.
+
+## What data we process
+
+TODO(legal): the categories of data – the first name and phone number visible in WhatsApp, the day and time of the booking, the chosen service, invoicing data if you request an invoice, and written consent for testimonials and photos.
 
 ## Why and on what basis
 
@@ -22,11 +32,11 @@ TODO(legal): the purposes of processing (replying to messages, managing bookings
 
 ## How long we keep data
 
-TODO(legal): the retention periods for each category (for example contact messages, booking data, accounting documents as required by law, consents for testimonials).
+TODO(legal): the retention periods for each category (WhatsApp conversations, booking data, accounting documents as required by law, consents for testimonials).
 
 ## Who we share data with
 
-TODO(legal): processors and recipients – the booking platform, the hosting and form provider, the email service, the accountant – and the safeguards for transfers outside the European Economic Area.
+TODO(legal): recipients – WhatsApp (Meta Platforms) as the messaging service, the website hosting provider, the accountant – and the safeguards for transfers outside the European Economic Area.
 
 ## Your rights
 
@@ -34,7 +44,7 @@ TODO(legal): the rights of access, rectification, erasure, restriction, portabil
 
 ## Cookies
 
-TODO(legal): reference to the cookie policy, with the list of categories used and how to change preferences.
+TODO(legal): reference to the cookie policy, noting that in its default configuration the site sets no cookies.
 
 ## Contact
 

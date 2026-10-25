@@ -1,8 +1,10 @@
 ---
 /**
  * Sticky header with a translucent material bar. Rendered exactly once by BaseLayout.
- * The nav, language switcher and booking button live inside the MobileMenu sheet wrapper,
- * which becomes `display: contents` on desktop so there is a single copy of every link.
+ * The nav, language switcher, phone link (small screens only, where the top bar is hidden)
+ * and the "Rezervă" BookingLink live inside the MobileMenu sheet wrapper, which becomes
+ * `display: contents` on desktop so there is a single copy of every link.
+ * Nav items come from `primaryNav` in routes.ts and their `nav.*` labels; nothing is hard-coded.
  */
 import { site } from '../config/site';
 import {
@@ -13,7 +15,7 @@ import {
   type PageKey,
   type RouteParams,
 } from '../i18n';
-import Button from './ui/Button.astro';
+import BookingLink from './BookingLink.astro';
 import Container from './ui/Container.astro';
 import Icon from './ui/Icon.astro';
 import LanguageSwitcher from './LanguageSwitcher.astro';
@@ -81,16 +83,15 @@ const navItems = primaryNav.map((key) => ({
               params={params}
               alternateUrl={alternateUrl}
             />
-            <Button
-              href={site.bookingUrl}
+            <BookingLink
+              lang={lang}
               size="sm"
-              icon="calendar-check"
+              icon="whatsapp"
               iconPosition="start"
-              newTabLabel={t('a11y.newTab')}
               class="site-header__book"
             >
               {t('actions.book')}
-            </Button>
+            </BookingLink>
           </div>
         </MobileMenu>
       </div>
@@ -214,6 +215,7 @@ const navItems = primaryNav.map((key) => ({
     }
     .site-header__brand {
       margin-inline-end: 0;
+      flex-shrink: 0;
     }
     .primary-nav {
       flex: 1;

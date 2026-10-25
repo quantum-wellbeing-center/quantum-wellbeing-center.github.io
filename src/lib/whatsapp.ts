@@ -7,48 +7,22 @@
  *
  *   buildWhatsAppMessage('ro', { topic: 'booking', name: 'Ana', preferredTime: 'joi după-amiază' })
  *   → 'Bună ziua! Aș dori o programare. Nume: Ana. Ziua/ora preferată: joi după-amiază.'
+ *
+ * The pure halves (`composeMessage`, `whatsappLink`) live in ./whatsapp-message.ts; the chat
+ * island imports them from there and receives the templates and number through data attributes,
+ * so the site config never enters the client bundle.
  */
-import { site, type ChatTopic, type Locale } from '../config/site';
+import { site, type Locale } from '../config/site';
+import { composeMessage, whatsappLink, type ChatMessageParts } from './whatsapp-message';
 
-export type { ChatTopic } from '../config/site';
-
-export interface ChatMessageParts {
-  /** Defaults to 'booking'. */
-  topic?: ChatTopic;
-  /** Service name, added when a service card opened the chat. */
-  service?: string;
-  name?: string;
-  preferredTime?: string;
-  /** Free text from the message box, appended as written. */
-  message?: string;
-}
-
-/** Trims a field value and drops trailing punctuation, which the template supplies. */
-function clean(value: string | undefined): string {
-  return value?.trim().replace(/[\s.!?]+$/u, '') ?? '';
-}
-
-function fill(template: string, value: string | undefined): string {
-  const text = clean(value);
-  return text ? template.replace('{value}', () => text) : '';
-}
+export type { ChatTopic, WhatsAppMessages } from '../config/site';
+export { composeMessage, whatsappLink, type ChatMessageParts } from './whatsapp-message';
 
 export function buildWhatsAppMessage(lang: Locale, parts: ChatMessageParts = {}): string {
-  const m = site.whatsappMessages[lang];
-  return [
-    m.greeting,
-    m.topics[parts.topic ?? 'booking'],
-    fill(m.service, parts.service),
-    fill(m.name, parts.name),
-    fill(m.preferredTime, parts.preferredTime),
-    parts.message?.trim() ?? '',
-  ]
-    .filter(Boolean)
-    .join(' ');
+  return composeMessage(site.whatsappMessages[lang], parts);
 }
 
-/** `https://wa.me/<number>?text=<encoded>`; without text, the bare chat link. */
+/** `whatsappLink` bound to the site's number. */
 export function whatsappHref(text?: string, number: string = site.whatsappNumber): string {
-  const base = `https://wa.me/${number}`;
-  return text ? `${base}?text=${encodeURIComponent(text)}` : base;
+  return whatsappLink(number, text);
 }

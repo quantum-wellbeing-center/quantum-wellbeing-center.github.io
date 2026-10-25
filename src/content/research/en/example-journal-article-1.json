@@ -1,0 +1,13 @@
+{
+  "lang": "en",
+  "translationKey": "example-journal-article-1",
+  "title": "Example document 1: article published in a peer-reviewed journal",
+  "authors": ["Example Author, A.", "Example Author, B."],
+  "year": 2023,
+  "documentType": "peer-reviewed",
+  "source": "TODO(content): real source",
+  "pdf": "/research/placeholder-01.pdf",
+  "description": "Article published in a peer-reviewed journal. TODO(content): replace with the real title, authors and source.",
+  "group": "publications",
+  "featured": true
+}

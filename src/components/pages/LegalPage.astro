@@ -2,9 +2,11 @@
 /**
  * LegalPage: renders one `legal` entry (terms, privacy or cookies) with a visible draft notice
  * (TODO(legal)), the "last updated" date, a table of contents from the h2 headings and the
- * Markdown body. The cookie policy also gets the cookie table and a `data-consent-open` button.
+ * Markdown body. The cookie policy also gets the cookie table and, when the consent banner is
+ * enabled, a `data-consent-open` button.
  */
 import { render } from 'astro:content';
+import { needsConsentBanner } from '../../config/site';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { formatDate, useTranslations, type Locale } from '../../i18n';
 import { getLegal, type LegalKey } from '../../lib/content';
@@ -48,57 +50,66 @@ const cookies = entry.data.cookies ?? [];
 
   <Section spacing="compact" class="legal">
     <div class="legal__inner">
-    {toc.length > 1 && (
-      <nav class="legal__toc" aria-label={t('a11y.tableOfContents')}>
-        <p class="legal__toc-title">{t('legal.contents')}</p>
-        <ol class="legal__toc-list">
-          {toc.map((h) => (
-            <li>
-              <a href={`#${h.slug}`}>{h.text}</a>
-            </li>
-          ))}
-        </ol>
-      </nav>
-    )}
+      {toc.length > 1 && (
+        <nav class="legal__toc" aria-label={t('a11y.tableOfContents')}>
+          <p class="legal__toc-title">{t('legal.contents')}</p>
+          <ol class="legal__toc-list">
+            {toc.map((h) => (
+              <li>
+                <a href={`#${h.slug}`}>{h.text}</a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+      )}
 
-    <div class="prose legal__body">
-      <Content />
-    </div>
-
-    {legalKey === 'cookies' && (
-      <div class="legal__cookies">
-        <div class="legal__table-wrap">
-          <table class="legal__table">
-            <caption class="legal__caption">{t('legal.cookieTableCaption')}</caption>
-            <thead>
-              <tr>
-                <th scope="col">{t('legal.cookieName')}</th>
-                <th scope="col">{t('legal.cookieCategory')}</th>
-                <th scope="col">{t('legal.cookiePurpose')}</th>
-                <th scope="col">{t('legal.cookieDuration')}</th>
-                <th scope="col">{t('legal.cookieProvider')}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {cookies.map((c) => (
-                <tr>
-                  <th scope="row">
-                    <code>{c.name}</code>
-                  </th>
-                  <td>{t(`cookie.${c.category}`)}</td>
-                  <td>{c.purpose}</td>
-                  <td>{c.duration}</td>
-                  <td>{c.provider}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <Button variant="secondary" icon="cookie" iconPosition="start" data-consent-open>
-          {t('legal.openPreferences')}
-        </Button>
+      <div class="prose legal__body">
+        <Content />
       </div>
-    )}
+
+      {legalKey === 'cookies' && (
+        <div class="legal__cookies">
+          <div class="legal__table-wrap">
+            <table class="legal__table">
+              <caption class="legal__caption">{t('legal.cookieTableCaption')}</caption>
+              <thead>
+                <tr>
+                  <th scope="col">{t('legal.cookieName')}</th>
+                  <th scope="col">{t('legal.cookieCategory')}</th>
+                  <th scope="col">{t('legal.cookiePurpose')}</th>
+                  <th scope="col">{t('legal.cookieDuration')}</th>
+                  <th scope="col">{t('legal.cookieProvider')}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {cookies.length === 0 && (
+                  <tr>
+                    <td colspan="5" class="legal__empty">
+                      {t('legal.noCookies')}
+                    </td>
+                  </tr>
+                )}
+                {cookies.map((c) => (
+                  <tr>
+                    <th scope="row">
+                      <code>{c.name}</code>
+                    </th>
+                    <td>{t(`cookie.${c.category}`)}</td>
+                    <td>{c.purpose}</td>
+                    <td>{c.duration}</td>
+                    <td>{c.provider}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {needsConsentBanner() && (
+            <Button variant="secondary" icon="cookie" iconPosition="start" data-consent-open>
+              {t('legal.openPreferences')}
+            </Button>
+          )}
+        </div>
+      )}
     </div>
   </Section>
 </BaseLayout>
@@ -199,5 +210,8 @@ const cookies = entry.data.cookies ?? [];
   .legal__table tbody th {
     font-weight: 500;
     white-space: nowrap;
+  }
+  .legal__empty {
+    color: var(--label-secondary);
   }
 </style>

@@ -1,13 +1,13 @@
 {
   "lang": "en",
   "translationKey": "example-clinical-study",
-  "title": "Example registered clinical study on perceived comfort during sessions",
-  "authors": ["Example Author, A.", "Example Author, B.", "Example Collaborator, C."],
+  "title": "Example document 4: clinical study with a registered protocol",
+  "authors": ["Example Author, A.", "Example Author, B.", "Example Collaborator, F."],
   "year": 2022,
-  "evidenceType": "clinical-study",
+  "documentType": "clinical-study",
   "source": "TODO(content): real source",
-  "pdf": "/research/placeholder-02.pdf",
-  "summary": "TODO(content): real summary. Placeholder for a registered clinical study. Use the \"clinical study\" label only if the real document has a protocol, a control group or a public registration; otherwise choose a more modest evidence type.",
-  "group": "published-clinical",
+  "pdf": "/research/placeholder-04.pdf",
+  "description": "Study with a publicly registered protocol and a comparison group. TODO(content): use this label only if the real document has a registered protocol.",
+  "group": "studies",
   "featured": true
 }

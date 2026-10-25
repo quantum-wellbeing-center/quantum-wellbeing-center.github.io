@@ -1,9 +1,12 @@
 ---
 /**
- * CtaBand: a centred call-to-action band with a heading, a line of text and one or two buttons.
+ * CtaBand: a centred call-to-action band with a heading, a line of text, a BookingLink (the
+ * WhatsApp chat) and, next to it, the `tel:` link from site config or a custom secondary link.
  * Tinted (secondary) by default so it stays subtle; `tone="accent"` for a filled band.
  */
+import { site, type ChatTopic } from '../../config/site';
 import { useTranslations, type Locale } from '../../i18n';
+import BookingLink from '../BookingLink.astro';
 import Button from '../ui/Button.astro';
 import Section from '../ui/Section.astro';
 
@@ -11,36 +14,61 @@ interface Props {
   lang: Locale;
   heading: string;
   text: string;
-  primary: { href: string; label: string };
+  /** Chip preselected in the chat. Defaults to 'booking'. */
+  topic?: ChatTopic;
+  /** Label of the BookingLink; defaults to "Programează-te pe WhatsApp". */
+  bookingLabel?: string;
+  /** Custom secondary link; by default the band shows the `tel:` link. */
   secondary?: { href: string; label: string };
   tone?: 'default' | 'secondary' | 'accent';
+  id?: string;
 }
 
-const { lang, heading, text, primary, secondary, tone = 'secondary' } = Astro.props;
+const {
+  lang,
+  heading,
+  text,
+  topic = 'booking',
+  bookingLabel,
+  secondary,
+  tone = 'secondary',
+  id = 'cta',
+} = Astro.props;
 const t = useTranslations(lang);
+const secondaryVariant = tone === 'accent' ? 'plain' : 'secondary';
 ---
 
-<Section tone={tone} class="cta-band" aria-labelledby="cta-heading">
+<Section tone={tone} class="cta-band" id={id} aria-labelledby={`${id}-heading`}>
   <div class="cta-band__inner">
-    <h2 id="cta-heading" class="cta-band__title">{heading}</h2>
+    <h2 id={`${id}-heading`} class="cta-band__title">
+      {heading}
+    </h2>
     <p class="cta-band__text">{text}</p>
     <div class="cta-band__actions">
-      <Button
-        href={primary.href}
+      <BookingLink
+        lang={lang}
+        topic={topic}
         size="lg"
         variant={tone === 'accent' ? 'secondary' : 'primary'}
-        newTabLabel={t('a11y.newTab')}
+        icon="whatsapp"
+        iconPosition="start"
       >
-        {primary.label}
-      </Button>
-      {secondary && (
-        <Button
-          href={secondary.href}
-          variant={tone === 'accent' ? 'plain' : 'secondary'}
-          size="lg"
-          newTabLabel={t('a11y.newTab')}
-        >
+        {bookingLabel ?? t('actions.bookWhatsApp')}
+      </BookingLink>
+      {secondary ? (
+        <Button href={secondary.href} variant={secondaryVariant} size="lg">
           {secondary.label}
+        </Button>
+      ) : (
+        <Button
+          href={`tel:${site.phoneHref}`}
+          variant={secondaryVariant}
+          size="lg"
+          icon="phone"
+          iconPosition="start"
+          class="cta-band__phone"
+        >
+          {t('actions.callNumber', { phone: site.phone })}
         </Button>
       )}
     </div>
@@ -69,5 +97,13 @@ const t = useTranslations(lang);
     justify-content: center;
     gap: var(--space-3);
     margin-block-start: var(--space-2);
+  }
+  /* Long labels wrap instead of overflowing at 320px. */
+  .cta-band__actions :global(.btn) {
+    white-space: normal;
+    max-width: 100%;
+  }
+  .cta-band__phone {
+    font-variant-numeric: tabular-nums;
   }
 </style>

@@ -1,11 +1,13 @@
 ---
 /**
- * Floating WhatsApp button: bottom right, 56px, safe-area aware.
+ * Floating WhatsApp button: bottom right, 56px, safe-area aware, `--whatsapp` colours.
+ * Without JavaScript it is a plain wa.me link with the default booking message; with it, the
+ * WhatsAppChat island intercepts the click (`data-chat-open`) and opens the chat panel.
  * The cookie consent island sets `--consent-offset` on <html> while the banner is open,
  * which lifts this button so the two never overlap.
  */
-import { whatsappUrl } from '../config/site';
 import { useTranslations, type Locale } from '../i18n';
+import { buildWhatsAppMessage, whatsappHref } from '../lib/whatsapp';
 import Icon from './ui/Icon.astro';
 
 interface Props {
@@ -14,14 +16,13 @@ interface Props {
 
 const { lang } = Astro.props;
 const t = useTranslations(lang);
+const href = whatsappHref(buildWhatsAppMessage(lang, { topic: 'booking' }));
 ---
 
 <aside class="whatsapp-fab-wrap" aria-label={t('actions.whatsapp')}>
-  <a class="whatsapp-fab" href={whatsappUrl} target="_blank" rel="noopener" data-whatsapp-fab>
+  <a class="whatsapp-fab" href={href} data-whatsapp-fab data-chat-open data-chat-topic="booking">
     <Icon name="whatsapp" size={28} />
-    <span class="visually-hidden">
-      {t('a11y.whatsappButton')} ({t('a11y.newTab')})
-    </span>
+    <span class="visually-hidden">{t('a11y.whatsappButton')}</span>
   </a>
 </aside>
 
@@ -39,8 +40,8 @@ const t = useTranslations(lang);
     width: 3.5rem;
     height: 3.5rem;
     border-radius: var(--radius-capsule);
-    background: var(--accent-fill);
-    color: var(--on-accent);
+    background: var(--whatsapp);
+    color: var(--on-whatsapp);
     box-shadow: var(--shadow-md);
     text-decoration: none;
     transition:

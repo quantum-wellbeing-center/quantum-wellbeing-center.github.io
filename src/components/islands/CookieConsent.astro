@@ -1,18 +1,18 @@
 ---
 /**
- * CookieConsent island.
+ * CookieConsent island. BaseLayout renders it only when `needsConsentBanner()` is true (a
+ * non-cookieless analytics provider or the reviews embed is configured), so the default site,
+ * which sets no cookies, emits no consent markup and no consent script at all.
  *
- * - Full mode (analytics or embeds configured): categories necessary (always on), statistics,
- *   marketing; "Accept all", "Reject all", "Preferences" with equal visual weight.
- * - Notice mode (nothing optional configured): a short notice with one OK button.
- *
- * Stores { version, choices, timestamp } in localStorage under "cookie-consent",
- * dispatches `consent-changed` on window (detail: the stored record), exposes
- * `window.__cookieConsent` (getter) and `window.__openCookiePreferences()`.
- * Any element with [data-consent-open] reopens the dialog. No optional script loads here:
- * consumers listen for `consent-changed` and check `detail.choices`.
+ * Categories: necessary (always on), statistics, marketing. "Accept all", "Reject all" and
+ * "Preferences" share the same visual weight. The choice is stored as
+ * { version, choices, timestamp } in localStorage under "cookie-consent" and bumped by
+ * `site.consentVersion`. `consent-changed` is dispatched on window (detail: the stored record),
+ * `window.__cookieConsent` is a getter and `window.__openCookiePreferences()` reopens the
+ * dialog, as does any element with [data-consent-open] (the footer link). No optional script
+ * loads here: consumers listen for `consent-changed` and check `detail.choices` first.
  */
-import { site, hasOptionalScripts } from '../../config/site';
+import { site } from '../../config/site';
 import { getRoute, useTranslations, type Locale } from '../../i18n';
 import Button from '../ui/Button.astro';
 
@@ -22,7 +22,6 @@ interface Props {
 
 const { lang } = Astro.props;
 const t = useTranslations(lang);
-const fullMode = hasOptionalScripts();
 const policyHref = getRoute(lang, 'cookies');
 ---
 
@@ -34,75 +33,64 @@ const policyHref = getRoute(lang, 'cookies');
   aria-describedby="consent-text"
   data-consent
   data-version={site.consentVersion}
-  data-mode={fullMode ? 'full' : 'notice'}
   hidden
 >
   <div class="consent__inner">
     <h2 class="consent__title" id="consent-title">
-      {fullMode ? t('cookie.title') : t('cookie.noticeTitle')}
+      {t('cookie.title')}
     </h2>
     <p class="consent__text" id="consent-text">
-      {fullMode ? t('cookie.intro') : t('cookie.noticeText')}
+      {t('cookie.intro')}
       <a href={policyHref}>{t('cookie.policyLink')}</a>
     </p>
 
-    {fullMode ? (
-      <>
-        <div class="consent__prefs" id="consent-prefs" data-consent-prefs hidden>
-          <ul class="consent__list" role="list">
-            <li class="consent__option">
-              <div class="consent__option-head">
-                <span class="consent__option-name" id="consent-necessary-label">
-                  {t('cookie.necessary')}
-                </span>
-                <span class="consent__always">{t('cookie.alwaysOn')}</span>
-              </div>
-              <p class="consent__option-desc">{t('cookie.necessaryDesc')}</p>
-            </li>
-            <li class="consent__option">
-              <label class="consent__option-head">
-                <span class="consent__option-name">{t('cookie.statistics')}</span>
-                <input type="checkbox" name="statistics" data-consent-choice="statistics" />
-              </label>
-              <p class="consent__option-desc">{t('cookie.statisticsDesc')}</p>
-            </li>
-            <li class="consent__option">
-              <label class="consent__option-head">
-                <span class="consent__option-name">{t('cookie.marketing')}</span>
-                <input type="checkbox" name="marketing" data-consent-choice="marketing" />
-              </label>
-              <p class="consent__option-desc">{t('cookie.marketingDesc')}</p>
-            </li>
-          </ul>
-          <Button variant="secondary" size="sm" data-consent-action="save">
-            {t('cookie.save')}
-          </Button>
-        </div>
-        <div class="consent__actions">
-          <Button variant="secondary" size="sm" data-consent-action="accept">
-            {t('cookie.acceptAll')}
-          </Button>
-          <Button variant="secondary" size="sm" data-consent-action="reject">
-            {t('cookie.rejectAll')}
-          </Button>
-          <Button
-            variant="secondary"
-            size="sm"
-            data-consent-action="prefs"
-            aria-expanded="false"
-            aria-controls="consent-prefs"
-          >
-            {t('cookie.preferences')}
-          </Button>
-        </div>
-      </>
-    ) : (
-      <div class="consent__actions">
-        <Button variant="secondary" size="sm" data-consent-action="ok">
-          {t('cookie.ok')}
-        </Button>
-      </div>
-    )}
+    <div class="consent__prefs" id="consent-prefs" data-consent-prefs hidden>
+      <ul class="consent__list" role="list">
+        <li class="consent__option">
+          <div class="consent__option-head">
+            <span class="consent__option-name" id="consent-necessary-label">
+              {t('cookie.necessary')}
+            </span>
+            <span class="consent__always">{t('cookie.alwaysOn')}</span>
+          </div>
+          <p class="consent__option-desc">{t('cookie.necessaryDesc')}</p>
+        </li>
+        <li class="consent__option">
+          <label class="consent__option-head">
+            <span class="consent__option-name">{t('cookie.statistics')}</span>
+            <input type="checkbox" name="statistics" data-consent-choice="statistics" />
+          </label>
+          <p class="consent__option-desc">{t('cookie.statisticsDesc')}</p>
+        </li>
+        <li class="consent__option">
+          <label class="consent__option-head">
+            <span class="consent__option-name">{t('cookie.marketing')}</span>
+            <input type="checkbox" name="marketing" data-consent-choice="marketing" />
+          </label>
+          <p class="consent__option-desc">{t('cookie.marketingDesc')}</p>
+        </li>
+      </ul>
+      <Button variant="secondary" size="sm" data-consent-action="save">
+        {t('cookie.save')}
+      </Button>
+    </div>
+    <div class="consent__actions">
+      <Button variant="secondary" size="sm" data-consent-action="accept">
+        {t('cookie.acceptAll')}
+      </Button>
+      <Button variant="secondary" size="sm" data-consent-action="reject">
+        {t('cookie.rejectAll')}
+      </Button>
+      <Button
+        variant="secondary"
+        size="sm"
+        data-consent-action="prefs"
+        aria-expanded="false"
+        aria-controls="consent-prefs"
+      >
+        {t('cookie.preferences')}
+      </Button>
+    </div>
   </div>
 </section>
 
@@ -151,6 +139,7 @@ const policyHref = getRoute(lang, 'cookies');
     );
     let opener: HTMLElement | null = null;
 
+    /** Lifts the floating WhatsApp button and the chat panel above the banner. */
     const setOffset = () => {
       const visible = !dialog.hidden;
       document.documentElement.style.setProperty(
@@ -210,7 +199,6 @@ const policyHref = getRoute(lang, 'cookies');
           save({ necessary: true, statistics: true, marketing: true });
           break;
         case 'reject':
-        case 'ok':
           save({ necessary: true, statistics: false, marketing: false });
           break;
         case 'save': {

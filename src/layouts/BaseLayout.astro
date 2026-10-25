@@ -1,17 +1,21 @@
 ---
 /**
- * BaseLayout: HTML shell, SEO head, global styles and the shared chrome.
- * Renders the header exactly once. Pages pass `pageKey` so the language switcher and
- * hreflang alternates point to the same page in the other language.
+ * BaseLayout: HTML shell, SEO head, LocalBusiness structured data, global styles and the
+ * shared chrome. Renders the header and the WhatsApp chat panel exactly once. Pages pass
+ * `pageKey` so the language switcher and hreflang alternates point to the same page in the
+ * other language.
  *
  * For dynamic routes (articles) pass `alternateUrl` with the translated path,
  * or `alternateUrl={null}` when no translation exists (no hreflang is emitted then).
+ *
+ * The cookie consent island is rendered only when `needsConsentBanner()` is true, so the
+ * default build carries no consent markup or script.
  */
 import '../styles/tokens.css';
 import '../styles/typography.css';
 import '../styles/base.css';
 
-import { site } from '../config/site';
+import { needsConsentBanner, site, type Weekday } from '../config/site';
 import {
   bcp47,
   getAlternatePath,
@@ -25,6 +29,7 @@ import TopBar from '../components/TopBar.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import WhatsAppButton from '../components/WhatsAppButton.astro';
+import WhatsAppChat from '../components/islands/WhatsAppChat.astro';
 import CookieConsent from '../components/islands/CookieConsent.astro';
 
 export interface Props {
@@ -76,6 +81,57 @@ const fullTitle =
 const ogImageUrl = new URL(ogImage, siteUrl).href;
 const ogLocale = lang === 'ro' ? 'ro_RO' : 'en_US';
 const ogLocaleAlternate = other === 'ro' ? 'ro_RO' : 'en_US';
+
+/**
+ * LocalBusiness structured data, built from site.ts. `HealthAndBeautyBusiness` is the schema.org
+ * type for a wellness centre; medical types are never used (WEBSITE_PLAN.md section 8).
+ * Days with identical hours are merged into one OpeningHoursSpecification.
+ */
+const schemaDay: Record<Weekday, string> = {
+  monday: 'Monday',
+  tuesday: 'Tuesday',
+  wednesday: 'Wednesday',
+  thursday: 'Thursday',
+  friday: 'Friday',
+  saturday: 'Saturday',
+  sunday: 'Sunday',
+};
+const hoursByTime = new Map<string, { opens: string; closes: string; days: string[] }>();
+for (const entry of site.openingHours) {
+  if (!entry.opens || !entry.closes) continue;
+  const key = `${entry.opens}-${entry.closes}`;
+  const group = hoursByTime.get(key) ?? { opens: entry.opens, closes: entry.closes, days: [] };
+  group.days.push(`https://schema.org/${schemaDay[entry.day]}`);
+  hoursByTime.set(key, group);
+}
+const localBusiness = {
+  '@context': 'https://schema.org',
+  '@type': 'HealthAndBeautyBusiness',
+  '@id': `${siteUrl.origin}/#business`,
+  name: site.brandName,
+  description: site.tagline[lang],
+  url: new URL('/', siteUrl).href,
+  telephone: site.phoneHref,
+  email: site.email,
+  image: new URL('/og-default.png', siteUrl).href,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: site.address.street,
+    addressLocality: site.address.city,
+    addressRegion: site.address.county,
+    postalCode: site.address.postalCode,
+    addressCountry: site.address.country,
+  },
+  openingHoursSpecification: [...hoursByTime.values()].map((group) => ({
+    '@type': 'OpeningHoursSpecification',
+    dayOfWeek: group.days,
+    opens: group.opens,
+    closes: group.closes,
+  })),
+  sameAs: Object.values(site.socials).filter((url): url is string => Boolean(url)),
+};
+/* `<` is escaped so config text can never close the script element. */
+const localBusinessJson = JSON.stringify(localBusiness).replace(/</g, '\\u003c');
 ---
 
 <!doctype html>
@@ -117,6 +173,7 @@ const ogLocaleAlternate = other === 'ro' ? 'ro_RO' : 'en_US';
     <meta name="generator" content={Astro.generator} />
 
     <slot name="head" />
+    <script type="application/ld+json" set:html={localBusinessJson} />
   </head>
   <body>
     <SkipLink lang={lang} />
@@ -126,8 +183,9 @@ const ogLocaleAlternate = other === 'ro' ? 'ro_RO' : 'en_US';
       <slot />
     </main>
     <Footer lang={lang} />
-    <CookieConsent lang={lang} />
+    {needsConsentBanner() && <CookieConsent lang={lang} />}
     {site.features.whatsappButton && !minimalChrome && <WhatsAppButton lang={lang} />}
+    <WhatsAppChat lang={lang} />
   </body>
 </html>
 

@@ -1,0 +1,74 @@
+---
+/**
+ * BookingSteps: "Cum te programezi" as an ordered list of three steps (write on WhatsApp,
+ * confirm the time, come to the centre). The numbers are decorative; the `ol` carries the order.
+ */
+import Section from '../ui/Section.astro';
+import SectionHeading from './SectionHeading.astro';
+
+interface Props {
+  heading: string;
+  text: string;
+  items: { title: string; text: string }[];
+  id?: string;
+  tone?: 'default' | 'secondary';
+}
+
+const { heading, text, items, id = 'steps', tone = 'default' } = Astro.props;
+---
+
+<Section tone={tone} id={id} aria-labelledby={`${id}-heading`}>
+  <SectionHeading id={`${id}-heading`} title={heading} text={text} />
+  <ol class="steps" role="list">
+    {items.map((item, index) => (
+      <li class="steps__item">
+        <span class="steps__number" aria-hidden="true">
+          {index + 1}
+        </span>
+        <h3 class="steps__title">{item.title}</h3>
+        <p class="steps__text">{item.text}</p>
+      </li>
+    ))}
+  </ol>
+</Section>
+
+<style>
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+    gap: var(--space-5) var(--space-6);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    counter-reset: step;
+  }
+  .steps__item {
+    display: grid;
+    gap: var(--space-3);
+    justify-items: start;
+    padding-block-start: var(--space-4);
+    border-top: 1px solid var(--separator);
+  }
+  .steps__number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: var(--radius-capsule);
+    background: var(--accent-tint);
+    color: var(--accent-strong);
+    font-size: var(--text-headline);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .steps__title {
+    font-size: var(--text-title-3);
+    line-height: var(--leading-title-3);
+  }
+  .steps__text {
+    font-size: var(--text-callout);
+    line-height: var(--leading-body);
+    color: var(--label-secondary);
+  }
+</style>

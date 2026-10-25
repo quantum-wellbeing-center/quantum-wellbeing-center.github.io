@@ -1,12 +1,12 @@
 {
   "lang": "en",
   "translationKey": "example-technical-document",
-  "title": "Example technical document: equipment description and operating conditions",
+  "title": "Example document 9: technical data sheet for a piece of equipment, no publication year",
   "authors": ["Example Manufacturer Ltd."],
-  "evidenceType": "other",
+  "documentType": "other",
   "source": "TODO(content): real source",
-  "pdf": "/research/placeholder-07.pdf",
-  "summary": "TODO(content): real summary. Placeholder for a manufacturer’s technical document. It is not a study; it describes the equipment, its installation and operating conditions.",
-  "group": "research-studies",
+  "pdf": "/research/placeholder-09.pdf",
+  "description": "Manufacturer data sheet: dimensions, installation and operating conditions. TODO(content): replace with the real data sheet and the maker’s name.",
+  "group": "other-documents",
   "featured": false
 }

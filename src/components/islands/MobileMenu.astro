@@ -6,6 +6,8 @@
  * renders as a static list under the header bar, so every link is still reachable.
  * With JavaScript: aria-expanded/aria-controls, focus trap, Escape closes, focus returns to the
  * toggle, body scroll lock, closes on link click and when the viewport grows past 900px.
+ * Chat triggers (`[data-chat-open]`, the "Rezervă" link) do not close the sheet: the chat
+ * panel opens as a modal on top of it and returns focus to the link when it closes.
  */
 import { useTranslations, type Locale } from '../../i18n';
 import Icon from '../ui/Icon.astro';
@@ -85,6 +87,10 @@ const t = useTranslations(lang);
     }
 
     function onKeydown(event: KeyboardEvent) {
+      // A modal dialog opened from inside the sheet (the chat panel) owns Escape and Tab while
+      // it is open: keydown bubbles out of it to the document, and cancelling Escape here would
+      // block the dialog's own close request and close the sheet underneath instead.
+      if (event.target instanceof Element && event.target.closest('dialog[open]')) return;
       if (event.key === 'Escape') {
         event.preventDefault();
         close();
@@ -111,7 +117,9 @@ const t = useTranslations(lang);
     toggle.addEventListener('click', () => (isOpen ? close() : open()));
     menu.addEventListener('click', (event) => {
       const target = event.target;
-      if (target instanceof Element && target.closest('a[href]')) close(false);
+      if (!(target instanceof Element)) return;
+      const link = target.closest('a[href]');
+      if (link && !link.hasAttribute('data-chat-open')) close(false);
     });
     desktop.addEventListener('change', (event) => {
       if (event.matches) close(false);

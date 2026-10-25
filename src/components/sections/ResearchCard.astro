@@ -1,14 +1,16 @@
 ---
 /**
- * ResearchCard: one research item with its evidence-type badge, authors, year, source, DOI,
- * neutral summary and the file link labelled with type and size.
+ * ResearchCard: one document of the library with its document-type badge, authors, year,
+ * source, DOI, the one-line neutral description (what the document is, never what it claims)
+ * and the file link labelled with type and size.
  *
- * Data attributes (`data-research-item`, `data-title`, `data-authors`, `data-evidence-type`,
- * `data-group`) are the hooks for the Phase 5 search and filter island.
+ * Data attributes (`data-research-item`, `data-title`, `data-authors`, `data-document-type`,
+ * `data-group`) are the hooks for the Phase 5 search and filter island. Everything renders
+ * statically, so every item is visible without JavaScript.
  */
 import type { CollectionEntry } from 'astro:content';
 import { useTranslations, type Locale } from '../../i18n';
-import { evidenceTone } from '../../lib/content';
+import { documentTypeTone } from '../../lib/content';
 import { formatFileSize } from '../../lib/format';
 import Badge from '../ui/Badge.astro';
 import Card from '../ui/Card.astro';
@@ -27,16 +29,14 @@ const d = entry.data;
 const isExternal = /^https?:\/\//i.test(d.pdf);
 const fileType = d.fileType ?? 'PDF';
 const linkLabel = fileType === 'PDF' ? t('actions.openPdf') : t('actions.openDocument');
-// The label already names the type for PDFs, so the meta shows only the size then.
+/** "PDF · 3,4 KB" for local files; "Link extern" for documents hosted elsewhere. */
 const fileMeta =
   typeof d.fileSizeBytes === 'number'
-    ? fileType === 'PDF'
-      ? formatFileSize(lang, d.fileSizeBytes)
-      : t('research.fileMeta', { type: fileType, size: formatFileSize(lang, d.fileSizeBytes) })
+    ? t('research.fileMeta', { type: fileType, size: formatFileSize(lang, d.fileSizeBytes) })
     : isExternal
       ? t('research.externalLink')
       : fileType;
-const isPlaceholder = /TODO\(content\)/.test(`${d.title} ${d.summary} ${d.source}`);
+const isPlaceholder = /TODO\(content\)/.test(`${d.title} ${d.description} ${d.source}`);
 const doiUrl = d.doi ? (/^https?:\/\//i.test(d.doi) ? d.doi : `https://doi.org/${d.doi}`) : null;
 const metaParts = [d.authors.join(', '), d.year ? String(d.year) : t('research.noYear'), d.source];
 ---
@@ -48,11 +48,11 @@ const metaParts = [d.authors.join(', '), d.year ? String(d.year) : t('research.n
   data-research-item
   data-title={d.title}
   data-authors={d.authors.join('; ')}
-  data-evidence-type={d.evidenceType}
+  data-document-type={d.documentType}
   data-group={d.group}
 >
   <div class="research-card__badges">
-    <Badge tone={evidenceTone(d.evidenceType)}>{t(`evidence.${d.evidenceType}`)}</Badge>
+    <Badge tone={documentTypeTone(d.documentType)}>{t(`documentType.${d.documentType}`)}</Badge>
     {isPlaceholder && <Badge tone="neutral">{t('common.placeholder')}</Badge>}
   </div>
   <Heading class="research-card__title">{d.title}</Heading>
@@ -64,7 +64,7 @@ const metaParts = [d.authors.join(', '), d.year ? String(d.year) : t('research.n
       </>
     ))}
   </p>
-  <p class="research-card__summary">{d.summary}</p>
+  <p class="research-card__description">{d.description}</p>
   {doiUrl && (
     <p class="research-card__doi">
       <span class="text-secondary">{t('research.doi')}: </span>
@@ -99,7 +99,7 @@ const metaParts = [d.authors.join(', '), d.year ? String(d.year) : t('research.n
     line-height: var(--leading-subheadline);
     color: var(--label-secondary);
   }
-  .research-card__summary {
+  .research-card__description {
     font-size: var(--text-callout);
     line-height: var(--leading-body);
   }

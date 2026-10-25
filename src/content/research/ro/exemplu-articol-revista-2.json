@@ -1,0 +1,14 @@
+{
+  "lang": "ro",
+  "translationKey": "example-journal-article-2",
+  "title": "Document exemplu 2: articol publicat într-o revistă cu evaluare de specialiști",
+  "authors": ["Autoare Exemplu, C."],
+  "year": 2021,
+  "documentType": "peer-reviewed",
+  "source": "TODO(content): sursa reală",
+  "doi": "10.0000/example.0002",
+  "pdf": "/research/placeholder-02.pdf",
+  "description": "Articol de revistă cu DOI, publicat după evaluarea de specialiști. TODO(content): înlocuiți cu documentul real și DOI-ul corect.",
+  "group": "publications",
+  "featured": false
+}

@@ -1,0 +1,13 @@
+{
+  "lang": "ro",
+  "translationKey": "example-literature-review",
+  "title": "Document exemplu 3: sinteză a literaturii publicate pe un subiect dat",
+  "authors": ["Autor Exemplu, D.", "Autoare Exemplu, E."],
+  "year": 2020,
+  "documentType": "review",
+  "source": "TODO(content): sursa reală",
+  "pdf": "/research/placeholder-03.pdf",
+  "description": "Sinteză care trece în revistă lucrări publicate anterior, fără date noi. TODO(content): înlocuiți cu sinteza reală și sursa ei.",
+  "group": "publications",
+  "featured": false
+}

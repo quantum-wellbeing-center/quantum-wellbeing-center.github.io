@@ -30,3 +30,4 @@ lighthouse-report/
 
 # jetbrains setting folder
 .idea/
+.claude/worktrees/

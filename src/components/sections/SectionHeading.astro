@@ -15,15 +15,7 @@ interface Props {
   class?: string;
 }
 
-const {
-  title,
-  text,
-  id,
-  as: Tag = 'h2',
-  action,
-  align = 'start',
-  class: className,
-} = Astro.props;
+const { title, text, id, as: Tag = 'h2', action, align = 'start', class: className } = Astro.props;
 ---
 
 <div class:list={['section-heading', `section-heading--${align}`, className]}>

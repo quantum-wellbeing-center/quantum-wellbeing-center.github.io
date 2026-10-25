@@ -3,7 +3,7 @@
   "translationKey": "placeholder-01",
   "image": "../../../assets/gallery/placeholder-01.svg",
   "alt": "Solid-colour placeholder image labelled “Placeholder image 1”",
-  "caption": "TODO(content): “before” photo – pair 1. Replace with the real, unedited photo, published only with the written consent of the person shown.",
-  "consent": true,
+  "caption": "The reception area. TODO(content): Replace with a real photo of the reception area.",
+  "identifiablePeople": false,
   "order": 1
 }

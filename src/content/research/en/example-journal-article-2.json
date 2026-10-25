@@ -1,0 +1,14 @@
+{
+  "lang": "en",
+  "translationKey": "example-journal-article-2",
+  "title": "Example document 2: article published in a peer-reviewed journal",
+  "authors": ["Example Author, C."],
+  "year": 2021,
+  "documentType": "peer-reviewed",
+  "source": "TODO(content): real source",
+  "doi": "10.0000/example.0002",
+  "pdf": "/research/placeholder-02.pdf",
+  "description": "Journal article with a DOI, published after peer review. TODO(content): replace with the real document and the correct DOI.",
+  "group": "publications",
+  "featured": false
+}

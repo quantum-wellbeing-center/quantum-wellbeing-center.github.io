@@ -39,7 +39,13 @@ const { data: page } = await getPage(lang, 'not-found');
       <Button href={getRoute(lang, 'contact')} variant="secondary" size="lg">
         {t('actions.contactUs')}
       </Button>
-      <Button href={getRoute(other, 'home')} variant="plain" size="lg" hreflang={other} lang={other}>
+      <Button
+        href={getRoute(other, 'home')}
+        variant="plain"
+        size="lg"
+        hreflang={other}
+        lang={other}
+      >
         {t('notFound.otherLanguage')}
       </Button>
     </div>

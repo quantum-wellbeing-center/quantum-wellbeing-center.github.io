@@ -1,0 +1,591 @@
+---
+/**
+ * WhatsAppChat island: the chat-style panel behind every booking and contact action
+ * (WEBSITE_PLAN.md section 8). Mounted once per page by BaseLayout.
+ *
+ * Markup: a native <dialog> (opened with showModal(), so Escape closes it and the page behind
+ * is inert) with the material background. Inside: a header with the logo and opening hours, a
+ * greeting bubble, quick-reply chips (a radio group styled as chips: single-select, arrow keys
+ * move the selection, the checked state is exposed to assistive technology), optional name
+ * and preferred-time fields, a message box, a preview bubble with the assembled text, and
+ * two actions: "Trimite pe WhatsApp" (an <a> whose href is the live wa.me link, readable by
+ * tests without opening WhatsApp) and "Sună" (a tel: link).
+ *
+ * One delegated click listener opens the panel from any `[data-chat-open]` on the page,
+ * preselects its `data-chat-topic` and adds `data-chat-service` to the message. Without
+ * JavaScript the dialog stays closed and every trigger remains a plain wa.me link.
+ *
+ * Privacy: no third-party script, no cookies, no web storage. Nothing leaves the page until
+ * the visitor follows the send link. The message templates and number travel through data
+ * attributes, so the client bundle holds only the pure helpers from src/lib/whatsapp-message.ts.
+ */
+import { site } from '../../config/site';
+import { useTranslations, type Locale } from '../../i18n';
+import { buildWhatsAppMessage, whatsappHref } from '../../lib/whatsapp';
+import Button from '../ui/Button.astro';
+import Icon from '../ui/Icon.astro';
+import Logo from '../Logo.astro';
+import OpeningHours from '../OpeningHours.astro';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const topics = [
+  { value: 'booking', label: t('chat.topicBooking') },
+  { value: 'pricing', label: t('chat.topicPricing') },
+  { value: 'other', label: t('chat.topicOther') },
+] as const;
+const defaultMessage = buildWhatsAppMessage(lang, { topic: 'booking' });
+---
+
+<dialog
+  class="chat"
+  aria-label={t('chat.dialogLabel', { brand: site.brandName })}
+  data-chat
+  data-messages={JSON.stringify(site.whatsappMessages[lang])}
+  data-number={site.whatsappNumber}
+>
+  <div class="chat__head">
+    <h2 class="chat__title">
+      <Logo size={26} />
+    </h2>
+    <p class="chat__hours">
+      {t('chat.hoursLine')} <OpeningHours lang={lang} inline class="chat__hours-list" />
+    </p>
+    <button class="chat__close" type="button" data-chat-close>
+      <Icon name="x" size={22} />
+      <span class="visually-hidden">{t('actions.close')}</span>
+    </button>
+  </div>
+
+  <div class="chat__body">
+    <p class="chat__bubble chat__bubble--in">{t('chat.greeting')}</p>
+
+    <fieldset class="chat__topics">
+      <legend class="visually-hidden">{t('chat.topicLegend')}</legend>
+      <div class="chat__chips">
+        {topics.map((topic) => (
+          <label class="chat__chip">
+            <input
+              class="chat__chip-input"
+              type="radio"
+              name="chat-topic"
+              value={topic.value}
+              checked={topic.value === 'booking'}
+            />
+            <span class="chat__chip-label">{topic.label}</span>
+          </label>
+        ))}
+      </div>
+    </fieldset>
+
+    <p class="chat__service" data-chat-service-line hidden>
+      <Icon name="calendar-check" size={16} />
+      <span>
+        {t('chat.serviceLabel')}: <strong data-chat-service-name></strong>
+      </span>
+    </p>
+
+    <div class="chat__field">
+      <label class="chat__label" for="chat-name">
+        {t('chat.nameLabel')} <span class="chat__optional">({t('chat.optional')})</span>
+      </label>
+      <input
+        class="chat__input"
+        id="chat-name"
+        name="name"
+        type="text"
+        autocomplete="name"
+        data-chat-name
+      />
+    </div>
+
+    <div class="chat__field">
+      <label class="chat__label" for="chat-time">
+        {t('chat.timeLabel')} <span class="chat__optional">({t('chat.optional')})</span>
+      </label>
+      <input
+        class="chat__input"
+        id="chat-time"
+        name="preferredTime"
+        type="text"
+        autocomplete="off"
+        aria-describedby="chat-time-hint"
+        data-chat-time
+      />
+      <p class="chat__hint" id="chat-time-hint">
+        {t('chat.timeHint')}
+      </p>
+    </div>
+
+    <div class="chat__field">
+      <label class="chat__label" for="chat-message">
+        {t('chat.messageLabel')} <span class="chat__optional">({t('chat.optional')})</span>
+      </label>
+      <textarea
+        class="chat__input chat__textarea"
+        id="chat-message"
+        name="message"
+        rows="3"
+        data-chat-message
+      ></textarea>
+    </div>
+
+    <div class="chat__preview">
+      <p class="chat__preview-label">{t('chat.previewLabel')}</p>
+      <p class="chat__bubble chat__bubble--out" data-chat-preview>
+        {defaultMessage}
+      </p>
+    </div>
+  </div>
+
+  <div class="chat__actions">
+    <Button
+      href={whatsappHref(defaultMessage)}
+      variant="whatsapp"
+      icon="whatsapp"
+      iconPosition="start"
+      fullWidth
+      newTabLabel={t('a11y.newTab')}
+      data-chat-send
+    >
+      {t('actions.sendWhatsApp')}
+    </Button>
+    <Button
+      href={`tel:${site.phoneHref}`}
+      variant="secondary"
+      icon="phone"
+      iconPosition="start"
+      fullWidth
+      data-chat-call
+    >
+      {t('actions.callNumber', { phone: site.phone })}
+    </Button>
+    <p class="chat__note">{t('chat.note')}</p>
+  </div>
+</dialog>
+
+<script>
+  import {
+    composeMessage,
+    whatsappLink,
+    type ChatTopic,
+    type WhatsAppMessages,
+  } from '../../lib/whatsapp-message';
+
+  const FOCUSABLE =
+    'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+  const TOPICS: readonly ChatTopic[] = ['booking', 'pricing', 'other'];
+  const isTopic = (value: string | undefined): value is ChatTopic =>
+    TOPICS.includes(value as ChatTopic);
+
+  function setup(dialog: HTMLDialogElement) {
+    // Browsers without <dialog> support keep every trigger as a plain wa.me link.
+    if (typeof dialog.showModal !== 'function') return;
+
+    const messages = JSON.parse(dialog.dataset.messages ?? '{}') as WhatsAppMessages;
+    const number = dialog.dataset.number ?? '';
+    const radios = Array.from(
+      dialog.querySelectorAll<HTMLInputElement>('input[name="chat-topic"]'),
+    );
+    const nameInput = dialog.querySelector<HTMLInputElement>('[data-chat-name]');
+    const timeInput = dialog.querySelector<HTMLInputElement>('[data-chat-time]');
+    const messageInput = dialog.querySelector<HTMLTextAreaElement>('[data-chat-message]');
+    const send = dialog.querySelector<HTMLAnchorElement>('[data-chat-send]');
+    const preview = dialog.querySelector<HTMLElement>('[data-chat-preview]');
+    const serviceLine = dialog.querySelector<HTMLElement>('[data-chat-service-line]');
+    const serviceName = dialog.querySelector<HTMLElement>('[data-chat-service-name]');
+
+    let opener: HTMLElement | null = null;
+    let service = '';
+    let lockedByChat = false;
+
+    const topic = (): ChatTopic => {
+      const value = radios.find((radio) => radio.checked)?.value;
+      return isTopic(value) ? value : 'booking';
+    };
+
+    /** Rebuilds the message, the send link and the preview from the current state. */
+    function update() {
+      const text = composeMessage(messages, {
+        topic: topic(),
+        service,
+        name: nameInput?.value,
+        preferredTime: timeInput?.value,
+        message: messageInput?.value,
+      });
+      if (send) send.href = whatsappLink(number, text);
+      if (preview) preview.textContent = text;
+    }
+
+    function open(trigger: HTMLElement) {
+      opener = trigger;
+      const requested = trigger.dataset.chatTopic;
+      const selected = isTopic(requested) ? requested : 'booking';
+      for (const radio of radios) radio.checked = radio.value === selected;
+      service = trigger.dataset.chatService?.trim() ?? '';
+      if (serviceLine) serviceLine.hidden = !service;
+      if (serviceName) serviceName.textContent = service;
+      update();
+      if (!dialog.open) dialog.showModal();
+      // The mobile menu may already hold the lock; only release what this panel took.
+      if (!document.body.classList.contains('is-locked')) {
+        document.body.classList.add('is-locked');
+        lockedByChat = true;
+      }
+      radios.find((radio) => radio.checked)?.focus();
+    }
+
+    dialog.addEventListener('close', () => {
+      if (lockedByChat) {
+        document.body.classList.remove('is-locked');
+        lockedByChat = false;
+      }
+      const target = opener;
+      opener = null;
+      if (target?.isConnected) target.focus();
+    });
+
+    // showModal() makes the rest of the page inert; this keeps Tab from leaving for the
+    // browser chrome, so focus cycles inside the panel.
+    dialog.addEventListener('keydown', (event) => {
+      if (event.key !== 'Tab') return;
+      const items = Array.from(dialog.querySelectorAll<HTMLElement>(FOCUSABLE)).filter(
+        (el) =>
+          el.offsetParent !== null &&
+          !(el instanceof HTMLInputElement && el.type === 'radio' && !el.checked),
+      );
+      if (items.length === 0) return;
+      const first = items[0] as HTMLElement;
+      const last = items[items.length - 1] as HTMLElement;
+      const active = document.activeElement;
+      if (event.shiftKey && active === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && active === last) {
+        event.preventDefault();
+        first.focus();
+      } else if (!(active instanceof HTMLElement) || !dialog.contains(active)) {
+        event.preventDefault();
+        first.focus();
+      }
+    });
+
+    dialog.addEventListener('input', update);
+    dialog.addEventListener('change', update);
+    dialog.querySelector('[data-chat-close]')?.addEventListener('click', () => dialog.close());
+    // A click on the backdrop (the dialog element itself, outside its children) closes it.
+    dialog.addEventListener('click', (event) => {
+      if (event.target === dialog) dialog.close();
+    });
+
+    document.addEventListener('click', (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      const trigger = target.closest<HTMLElement>('[data-chat-open]');
+      if (!trigger || dialog.contains(trigger) || event.defaultPrevented) return;
+      // Modifier clicks keep the link's own behaviour (open the wa.me link in a new tab).
+      if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)
+        return;
+      event.preventDefault();
+      open(trigger);
+    });
+  }
+
+  const dialog = document.querySelector<HTMLDialogElement>('dialog[data-chat]');
+  if (dialog) setup(dialog);
+</script>
+
+<style>
+  .chat {
+    position: fixed;
+    inset: auto;
+    inset-inline-end: calc(var(--space-4) + env(safe-area-inset-right));
+    inset-block-end: calc(
+      var(--space-4) + env(safe-area-inset-bottom) + var(--consent-offset, 0px)
+    );
+    width: min(24rem, calc(100vw - 2 * var(--space-4) - env(safe-area-inset-right)));
+    max-width: none;
+    max-height: min(46rem, calc(100dvh - 2 * var(--space-4) - env(safe-area-inset-bottom)));
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius-lg);
+    background: var(--material);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: saturate(180%) blur(20px);
+    color: var(--label);
+    box-shadow:
+      var(--shadow-lg),
+      inset 0 0 0 1px var(--separator);
+    overflow: hidden;
+  }
+  .chat[open] {
+    display: flex;
+    flex-direction: column;
+    animation: chat-in var(--duration-base) var(--ease-out);
+  }
+  .chat::backdrop {
+    background: var(--scrim);
+  }
+  @supports not (backdrop-filter: blur(1px)) {
+    .chat {
+      background: var(--material-fallback);
+    }
+  }
+  @media (prefers-reduced-transparency: reduce) {
+    .chat {
+      background: var(--material-fallback);
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+  }
+  @keyframes chat-in {
+    from {
+      opacity: 0;
+      transform: translateY(0.5rem);
+    }
+  }
+  @keyframes chat-fade {
+    from {
+      opacity: 0;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .chat[open] {
+      animation-name: chat-fade;
+    }
+  }
+  /* Small screens: a bottom sheet across the full width. */
+  @media (max-width: 39.99em) {
+    .chat {
+      inset-inline: 0;
+      inset-block-end: 0;
+      width: 100%;
+      max-height: calc(100dvh - var(--space-7));
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+      padding-block-end: env(safe-area-inset-bottom);
+    }
+  }
+
+  .chat__head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: var(--space-3);
+    align-items: start;
+    padding: var(--space-4) var(--space-4) var(--space-3);
+    border-bottom: 1px solid var(--separator);
+  }
+  .chat__title {
+    grid-column: 1;
+    min-height: var(--touch-target);
+    display: flex;
+    align-items: center;
+    font-size: var(--text-headline);
+    line-height: var(--leading-headline);
+  }
+  .chat__close {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: var(--touch-target);
+    min-height: var(--touch-target);
+    margin-inline-end: calc(-1 * var(--space-2));
+    border-radius: var(--radius-capsule);
+    color: var(--label);
+  }
+  .chat__close:hover {
+    background: var(--fill);
+  }
+  .chat__hours {
+    grid-column: 1;
+    font-size: var(--text-footnote);
+    line-height: var(--leading-footnote);
+    color: var(--label-secondary);
+  }
+
+  .chat__body {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: grid;
+    align-content: start;
+    gap: var(--space-4);
+    padding: var(--space-4);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .chat__bubble {
+    max-width: 92%;
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-lg);
+    font-size: var(--text-callout);
+    line-height: var(--leading-callout);
+    overflow-wrap: anywhere;
+  }
+  .chat__bubble--in {
+    justify-self: start;
+    border-end-start-radius: var(--radius-sm);
+    background: var(--bg-elevated);
+    box-shadow: var(--shadow-sm);
+  }
+  .chat__bubble--out {
+    justify-self: end;
+    border-end-end-radius: var(--radius-sm);
+    background: var(--accent-tint);
+    color: var(--label);
+  }
+
+  .chat__topics {
+    border: 0;
+    padding: 0;
+    margin: 0;
+    min-width: 0;
+  }
+  .chat__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .chat__chip {
+    position: relative;
+    display: inline-flex;
+  }
+  .chat__chip-input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+  .chat__chip-label {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--touch-target);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-capsule);
+    background: var(--bg-elevated);
+    box-shadow: inset 0 0 0 1px var(--separator);
+    color: var(--label);
+    font-size: var(--text-subheadline);
+    font-weight: 500;
+    line-height: 1.2;
+    cursor: pointer;
+    transition:
+      background-color var(--duration-fast) var(--ease-out),
+      color var(--duration-fast) var(--ease-out);
+  }
+  .chat__chip-input:hover + .chat__chip-label {
+    background: var(--fill);
+  }
+  .chat__chip-input:checked + .chat__chip-label {
+    background: var(--accent-fill);
+    color: var(--on-accent);
+    font-weight: 600;
+    box-shadow: none;
+  }
+  .chat__chip-input:focus-visible + .chat__chip-label {
+    outline: 3px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+
+  .chat__service {
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+    font-size: var(--text-subheadline);
+    line-height: var(--leading-subheadline);
+    color: var(--label-secondary);
+  }
+  .chat__service strong {
+    color: var(--label);
+  }
+  .chat__service[hidden] {
+    display: none;
+  }
+
+  .chat__field {
+    display: grid;
+    gap: var(--space-1);
+  }
+  .chat__label {
+    font-size: var(--text-subheadline);
+    line-height: var(--leading-subheadline);
+    font-weight: 600;
+  }
+  .chat__optional {
+    font-weight: 400;
+    color: var(--label-secondary);
+  }
+  .chat__input {
+    width: 100%;
+    min-height: var(--touch-target);
+    padding: 0.5rem 0.875rem;
+    border: 0;
+    border-radius: var(--radius-md);
+    background: var(--bg-elevated);
+    box-shadow: inset 0 0 0 1px var(--separator);
+    color: var(--label);
+    font-size: var(--text-callout);
+    line-height: var(--leading-callout);
+  }
+  .chat__input:focus-visible {
+    outline: 3px solid var(--focus-ring);
+    outline-offset: 1px;
+  }
+  .chat__textarea {
+    resize: vertical;
+    min-height: 4.5rem;
+  }
+  .chat__hint {
+    font-size: var(--text-footnote);
+    line-height: var(--leading-footnote);
+    color: var(--label-secondary);
+  }
+
+  .chat__preview {
+    display: grid;
+    gap: var(--space-1);
+    justify-items: end;
+  }
+  .chat__preview-label {
+    font-size: var(--text-caption);
+    line-height: var(--leading-caption);
+    font-weight: 600;
+    color: var(--label-secondary);
+  }
+
+  .chat__actions {
+    display: grid;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4) var(--space-4);
+    border-top: 1px solid var(--separator);
+  }
+  .chat__note {
+    font-size: var(--text-caption);
+    line-height: var(--leading-caption);
+    color: var(--label-secondary);
+  }
+
+  /* Bottom sheet: a tighter gutter so the action buttons fit a 320px screen at 200% text. */
+  @media (max-width: 39.99em) {
+    .chat__head,
+    .chat__body,
+    .chat__actions {
+      padding-inline: var(--space-3);
+    }
+  }
+
+  @media print {
+    .chat {
+      display: none;
+    }
+  }
+</style>

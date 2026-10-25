@@ -44,7 +44,9 @@ const feedTitle = t('articles.feedTitle', { brand: site.brandName });
 
   <PageIntro title={copy.title} lead={copy.subheading}>
     <p class="articles-feed">
-      <a href={feedPath} class="articles-feed__link">{t('a11y.rss')}</a>
+      <a href={feedPath} class="articles-feed__link">
+        {t('a11y.rss')}
+      </a>
     </p>
   </PageIntro>
 

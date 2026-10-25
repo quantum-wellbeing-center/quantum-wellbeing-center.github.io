@@ -2,12 +2,11 @@
 lang: ro
 translationKey: testimonials
 title: Testimoniale
-description: Ce ne spun clienții după sesiuni, publicat doar cu acordul lor scris, și o galerie de fotografii needitate. Experiențe personale, nu rezultate. TODO(content) – text substituent.
-subheading: Mesajele de mai jos sunt experiențe personale, publicate cu acordul scris al celor care le-au lăsat. Le citim cu recunoștință, dar nu le prezentăm drept rezultate.
+description: Mesaje de la clienți despre vizită, echipă, spațiu și programare, publicate cu acordul lor scris, plus fotografii din centru. TODO(content) – text substituent.
+subheading: Mesajele de mai jos sunt despre vizită, echipă, spațiu și programare. Le publicăm doar cu acordul scris al celor care le-au lăsat.
 gallery:
   heading: Galerie
-  text: Fotografii din centru și perechi „înainte și după”, publicate doar cu consimțământul scris al persoanelor din imagine. Imaginile nu sunt editate.
-  note: Fotografiile arată momente din vizite, nu efecte ale sesiunilor. Nu trageți concluzii despre sănătate din imagini. TODO(content) – înlocuiți imaginile substituent cu fotografii reale, needitate, cu consimțământ scris.
+  text: Fotografii din centru – recepția, încăperea de sesiune, zona de așteptare și echipa. Persoanele apar doar cu acordul lor scris. TODO(content) – înlocuiți imaginile substituent cu fotografii reale.
 reviews:
   heading: Recenzii Google
   text: Recenziile de pe profilul nostru Google nu sunt încorporate în această pagină, pentru că widgetul setează cookie-uri de la terți. Le poți citi direct pe Google. TODO(content) – adăugați linkul către profilul Google.

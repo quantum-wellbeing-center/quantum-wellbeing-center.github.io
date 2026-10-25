@@ -1,0 +1,12 @@
+{
+  "lang": "en",
+  "translationKey": "session-for-two",
+  "name": "Session for two – 60 minutes",
+  "description": "An hour in the same room, on two armchairs side by side, for anyone who would rather come with someone. You book a single slot, and the price covers both people. TODO(content): confirm the price and the number of seats.",
+  "durationMinutes": 60,
+  "price": 260,
+  "currency": "RON",
+  "highlighted": false,
+  "order": 3,
+  "whatsappMessage": "Hello! I would like to book an appointment. Service: Session for two – 60 minutes."
+}

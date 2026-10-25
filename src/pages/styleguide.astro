@@ -13,7 +13,10 @@ import SegmentedControl from '../components/ui/SegmentedControl.astro';
 import Icon from '../components/ui/Icon.astro';
 import type { IconName } from '../components/ui/Icon.astro';
 import type { BadgeTone } from '../components/ui/Badge.astro';
+import BookingLink from '../components/BookingLink.astro';
+import { DOCUMENT_TYPES } from '../content.config';
 import { formatDate, formatPrice, useTranslations } from '../i18n';
+import { documentTypeTone } from '../lib/content';
 
 const t = useTranslations('ro');
 const tEn = useTranslations('en');
@@ -56,24 +59,6 @@ const spacing = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 const radii = ['sm', 'md', 'card', 'lg', 'capsule'];
 const shadows = ['sm', 'md', 'lg'];
 const badgeTones: BadgeTone[] = ['neutral', 'accent', 'success', 'warning', 'danger'];
-const evidenceTypes = [
-  'peer-reviewed',
-  'clinical-study',
-  'pilot-study',
-  'case-report',
-  'review',
-  'anecdotal-report',
-  'other',
-] as const;
-const evidenceTone: Record<(typeof evidenceTypes)[number], BadgeTone> = {
-  'peer-reviewed': 'success',
-  'clinical-study': 'accent',
-  'pilot-study': 'accent',
-  'case-report': 'neutral',
-  review: 'accent',
-  'anecdotal-report': 'warning',
-  other: 'neutral',
-};
 const icons: IconName[] = [
   'arrow-right',
   'arrow-up-right',
@@ -205,7 +190,7 @@ const sampleDate = new Date('2026-03-14');
               {name} · <code>.text-{cls}</code> · {spec}
             </span>
           </dt>
-          <dd class={`text-${cls}`}>Sesiuni de relaxare și stare de bine</dd>
+          <dd class={`text-${cls}`}>Centru de wellness – ș, ț, â, î, ă</dd>
         </div>
       ))}
     </dl>
@@ -280,12 +265,12 @@ const sampleDate = new Date('2026-03-14');
           <Button variant={variant} size="sm">
             {t('actions.book')}
           </Button>
-          <Button variant={variant}>{t('actions.bookSession')}</Button>
+          <Button variant={variant}>{t('actions.bookWhatsApp')}</Button>
           <Button variant={variant} size="lg">
-            {tEn('actions.bookSession')}
+            {tEn('actions.bookWhatsApp')}
           </Button>
           <Button variant={variant} icon="arrow-right">
-            {t('actions.howItWorks')}
+            {t('actions.seeServices')}
           </Button>
           <Button variant={variant} icon="calendar-check" iconPosition="start">
             {tEn('actions.book')}
@@ -310,7 +295,30 @@ const sampleDate = new Date('2026-03-14');
         <code>fullWidth</code>
       </h3>
       <div style="max-width: 20rem">
-        <Button fullWidth>{t('form.submit')}</Button>
+        <Button fullWidth>{t('actions.sendWhatsApp')}</Button>
+      </div>
+    </div>
+    <div class="sg-block">
+      <h3>
+        <code>BookingLink</code>
+      </h3>
+      <p class="text-secondary">
+        Toate butoanele de programare: link wa.me cu mesaj precompletat, interceptat de panoul de
+        chat când există JavaScript.
+      </p>
+      <div class="sg-row">
+        <BookingLink lang="ro" icon="whatsapp" iconPosition="start">
+          {t('actions.bookWhatsApp')}
+        </BookingLink>
+        <BookingLink lang="ro" variant="secondary" size="sm">
+          {t('actions.bookShort')}
+        </BookingLink>
+        <BookingLink lang="ro" topic="other" variant="plain">
+          {t('actions.writeWhatsApp')}
+        </BookingLink>
+        <BookingLink lang="en" topic="pricing" variant="secondary">
+          {tEn('actions.writeWhatsApp')}
+        </BookingLink>
       </div>
     </div>
   </Section>
@@ -327,15 +335,15 @@ const sampleDate = new Date('2026-03-14');
         </Badge>
       ))}
     </div>
-    <h3>Tipuri de dovezi</h3>
+    <h3>Tipuri de documente</h3>
     <div class="sg-row">
-      {evidenceTypes.map((type) => (
-        <Badge tone={evidenceTone[type]}>{t(`evidence.${type}`)}</Badge>
+      {DOCUMENT_TYPES.map((type) => (
+        <Badge tone={documentTypeTone(type)}>{t(`documentType.${type}`)}</Badge>
       ))}
     </div>
     <div class="sg-row">
-      {evidenceTypes.map((type) => (
-        <Badge tone={evidenceTone[type]}>{tEn(`evidence.${type}`)}</Badge>
+      {DOCUMENT_TYPES.map((type) => (
+        <Badge tone={documentTypeTone(type)}>{tEn(`documentType.${type}`)}</Badge>
       ))}
     </div>
   </Section>
@@ -407,15 +415,15 @@ const sampleDate = new Date('2026-03-14');
     <p class="text-secondary">Radio nativ; săgețile schimbă selecția. Folosit pentru filtre.</p>
     <div class="sg-block">
       <SegmentedControl
-        name="evidence"
+        name="document-type"
         label={t('common.filterBy')}
         showLabel
         value="all"
         options={[
           { value: 'all', label: t('common.all'), count: 10 },
-          { value: 'peer-reviewed', label: t('evidence.peer-reviewed'), count: 4 },
-          { value: 'clinical-study', label: t('evidence.clinical-study'), count: 3 },
-          { value: 'anecdotal-report', label: t('evidence.anecdotal-report'), count: 3 },
+          { value: 'peer-reviewed', label: t('documentType.peer-reviewed'), count: 4 },
+          { value: 'clinical-study', label: t('documentType.clinical-study'), count: 3 },
+          { value: 'pilot-study', label: t('documentType.pilot-study'), count: 3 },
         ]}
       />
     </div>
@@ -437,8 +445,8 @@ const sampleDate = new Date('2026-03-14');
         fullWidth
         options={[
           { value: 'a', label: tEn('common.all') },
-          { value: 'b', label: tEn('evidence.review') },
-          { value: 'c', label: tEn('evidence.other') },
+          { value: 'b', label: tEn('documentType.review') },
+          { value: 'c', label: tEn('documentType.other') },
         ]}
       />
     </div>
@@ -530,6 +538,10 @@ const sampleDate = new Date('2026-03-14');
     align-items: center;
     gap: var(--space-3);
     margin-block-start: var(--space-3);
+  }
+  .sg-row :global(.btn) {
+    white-space: normal;
+    max-width: 100%;
   }
   .sg-grid-3 {
     display: grid;

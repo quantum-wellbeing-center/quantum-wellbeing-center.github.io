@@ -2,6 +2,6 @@
 lang: ro
 translationKey: articles
 title: Articole
-description: Articole despre sesiuni, pregătire, cum citim biblioteca de cercetări și cum alegi un centru de relaxare cu încredere. TODO(content) – text substituent.
-subheading: Texte scurte despre ce se întâmplă în centru, cum te pregătești pentru o vizită și cum citești documentele pe care le publicăm.
+description: Texte scurte despre vizita la centru, programarea pe WhatsApp și echipa. Informații practice, fără promisiuni. TODO(content) – text substituent.
+subheading: Texte scurte despre cum decurge o vizită, cum te programezi și cine te întâmpină la centru.
 ---

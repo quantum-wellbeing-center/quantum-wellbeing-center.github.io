@@ -7,7 +7,7 @@
   },
   "nav": {
     "home": "Home",
-    "technology": "Technology",
+    "services": "Services",
     "research": "Scientific research",
     "testimonials": "Testimonials",
     "pricing": "Pricing",
@@ -23,44 +23,32 @@
     "mainNavigation": "Main navigation",
     "footerNavigation": "Useful links",
     "legalNavigation": "Legal links",
-    "socialLinks": "Social media",
     "topBar": "Contact information",
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
-    "menuTitle": "Menu",
     "languageSwitcher": "Language",
     "newTab": "opens in a new tab",
     "brandHome": "{brand}, home page",
     "whatsappButton": "Message us on WhatsApp",
-    "currentPage": "Current page",
     "testimonialsRow": "Testimonials, horizontally scrollable list",
     "pagination": "Pagination",
     "articleNav": "Neighbouring articles",
     "tableOfContents": "Contents",
-    "rss": "RSS feed",
-    "decorative": "Decorative element"
+    "rss": "RSS feed"
   },
   "actions": {
     "book": "Book",
     "bookSession": "Book a session",
-    "howItWorks": "How it works",
-    "call": "Call us",
-    "writeEmail": "Email us",
     "whatsapp": "WhatsApp",
     "openPdf": "Open PDF",
     "openInMaps": "Open in Google Maps",
     "readMore": "Read more",
-    "seeAll": "See all",
-    "back": "Back",
     "backHome": "Back to the home page",
     "send": "Send",
     "close": "Close",
-    "ok": "Got it",
     "search": "Search",
     "clear": "Clear",
-    "learnMore": "Learn more",
     "joinCommunity": "Join the community",
-    "seeAllResearch": "See the whole library",
     "seeAllTestimonials": "See all testimonials",
     "seeAllFaq": "See all questions",
     "seePricing": "See prices",
@@ -73,7 +61,9 @@
     "seeServices": "See the services",
     "writeWhatsApp": "Message us on WhatsApp",
     "callNumber": "Call: {phone}",
-    "sendWhatsApp": "Send on WhatsApp"
+    "sendWhatsApp": "Send on WhatsApp",
+    "details": "Details",
+    "seeGallery": "See the gallery"
   },
   "topBar": {
     "hours": "Hours",
@@ -107,22 +97,34 @@
     "follow": "Follow us",
     "legalDetails": "{legalName} · CUI {cui} · {regCom}",
     "anpcSal": "ANPC SAL: alternative dispute resolution",
-    "anpcSalBadge": "ANPC SAL",
     "solNote": "TODO(legal): the EU ODR (SOL) platform closed in July 2025. Confirm with the legal adviser whether the badge is still required.",
-    "disclaimer": "Our sessions are relaxation and wellbeing experiences. We do not provide medical services, and sessions do not replace a diagnosis or treatment. For any health concern, consult a doctor.",
     "copyright": "© {year} {brand}. All rights reserved.",
     "cookiePreferences": "Cookie preferences"
+  },
+  "chat": {
+    "dialogLabel": "WhatsApp chat with {brand}",
+    "hoursLine": "We reply during opening hours:",
+    "greeting": "Hi! How can we help?",
+    "topicLegend": "Choose a topic",
+    "topicBooking": "I want to book",
+    "topicPricing": "A question about prices",
+    "topicOther": "Another question",
+    "serviceLabel": "Chosen service",
+    "nameLabel": "Name",
+    "timeLabel": "Preferred day and time",
+    "timeHint": "For example: Thursday afternoon",
+    "messageLabel": "Message",
+    "optional": "optional",
+    "previewLabel": "Your message",
+    "note": "The message opens in the WhatsApp app. Nothing is sent until you tap “Send on WhatsApp”."
   },
   "cookie": {
     "title": "Cookies and privacy",
     "intro": "We use cookies that are necessary for the site to work. With your consent, we also use statistics and marketing cookies. You can change your choice at any time from the page footer.",
-    "noticeTitle": "About cookies",
-    "noticeText": "This site only uses cookies that are strictly necessary for it to work. We do not track visitors and we use no marketing cookies.",
     "acceptAll": "Accept all",
     "rejectAll": "Reject all",
     "preferences": "Preferences",
     "save": "Save preferences",
-    "ok": "Got it",
     "necessary": "Strictly necessary",
     "necessaryDesc": "Needed for the site to work, for example to remember your cookie choice.",
     "alwaysOn": "Always on",
@@ -132,28 +134,6 @@
     "marketingDesc": "Used for embedded third-party content such as Google reviews.",
     "policyLink": "Cookie policy",
     "close": "Close"
-  },
-  "form": {
-    "name": "Name",
-    "email": "Email",
-    "phone": "Phone",
-    "optional": "optional",
-    "message": "Message",
-    "consent": "I have read the {privacyLink} and agree to the processing of my data.",
-    "consentLinkLabel": "privacy policy",
-    "submit": "Send message",
-    "sending": "Sending…",
-    "success": "Thank you! Your message was sent. We will get back to you shortly.",
-    "error": "The message could not be sent. Please try again or call us.",
-    "required": "This field is required.",
-    "invalidEmail": "Enter a valid email address.",
-    "honeypot": "Leave this field empty",
-    "requiredNote": "Fields marked with * are required.",
-    "requiredMark": "required",
-    "nameHint": "Your first and last name.",
-    "emailHint": "We reply to this address.",
-    "phoneHint": "Only if you would rather we call you.",
-    "messageHint": "A few sentences are enough."
   },
   "common": {
     "readingTime": "{minutes} min read",
@@ -170,22 +150,19 @@
     "filterBy": "Filter by type",
     "searchPlaceholder": "Search by title or authors",
     "all": "All",
-    "pdf": "PDF",
-    "fileSize": "{size}",
     "price": "Price",
     "duration": "{minutes} min",
-    "sessions": "{count} sessions",
     "vatNote": "TODO(content): state whether prices include VAT.",
     "placeholder": "Example"
   },
-  "evidence": {
-    "peer-reviewed": "Peer-reviewed",
+  "documentType": {
+    "peer-reviewed": "Peer-reviewed article",
     "clinical-study": "Clinical study",
     "pilot-study": "Pilot study",
     "case-report": "Case report",
     "review": "Review",
-    "anecdotal-report": "Anecdotal report",
-    "other": "Other"
+    "report": "Report",
+    "other": "Other document"
   },
   "research": {
     "count": "{count} documents",
@@ -193,11 +170,9 @@
     "externalLink": "External link",
     "fileMeta": "{type} · {size}",
     "doi": "DOI",
-    "year": "Year",
-    "source": "Source",
-    "authors": "Authors",
-    "evidenceLabel": "Type of evidence",
-    "noYear": "year not given"
+    "typeLabel": "Document type",
+    "noYear": "year not given",
+    "searchLabel": "Search the library"
   },
   "testimonials": {
     "rating": "{rating} out of 5 stars",
@@ -208,6 +183,7 @@
   },
   "pricing": {
     "recommended": "Recommended",
+    "from": "from {price}",
     "perSession": "{price} per session",
     "package": "Package of {count} sessions",
     "perSessionDuration": "{minutes} min per session"
@@ -218,22 +194,23 @@
     "next": "Next article",
     "pageTitle": "{title} – page {page}",
     "feedTitle": "{brand} – Articles",
-    "feedDescription": "Articles about sessions, preparing for a visit and how we read the research."
+    "feedDescription": "Articles about visiting the centre, booking on WhatsApp and the team."
   },
   "faq": {
     "category": {
-      "sesiuni": "Sessions",
-      "rezervari": "Bookings",
-      "siguranta": "Safety and data",
-      "preturi": "Prices and payment"
+      "booking": "Booking",
+      "cancellation": "Cancellation and rescheduling",
+      "visit": "The visit",
+      "payment": "Payment and prices",
+      "location": "Location and parking"
     }
   },
   "contact": {
     "address": "Address",
     "phone": "Phone",
     "email": "Email",
-    "whatsapp": "WhatsApp",
     "hours": "Opening hours",
+    "socials": "Social media",
     "mapAlt": "Placeholder map pointing to the centre's address. TODO(content): replace with a static map image."
   },
   "legal": {
@@ -246,17 +223,10 @@
     "cookiePurpose": "Purpose",
     "cookieDuration": "Duration",
     "cookieProvider": "Provider",
+    "noCookies": "In its default configuration, this site sets no cookies. The inventory is empty.",
     "openPreferences": "Open cookie preferences"
   },
-  "disclaimer": {
-    "short": "Not a medical service. Does not replace diagnosis or treatment. Consult a doctor.",
-    "long": "The information on this page is provided for general information. Our sessions are relaxation and wellbeing experiences, not medical services, and do not replace a diagnosis or treatment set by a doctor. For any health concern, consult a doctor.",
-    "title": "Important note"
-  },
   "notFound": {
-    "title": "Page not found",
-    "text": "The link may be wrong or the page may have moved.",
-    "backHome": "Back to the home page",
     "otherLanguage": "Versiunea în română",
     "code": "Error 404"
   },

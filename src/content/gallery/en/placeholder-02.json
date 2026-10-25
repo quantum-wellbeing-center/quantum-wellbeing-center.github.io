@@ -3,7 +3,7 @@
   "translationKey": "placeholder-02",
   "image": "../../../assets/gallery/placeholder-02.svg",
   "alt": "Solid-colour placeholder image labelled “Placeholder image 2”",
-  "caption": "TODO(content): “after” photo – pair 1. Replace with the real, unedited photo, published only with the written consent of the person shown.",
-  "consent": true,
+  "caption": "The session room, with the armchairs and soft lighting. TODO(content): Replace with a real photo of the room.",
+  "identifiablePeople": false,
   "order": 2
 }

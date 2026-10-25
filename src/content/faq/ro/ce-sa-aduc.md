@@ -2,13 +2,13 @@
 lang: ro
 translationKey: what-to-bring
 question: Ce ar trebui să aduc și cum să mă îmbrac?
-category: sesiuni
-order: 2
-featured: false
+category: visit
+order: 1
+featured: true
 ---
 
-Nu ai nevoie de nimic special. Vino în haine comode, în care poți sta relaxat o oră sau două. În încăpere este cald, iar la intrare primești o pătură dacă vrei.
+Nu ai nevoie de nimic special. Vino în haine comode, în care poți sta o oră sau două într-un fotoliu. În încăpere este cald, iar la intrare primești o pătură dacă vrei.
 
-Poți aduce o carte, căști și o sticlă cu apă. Telefonul poate rămâne la tine, dar îți recomandăm să îl pui pe modul silențios ca să nu îți întrerupă liniștea și pe a celorlalți.
+Poți aduce o carte, căști și o sticlă cu apă. Telefonul poate rămâne la tine; îți sugerăm să îl pui pe modul silențios, pentru tine și pentru ceilalți din încăpere.
 
-Lăsăm la vestiar hainele groase, umbrelele și bagajele, iar pentru obiectele de valoare există dulapuri care se încuie. TODO(content): confirmați dotările vestiarului.
+Hainele groase, umbrelele și bagajele rămân la vestiar, iar pentru obiectele de valoare există dulapuri care se încuie. TODO(content): confirmați dotările vestiarului.

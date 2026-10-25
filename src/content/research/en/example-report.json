@@ -1,0 +1,13 @@
+{
+  "lang": "en",
+  "translationKey": "example-report",
+  "title": "Example document 8: report by an organisation, not peer-reviewed",
+  "authors": ["Example Organisation"],
+  "year": 2025,
+  "documentType": "report",
+  "source": "TODO(content): real source",
+  "pdf": "/research/placeholder-08.pdf",
+  "description": "Report published by an organisation on its own website, not peer-reviewed. TODO(content): replace with the real report and its source.",
+  "group": "other-documents",
+  "featured": false
+}

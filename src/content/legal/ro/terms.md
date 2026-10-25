@@ -2,31 +2,35 @@
 lang: ro
 translationKey: terms
 title: Termeni și condiții
-description: Termenii și condițiile de utilizare a site-ului și de rezervare a sesiunilor în centrul nostru. Schiță pentru revizuire juridică.
+description: Termenii de utilizare a site-ului și condițiile de programare pe WhatsApp sau telefon, de anulare și de plată pentru sesiunile din centru. Schiță pentru revizuire juridică.
 updated: 2026-10-18
 ---
 
 ## Părțile
 
-TODO(legal): identificarea prestatorului (denumire legală, CUI, Reg. Com., sediu) și a clientului (persoana care rezervă sau participă la o sesiune), precum și momentul în care acești termeni devin aplicabili (crearea unei rezervări sau folosirea site-ului).
+TODO(legal): identificarea prestatorului (denumire legală, CUI, Reg. Com., sediu) și a clientului (persoana care programează sau participă la o sesiune), precum și momentul în care acești termeni devin aplicabili (confirmarea unei programări sau folosirea site-ului).
 
 ## Serviciile
 
-TODO(legal): descrierea serviciilor oferite – sesiuni de relaxare și stare de bine de 60 sau 120 de minute, pachete de sesiuni și servicii complementare – cu precizarea expresă că acestea nu sunt servicii medicale, nu înlocuiesc un consult, un diagnostic sau un tratament și nu fac obiectul vreunei afirmații privind efecte asupra sănătății.
+TODO(legal): descrierea serviciilor oferite – sesiuni individuale de 60 sau 120 de minute, sesiunea pentru două persoane și pachetul de cinci sesiuni – descrise factual: ce se întâmplă la vizită, durata, prețul și ce include fiecare serviciu.
 
-TODO(legal): condițiile de participare (vârstă minimă, însoțirea minorilor, situații în care centrul poate refuza accesul) și regulile de conduită în centru.
+TODO(legal): condițiile de participare (vârsta minimă, însoțirea minorilor, situațiile în care centrul poate refuza accesul) și regulile de conduită în centru.
 
-## Rezervări și anulări
+## Programări
 
-TODO(legal): modul de rezervare (platforma externă de rezervări, telefon, WhatsApp), confirmarea rezervării, termenul de anulare sau reprogramare gratuită (de exemplu 24 de ore), consecințele neprezentării și condițiile în care centrul poate anula sau muta o programare.
+TODO(legal): programarea se face printr-un mesaj pe WhatsApp la numărul afișat pe site sau telefonic, în timpul programului. O programare este confirmată doar prin răspunsul centrului, în aceeași conversație sau telefonic. Nu se percepe plată în avans. Precizați datele necesare pentru o programare (prenume, serviciu, ziua și ora dorite).
+
+## Anulări și reprogramări
+
+TODO(legal): anularea sau mutarea unei programări se face printr-un mesaj pe WhatsApp sau telefonic, fără cost, cu cel puțin 24 de ore înainte de ora stabilită. Precizați consecințele anulărilor târzii și ale neprezentării (inclusiv pentru sesiunile dintr-un pachet), regula pentru întârzieri și condițiile în care centrul poate anula sau muta o programare.
 
 ## Plata și prețurile
 
-TODO(legal): prețurile afișate în lei, mențiunea privind TVA, modalitățile de plată acceptate, valabilitatea pachetelor, politica de rambursare pentru sesiunile neconsumate și emiterea facturilor.
+TODO(legal): prețurile afișate în lei, mențiunea privind TVA, modalitățile de plată acceptate la recepție, valabilitatea pachetelor, politica de rambursare pentru sesiunile neconsumate și emiterea bonului fiscal și a facturilor.
 
 ## Răspunderea
 
-TODO(legal): limitele răspunderii prestatorului, obligația clientului de a informa echipa despre orice situație relevantă pentru siguranța sa, răspunderea pentru bunurile personale și clauza privind forța majoră.
+TODO(legal): limitele răspunderii prestatorului, răspunderea pentru bunurile personale lăsate la vestiar și clauza privind forța majoră.
 
 ## Proprietatea intelectuală
 
@@ -38,4 +42,4 @@ TODO(legal): legea aplicabilă, instanțele competente, dreptul consumatorului d
 
 ## Contact
 
-TODO(legal): datele de contact pentru întrebări legate de acești termeni (adresă poștală, e-mail, telefon).
+TODO(legal): datele de contact pentru întrebări legate de acești termeni (adresă poștală, e-mail, telefon, WhatsApp).

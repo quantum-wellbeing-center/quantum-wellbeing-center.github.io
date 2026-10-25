@@ -1,12 +1,12 @@
 ---
 /**
- * PricingPage: service cards sorted by `order` with the highlighted card emphasised, the VAT
- * note (TODO(content) in the dictionaries), what every session includes, and a CTA.
+ * PricingPage: service cards sorted by `order` with the highlighted card emphasised, each with
+ * a "Programează-te" BookingLink; the VAT note (TODO(content) in the dictionaries); what every
+ * session includes; and a CTA band with the WhatsApp link and the phone number.
  */
 import { render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { site } from '../../config/site';
-import { getRoute, useTranslations, type Locale } from '../../i18n';
+import { useTranslations, type Locale } from '../../i18n';
 import { getPage, getServices } from '../../lib/content';
 import Icon from '../ui/Icon.astro';
 import Section from '../ui/Section.astro';
@@ -46,8 +46,9 @@ const hasBody = Boolean(entry.body && entry.body.trim());
     lang={lang}
     heading={page.cta.heading}
     text={page.cta.text}
-    primary={{ href: getRoute(lang, 'contact'), label: t('actions.contactUs') }}
-    secondary={{ href: site.bookingUrl, label: t('actions.bookSession') }}
+    topic="pricing"
+    bookingLabel={t('actions.writeWhatsApp')}
+    id="pricing-cta"
   />
 </BaseLayout>
 

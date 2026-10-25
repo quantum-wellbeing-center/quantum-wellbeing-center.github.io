@@ -1,13 +1,13 @@
 {
   "lang": "ro",
   "translationKey": "example-clinical-study",
-  "title": "Exemplu de studiu clinic înregistrat privind confortul perceput în timpul sesiunilor",
-  "authors": ["Autor Exemplu, A.", "Autoare Exemplu, B.", "Colaborator Exemplu, C."],
+  "title": "Document exemplu 4: studiu clinic cu protocol înregistrat",
+  "authors": ["Autor Exemplu, A.", "Autoare Exemplu, B.", "Colaborator Exemplu, F."],
   "year": 2022,
-  "evidenceType": "clinical-study",
-  "source": "TODO(content): sursă reală",
-  "pdf": "/research/placeholder-02.pdf",
-  "summary": "TODO(content): rezumat real. Substituent pentru un studiu clinic înregistrat. Folosiți eticheta „studiu clinic” doar dacă documentul real are un protocol, un grup de control sau o înregistrare publică; altfel alegeți un tip de dovadă mai modest.",
-  "group": "published-clinical",
+  "documentType": "clinical-study",
+  "source": "TODO(content): sursa reală",
+  "pdf": "/research/placeholder-04.pdf",
+  "description": "Studiu cu protocol înregistrat public și grup de comparație. TODO(content): folosiți această etichetă doar dacă documentul real are un protocol înregistrat.",
+  "group": "studies",
   "featured": true
 }

@@ -1,7 +1,8 @@
 ---
 /**
- * ContactPage: intro, contact details with hours, a static map placeholder with a link to
- * Google Maps (no iframe), and the contact form.
+ * ContactPage: the WhatsApp BookingLink (topic "other") with the phone link beside it, the
+ * contact details with hours and socials, and a static map placeholder with a link to Google
+ * Maps (no iframe, which would set cookies). There is no contact form.
  */
 import { Image } from 'astro:assets';
 import { render } from 'astro:content';
@@ -10,10 +11,10 @@ import { site } from '../../config/site';
 import { useTranslations, type Locale } from '../../i18n';
 import { getPage } from '../../lib/content';
 import mapPlaceholder from '../../assets/brand/map-placeholder.svg';
+import BookingLink from '../BookingLink.astro';
 import Button from '../ui/Button.astro';
 import Section from '../ui/Section.astro';
 import ContactDetails from '../sections/ContactDetails.astro';
-import ContactForm from '../sections/ContactForm.astro';
 import PageIntro from '../sections/PageIntro.astro';
 
 interface Props {
@@ -24,23 +25,59 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 const { entry, data: page } = await getPage(lang, 'contact');
 const { Content } = await render(entry);
+const hasBody = Boolean(entry.body && entry.body.trim());
 ---
 
 <BaseLayout lang={lang} pageKey="contact" title={page.title} description={page.description}>
   <PageIntro title={page.title} lead={page.subheading}>
-    <div class="prose contact-intro">
-      <Content />
-    </div>
+    {hasBody && (
+      <div class="prose contact-intro">
+        <Content />
+      </div>
+    )}
   </PageIntro>
 
-  <Section spacing="compact" class="contact">
+  <Section
+    tone="secondary"
+    spacing="compact"
+    id="contact-whatsapp"
+    aria-labelledby="contact-whatsapp-heading"
+  >
+    <div class="contact-whatsapp">
+      <h2 id="contact-whatsapp-heading" class="contact__heading">
+        {page.whatsapp.heading}
+      </h2>
+      <p class="contact-whatsapp__text">{page.whatsapp.text}</p>
+      <div class="contact-whatsapp__actions">
+        <BookingLink lang={lang} topic="other" size="lg" icon="whatsapp" iconPosition="start">
+          {t('actions.writeWhatsApp')}
+        </BookingLink>
+        <Button
+          href={`tel:${site.phoneHref}`}
+          variant="secondary"
+          size="lg"
+          icon="phone"
+          iconPosition="start"
+          class="contact-whatsapp__phone"
+        >
+          {t('actions.callNumber', { phone: site.phone })}
+        </Button>
+      </div>
+    </div>
+  </Section>
+
+  <Section class="contact">
     <div class="contact__grid">
       <div class="contact__details" aria-labelledby="contact-details-heading">
-        <h2 id="contact-details-heading" class="contact__heading">{page.details.heading}</h2>
+        <h2 id="contact-details-heading" class="contact__heading">
+          {page.details.heading}
+        </h2>
         <ContactDetails lang={lang} />
       </div>
       <div class="contact__map" aria-labelledby="contact-map-heading">
-        <h2 id="contact-map-heading" class="contact__heading">{page.map.heading}</h2>
+        <h2 id="contact-map-heading" class="contact__heading">
+          {page.map.heading}
+        </h2>
         <p class="contact__map-text">{page.map.text}</p>
         <figure class="contact__map-figure">
           <Image
@@ -59,20 +96,11 @@ const { Content } = await render(entry);
           icon="map-pin"
           iconPosition="start"
           newTabLabel={t('a11y.newTab')}
+          data-map-link
         >
           {t('actions.openInMaps')}
         </Button>
       </div>
-    </div>
-  </Section>
-
-  <Section tone="secondary" aria-labelledby="contact-form-heading">
-    <div class="contact__form-wrap">
-      <div class="contact__form-intro">
-        <h2 id="contact-form-heading">{page.form.heading}</h2>
-        <p class="contact__form-text">{page.form.text}</p>
-      </div>
-      <ContactForm lang={lang} />
     </div>
   </Section>
 </BaseLayout>
@@ -80,6 +108,32 @@ const { Content } = await render(entry);
 <style>
   .contact-intro {
     color: var(--label-secondary);
+  }
+  .contact-whatsapp {
+    display: grid;
+    gap: var(--space-4);
+    justify-items: start;
+    max-width: var(--measure);
+  }
+  .contact-whatsapp .contact__heading {
+    margin-block-end: 0;
+  }
+  .contact-whatsapp__text {
+    color: var(--label-secondary);
+  }
+  .contact-whatsapp__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-block-start: var(--space-2);
+  }
+  /* Long labels wrap instead of overflowing at 320px. */
+  .contact-whatsapp__actions :global(.btn) {
+    white-space: normal;
+    max-width: 100%;
+  }
+  .contact-whatsapp__phone {
+    font-variant-numeric: tabular-nums;
   }
   .contact {
     padding-block-end: clamp(var(--space-7), 8vw, var(--space-9));
@@ -124,17 +178,5 @@ const { Content } = await render(entry);
     height: auto;
     aspect-ratio: 3 / 2;
     object-fit: cover;
-  }
-  .contact__form-wrap {
-    display: grid;
-    gap: var(--space-6);
-    max-width: 36rem;
-  }
-  .contact__form-intro {
-    display: grid;
-    gap: var(--space-3);
-  }
-  .contact__form-text {
-    color: var(--label-secondary);
   }
 </style>

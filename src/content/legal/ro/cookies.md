@@ -2,41 +2,27 @@
 lang: ro
 translationKey: cookies
 title: Politica de cookies
-description: Ce cookie-uri folosește site-ul, în ce categorii se împart, cât durează și cum îți poți schimba preferințele oricând. Schiță pentru revizuire juridică.
+description: În configurația implicită, site-ul nu setează cookie-uri. Ce se schimbă dacă se activează instrumente de analiză sau conținut încorporat. Schiță pentru revizuire juridică.
 updated: 2026-10-18
-cookies:
-  - name: cookie-consent
-    category: necessary
-    purpose: Reține alegerea ta privind cookie-urile, ca să nu te întrebăm la fiecare vizită. TODO(legal) – confirmați descrierea.
-    duration: 12 luni
-    provider: Acest site (localStorage)
-  - name: TODO(content)
-    category: statistics
-    purpose: TODO(legal) – completați doar dacă se activează un instrument de statistică; dacă instrumentul nu folosește cookie-uri, ștergeți rândul.
-    duration: TODO(legal)
-    provider: TODO(content)
-  - name: TODO(content)
-    category: marketing
-    purpose: TODO(legal) – completați doar dacă se activează conținut încorporat de la terți, de exemplu recenziile Google.
-    duration: TODO(legal)
-    provider: TODO(content)
 ---
+
+## Pe scurt
+
+În configurația implicită, acest site nu setează cookie-uri și nu folosește tehnologii similare de urmărire. Nu încarcă scripturi de analiză și nu încorporează conținut de la terți. Butoanele de programare deschid aplicația WhatsApp, care are propriile reguli, descrise în politica de confidențialitate.
+
+Inventarul de cookie-uri de mai jos este, prin urmare, gol. TODO(legal): dacă proprietarul activează un instrument de analiză sau conținut încorporat (de exemplu recenzii Google), completați inventarul, descrieți categoriile și confirmați că banner-ul de consimțământ se afișează înainte de încărcarea oricărui script neesențial.
 
 ## Ce sunt cookie-urile
 
-TODO(legal): definiția cookie-urilor și a tehnologiilor similare (localStorage), cu precizarea că site-ul folosește implicit doar cookie-uri strict necesare și că niciun script opțional nu se încarcă înainte de acordul vizitatorului.
+TODO(legal): definiția cookie-urilor și a tehnologiilor similare (localStorage), cu precizarea că site-ul nu le folosește în configurația implicită.
 
-## Categoriile folosite
+## Categorii
 
-TODO(legal): descrierea celor trei categorii – strict necesare (mereu active), statistică și marketing – cu temeiul juridic al fiecăreia și mențiunea că refuzul este la fel de simplu ca acceptarea.
+TODO(legal): dacă se activează cookie-uri, descrierea categoriilor – strict necesare, statistică și marketing – cu temeiul juridic al fiecăreia și mențiunea că refuzul este la fel de simplu ca acceptarea.
 
 ## Cum îți schimbi preferințele
 
-TODO(legal): explicarea butonului „Preferințe cookie” din subsolul fiecărei pagini, a stocării alegerii cu număr de versiune și a faptului că modificarea politicii poate duce la o nouă solicitare a acordului.
-
-## Cookie-uri de la terți
-
-TODO(legal): lista furnizorilor terți (dacă există) și linkuri către politicile lor.
+TODO(legal): dacă se activează cookie-uri, explicarea butonului „Preferințe cookie” din subsolul paginii, a modului în care alegerea este stocată cu un număr de versiune și a faptului că o modificare a politicii poate declanșa o nouă cerere de consimțământ.
 
 ## Contact
 

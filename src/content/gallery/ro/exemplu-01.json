@@ -3,7 +3,7 @@
   "translationKey": "placeholder-01",
   "image": "../../../assets/gallery/placeholder-01.svg",
   "alt": "Imagine substituent de culoare uni, cu eticheta „Imagine exemplu 1”",
-  "caption": "TODO(content): fotografie „înainte” – perechea 1. Înlocuiți cu fotografia reală, needitată, publicată doar cu consimțământul scris al persoanei.",
-  "consent": true,
+  "caption": "Recepția centrului. TODO(content): Înlocuiți cu o fotografie reală a recepției.",
+  "identifiablePeople": false,
   "order": 1
 }

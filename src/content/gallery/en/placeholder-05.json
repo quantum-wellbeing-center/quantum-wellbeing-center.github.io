@@ -3,7 +3,8 @@
   "translationKey": "placeholder-05",
   "image": "../../../assets/gallery/placeholder-05.svg",
   "alt": "Solid-colour placeholder image labelled “Placeholder image 5”",
-  "caption": "TODO(content): “before” photo – pair 3. Replace with the real, unedited photo, published only with the written consent of the person shown.",
+  "caption": "The centre team. TODO(content): Replace with a real photo of the team, published only with the written consent of everyone shown.",
+  "identifiablePeople": true,
   "consent": true,
   "order": 5
 }

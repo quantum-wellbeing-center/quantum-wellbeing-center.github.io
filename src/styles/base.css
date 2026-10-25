@@ -150,7 +150,7 @@ a:hover {
   outline-offset: -5px;
 }
 
-/* Visually hidden: still read by assistive technology. */
+/* Visually hidden: still read by screen readers. */
 .visually-hidden:not(:focus):not(:active) {
   position: absolute !important;
   width: 1px;

@@ -1,0 +1,13 @@
+{
+  "lang": "ro",
+  "translationKey": "example-pilot-study-2",
+  "title": "Document exemplu 6: studiu pilot despre condițiile de mediu ale unei încăperi",
+  "authors": ["Cercetătoare Exemplu, H.", "Cercetător Exemplu, I."],
+  "year": 2019,
+  "documentType": "pilot-study",
+  "source": "TODO(content): sursa reală",
+  "pdf": "/research/placeholder-06.pdf",
+  "description": "Studiu pilot care descrie lumina, sunetul și temperatura dintr-o încăpere și un chestionar aplicat participanților. TODO(content): înlocuiți cu documentul real.",
+  "group": "studies",
+  "featured": false
+}

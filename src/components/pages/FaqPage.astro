@@ -1,12 +1,12 @@
 ---
 /**
  * FaqPage: questions grouped by category (i18n headings) as native details/summary accordions,
- * plus FAQPage structured data with plain-text answers.
+ * FAQPage structured data with plain-text answers, and a CTA band that opens the WhatsApp chat
+ * on the "other question" topic next to the phone number.
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { FAQ_CATEGORIES } from '../../content.config';
-import { site } from '../../config/site';
-import { getRoute, useTranslations, type Locale } from '../../i18n';
+import { useTranslations, type Locale } from '../../i18n';
 import { getFaqs, getPage, jsonLd, markdownToText } from '../../lib/content';
 import Section from '../ui/Section.astro';
 import CtaBand from '../sections/CtaBand.astro';
@@ -79,9 +79,10 @@ const structuredData = {
     lang={lang}
     heading={page.cta.heading}
     text={page.cta.text}
-    primary={{ href: getRoute(lang, 'contact'), label: t('actions.contactUs') }}
-    secondary={{ href: site.bookingUrl, label: t('actions.bookSession') }}
+    topic="other"
+    bookingLabel={t('actions.writeWhatsApp')}
     tone={groups.length % 2 === 0 ? 'secondary' : 'default'}
+    id="faq-cta"
   />
 </BaseLayout>
 

@@ -1,5 +1,5 @@
 /**
- * Site-wide configuration: brand, contact, socials, booking, forms, analytics, feature flags.
+ * Site-wide configuration: brand, contact, socials, WhatsApp messages, analytics, feature flags.
  * Every value marked TODO(content) is a placeholder the owner must replace (see WEBSITE_PLAN.md
  * section 2). Components read from here and never hard-code any of these values.
  */
@@ -15,8 +15,6 @@ export interface OpeningHoursEntry {
   opens: string | null;
   closes: string | null;
 }
-
-export type FormProvider = 'netlify' | 'formspree' | 'web3forms';
 
 export type AnalyticsConfig =
   | { provider: 'none' }
@@ -78,13 +76,6 @@ export interface SiteConfig {
   /** Prefilled WhatsApp message parts per language. */
   whatsappMessages: Record<Locale, WhatsAppMessages>;
   openingHours: OpeningHoursEntry[];
-  /** @deprecated Booking goes through the WhatsApp chat (BookingLink). Removed once nothing reads it. */
-  bookingUrl: string;
-  /** @deprecated There is no contact form in the revised plan. Removed once nothing reads it. */
-  form: {
-    provider: FormProvider;
-    endpoint: string;
-  };
   socials: SocialLinks;
   community: CommunityChannel;
   mapUrl: string;
@@ -108,8 +99,8 @@ export interface SiteConfig {
 export const site: SiteConfig = {
   brandName: 'Centrul Wellness', // TODO(content): real brand name
   tagline: {
-    ro: 'Sesiuni de relaxare și stare de bine', // TODO(content): real tagline
-    en: 'Relaxation and wellbeing sessions', // TODO(content): real tagline
+    ro: 'Centru de wellness în București', // TODO(content): real tagline; keep the city in sync with address.city
+    en: 'Wellness centre in Bucharest', // TODO(content): real tagline; keep the city in sync with address.city
   },
   legal: {
     legalName: 'Exemplu Wellness SRL', // TODO(content): company legal name
@@ -162,11 +153,6 @@ export const site: SiteConfig = {
     { day: 'saturday', opens: '10:00', closes: '16:00' },
     { day: 'sunday', opens: null, closes: null },
   ],
-  bookingUrl: 'https://cal.com/example/sesiune', // TODO(content): booking link (Cal.com, Calendly, Fresha or WhatsApp)
-  form: {
-    provider: 'netlify',
-    endpoint: '/', // TODO(content): for Formspree or Web3Forms set the endpoint URL here
-  },
   socials: {
     // TODO(content): social profile URLs; remove the ones that do not exist
     facebook: 'https://www.facebook.com/example',
@@ -190,17 +176,27 @@ export const site: SiteConfig = {
   consentVersion: 1,
 };
 
-/** True when any script that needs consent is configured. */
-export function hasOptionalScripts(config: SiteConfig = site): boolean {
-  return config.analytics.provider !== 'none' || config.features.reviewsEmbed;
-}
-
 /** Analytics providers that set no cookies and need no consent banner category. */
 export function isCookielessAnalytics(config: SiteConfig = site): boolean {
   return config.analytics.provider === 'plausible' || config.analytics.provider === 'umami';
 }
 
-export const whatsappUrl = `https://wa.me/${site.whatsappNumber}`;
+/**
+ * Whether the cookie consent banner must be shown (WEBSITE_PLAN.md section 8).
+ *
+ * The site sets no cookies by default, so the default answer is false: no banner, no notice,
+ * no consent markup or script. The banner is needed only when the config turns on something
+ * that stores data on the visitor's device: analytics that is not cookieless (gtag) or the
+ * Google reviews embed. Plausible and Umami are cookieless and never trigger it.
+ *
+ *   needsConsentBanner()                                        → false (default config)
+ *   needsConsentBanner({ ...site, analytics: { provider: 'gtag', measurementId: 'G-1' } }) → true
+ *   needsConsentBanner({ ...site, features: { ...site.features, reviewsEmbed: true } })    → true
+ */
+export function needsConsentBanner(config: SiteConfig = site): boolean {
+  const cookieAnalytics = config.analytics.provider !== 'none' && !isCookielessAnalytics(config);
+  return cookieAnalytics || config.features.reviewsEmbed;
+}
 
 const weekdayOrder: Weekday[] = [
   'monday',

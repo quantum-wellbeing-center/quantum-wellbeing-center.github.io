@@ -10,7 +10,7 @@
  *     the folder and the field disagree;
  *   - the Romanian and English versions of one piece of content share the same `translationKey`
  *     (by convention the English slug). `scripts/check-content.mjs` verifies every key exists
- *     in both languages, flags cedilla characters and flags forbidden claim words.
+ *     in both languages, flags cedilla characters and flags banned words (section 9).
  *
  * Formats: `faq` and `blog` are Markdown (`.md`: frontmatter + body); `research`,
  * `testimonials`, `gallery` and `services` are JSON (`.json`).
@@ -23,14 +23,16 @@
  *   const faqs = await getCollection('faq', (entry) => entry.data.lang === lang);
  *   const { Content } = await render(entry);   // Markdown body of a faq or blog entry
  *
- * Consent: `testimonials` and `gallery` schemas only accept `consent: true`, so an entry without
- * written consent cannot build at all. Pages must still filter on `entry.data.consent === true`
- * before rendering, as the plan requires, so the rule is visible where the content is shown.
+ * Consent: the `testimonials` schema only accepts `consent: true`, so an entry without written
+ * consent cannot build at all. A `gallery` entry needs `consent: true` only when
+ * `identifiablePeople` is set (photos of the space need no consent). Pages must still filter on
+ * these rules before rendering (see src/lib/content.ts), so the rule is visible where the
+ * content is shown.
  *
  * Research: `fileSizeBytes` and `fileType` are derived at load time from the real file in
  * `public/research/` (for local `pdf` paths) and must not be set by hand. The build fails when a
  * local PDF is missing, and when two entries in the same language point at the same PDF (the RO
- * and EN versions of one study legitimately share a file).
+ * and EN versions of one document legitimately share a file).
  */
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
@@ -43,19 +45,25 @@ import { statSync } from 'node:fs';
 export const LANGS = ['ro', 'en'] as const;
 export type Lang = (typeof LANGS)[number];
 
-export const EVIDENCE_TYPES = [
+/** What kind of document a research entry is (section 7). Labels live in `documentType.*`. */
+export const DOCUMENT_TYPES = [
   'peer-reviewed',
   'clinical-study',
   'pilot-study',
   'case-report',
   'review',
-  'anecdotal-report',
+  'report',
   'other',
 ] as const;
+export type DocumentType = (typeof DOCUMENT_TYPES)[number];
 
-export const RESEARCH_GROUPS = ['published-clinical', 'research-studies', 'additional'] as const;
+/** Library sections, by kind of document; headings live in the research page copy. */
+export const RESEARCH_GROUPS = ['publications', 'studies', 'other-documents'] as const;
+export type ResearchGroup = (typeof RESEARCH_GROUPS)[number];
 
-export const FAQ_CATEGORIES = ['sesiuni', 'rezervari', 'siguranta', 'preturi'] as const;
+/** Practical FAQ topics (section 7). Labels live in `faq.category.*`. */
+export const FAQ_CATEGORIES = ['booking', 'cancellation', 'visit', 'payment', 'location'] as const;
+export type FaqCategory = (typeof FAQ_CATEGORIES)[number];
 
 export const TESTIMONIAL_SOURCES = ['google', 'in-person'] as const;
 
@@ -217,7 +225,7 @@ const research = defineCollection({
     title: z.string().min(1),
     authors: z.array(z.string().min(1)).min(1),
     year: z.number().int().min(1900).max(2100).optional(),
-    evidenceType: z.enum(EVIDENCE_TYPES),
+    documentType: z.enum(DOCUMENT_TYPES),
     /** Publisher, journal or organisation. */
     source: z.string().min(1),
     doi: z.string().min(1).optional(),
@@ -226,8 +234,15 @@ const research = defineCollection({
       message:
         'pdf must be a path like /research/<file>.pdf (a file in public/research/) or an absolute http(s) URL',
     }),
-    /** Short, neutral description of what the document is. */
-    summary: z.string().min(1),
+    /** One line saying what the document is (kind, scope, origin), never what it claims. */
+    description: z
+      .string()
+      .min(1)
+      .max(
+        200,
+        'description is one line of at most 200 characters: what the document is, not what it claims',
+      )
+      .refine((value) => !/\r?\n/.test(value), 'description must be a single line'),
     group: z.enum(RESEARCH_GROUPS),
     featured: z.boolean().default(false),
     /** Derived at load time from the real file; do not set by hand. */
@@ -250,6 +265,7 @@ const testimonials = defineCollection({
         /^\p{Lu}[\p{L}'-]+(?: \p{Lu}[\p{L}'-]+)* \p{Lu}\.$/u,
         'name must be "Firstname I." (first name plus initial with a full stop)',
       ),
+    /** About the experience, the staff, the space or the booking only (section 9). */
     quote: z.string().min(1),
     date: z.coerce.date(),
     rating: z.number().int().min(1).max(5).optional(),
@@ -261,18 +277,30 @@ const testimonials = defineCollection({
 
 /* ----------------------------------------------------------------- gallery */
 
+/**
+ * Images of the centre's space, team and atmosphere only: no before/after photos. An entry
+ * that shows a recognisable person must carry `consent: true`; photos of the space need not.
+ */
 const gallery = defineCollection({
   loader: localizedGlob('gallery', 'json'),
   schema: ({ image }) =>
-    z.object({
-      ...localized,
-      image: image(),
-      alt: z.string().min(1),
-      caption: z.string().min(1),
-      /** Written consent from the people shown is required to publish. Only `true` is accepted. */
-      consent: z.literal(true),
-      order: z.number().int(),
-    }),
+    z
+      .object({
+        ...localized,
+        image: image(),
+        alt: z.string().min(1),
+        caption: z.string().min(1),
+        /** True when a person in the photo can be recognised (team or visitors). */
+        identifiablePeople: z.boolean().default(false),
+        /** Written consent from the people shown. Required (and must be `true`) when `identifiablePeople` is set. */
+        consent: z.boolean().optional(),
+        order: z.number().int(),
+      })
+      .refine((data) => !data.identifiablePeople || data.consent === true, {
+        path: ['consent'],
+        message:
+          'consent: true is required when identifiablePeople is true (written consent from everyone recognisable in the photo)',
+      }),
 });
 
 /* --------------------------------------------------------------------- faq */
@@ -297,6 +325,7 @@ const services = defineCollection({
   schema: z.object({
     ...localized,
     name: z.string().min(1),
+    /** Factual: what the service is, what happens during the visit, what it includes. */
     description: z.string().min(1),
     durationMinutes: z.number().int().positive(),
     /** Plain number; format with `Intl.NumberFormat` for the page locale. */
@@ -305,6 +334,8 @@ const services = defineCollection({
     sessionsPerPackage: z.number().int().positive().optional(),
     highlighted: z.boolean().default(false),
     order: z.number().int(),
+    /** Full prefilled WhatsApp message for booking this service, in the entry's language. */
+    whatsappMessage: z.string().min(1),
   }),
 });
 
@@ -337,7 +368,7 @@ const blog = defineCollection({
  */
 export const PAGE_KEYS = [
   'home',
-  'technology',
+  'services',
   'research',
   'testimonials',
   'pricing',
@@ -362,12 +393,10 @@ const headed = z.object({
   text: z.string().min(1),
 });
 
-/** A heading, an intro, a list of short items and a closing note (guardrail wording). */
-const list = z.object({
-  heading: z.string().min(1),
-  intro: z.string().min(1),
-  items: z.array(z.string().min(1)).min(1),
-  note: z.string().min(1),
+/** One step of "Cum te programezi": a short title and one sentence. */
+const step = z.object({
+  title: z.string().min(1),
+  text: z.string().min(1),
 });
 
 const pages = defineCollection({
@@ -376,44 +405,50 @@ const pages = defineCollection({
     z.object({
       ...pageBase,
       translationKey: z.literal('home'),
-      hero: z.object({ headline: z.string().min(1), subheading: z.string().min(1) }),
-      technology: headed,
-      experiences: list,
+      /** Section order follows WEBSITE_PLAN.md section 6. */
+      hero: z.object({
+        /** "Centru de wellness" and its English equivalent. */
+        eyebrow: z.string().min(1),
+        headline: z.string().min(1),
+        subheading: z.string().min(1),
+      }),
+      /** Who you are, where you are, what the space is like. The Markdown body may add detail. */
+      intro: headed,
       services: headed,
-      research: headed,
+      steps: z.object({
+        heading: z.string().min(1),
+        text: z.string().min(1),
+        items: z.array(step).length(3),
+      }),
+      gallery: headed,
       testimonials: headed,
       faq: headed,
       cta: headed,
     }),
     z.object({
       ...pageBase,
-      translationKey: z.literal('technology'),
+      translationKey: z.literal('services'),
       subheading: z.string().min(1),
-      /** The Markdown body is the "how it works" explainer. */
-      reports: list,
-      services: headed,
+      /** The Markdown body (optional) describes how a visit goes, factually. */
+      visit: z.object({ heading: z.string().min(1) }),
       cta: headed,
     }),
     z.object({
       ...pageBase,
       translationKey: z.literal('research'),
+      /** Says the documents are listed for information and that some are not peer-reviewed. */
       subheading: z.string().min(1),
-      /** The Markdown body explains how to read the library. */
-      legend: z.object({
-        heading: z.string().min(1),
-        items: z.array(z.object({ type: z.enum(EVIDENCE_TYPES), text: z.string().min(1) })),
-      }),
       groups: z.object({
-        'published-clinical': headed,
-        'research-studies': headed,
-        additional: headed,
+        publications: headed,
+        studies: headed,
+        'other-documents': headed,
       }),
     }),
     z.object({
       ...pageBase,
       translationKey: z.literal('testimonials'),
       subheading: z.string().min(1),
-      gallery: headed.extend({ note: z.string().min(1) }),
+      gallery: headed,
       reviews: headed,
     }),
     z.object({
@@ -439,9 +474,9 @@ const pages = defineCollection({
       translationKey: z.literal('contact'),
       subheading: z.string().min(1),
       /** The Markdown body is the short intro above the contact details. */
+      whatsapp: headed,
       details: z.object({ heading: z.string().min(1) }),
       map: z.object({ heading: z.string().min(1), text: z.string().min(1) }),
-      form: headed,
     }),
     z.object({
       ...pageBase,
@@ -471,7 +506,10 @@ const legal = defineCollection({
     description: z.string().min(1),
     /** Date of the last change to the text; shown as "last updated". */
     updated: z.coerce.date(),
-    /** Cookie inventory, shown as a table on the cookie policy page only. */
+    /**
+     * Cookie inventory, shown as a table on the cookie policy page. Empty by default: the site
+     * sets no cookies until analytics or embeds are enabled (TODO(legal) in the policy).
+     */
     cookies: z
       .array(
         z.object({
@@ -482,7 +520,7 @@ const legal = defineCollection({
           provider: z.string().min(1),
         }),
       )
-      .optional(),
+      .default([]),
   }),
 });
 

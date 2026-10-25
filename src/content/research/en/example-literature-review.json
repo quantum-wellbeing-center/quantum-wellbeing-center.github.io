@@ -1,0 +1,13 @@
+{
+  "lang": "en",
+  "translationKey": "example-literature-review",
+  "title": "Example document 3: literature review of published work on a given topic",
+  "authors": ["Example Author, D.", "Example Author, E."],
+  "year": 2020,
+  "documentType": "review",
+  "source": "TODO(content): real source",
+  "pdf": "/research/placeholder-03.pdf",
+  "description": "Review that surveys previously published papers and adds no new data. TODO(content): replace with the real review and its source.",
+  "group": "publications",
+  "featured": false
+}
