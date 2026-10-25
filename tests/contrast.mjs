@@ -24,8 +24,11 @@ function parseBlock(body) {
 const lightBody = css.match(/:root\s*{([\s\S]*?)}/)?.[1] ?? '';
 const darkBody =
   css.match(/@media \(prefers-color-scheme: dark\)\s*{\s*:root\s*{([\s\S]*?)}\s*}/)?.[1] ?? '';
+const brandBody = css.match(/\.surface-brand\s*{([\s\S]*?)}/)?.[1] ?? '';
 const light = parseBlock(lightBody);
 const dark = { ...light, ...parseBlock(darkBody) };
+/** The token mapping on dark brand surfaces (hero, CTA band); the same in both schemes. */
+const brand = { ...light, ...parseBlock(brandBody) };
 
 function hexToRgb(hex) {
   const h = hex.replace('#', '');
@@ -178,6 +181,77 @@ for (const [themeName, theme] of [
       ok: r >= 3,
     });
   }
+}
+
+// Brand surfaces: `.surface-brand` re-maps the tokens for the hero and the CTA band. The band
+// is the navy-to-teal gradient, so every pair is checked against both ends of it.
+const brandBackgrounds = ['brand-navy', 'brand-teal'];
+for (const bg of brandBackgrounds) {
+  for (const [token, target] of [
+    ['label', 4.5],
+    ['label-secondary', 4.5],
+    ['accent', 4.5],
+  ]) {
+    const r = ratio(hexToRgb(brand[token]), hexToRgb(brand[bg]));
+    if (r < target) failed = true;
+    rows.push({
+      theme: 'brand',
+      pair: `${token} on ${bg}`,
+      ratio: r.toFixed(2),
+      target,
+      ok: r >= target,
+    });
+  }
+  // Secondary button: white text over the translucent white tint.
+  const surface = composite(parseRgba(brand['accent-tint']), hexToRgb(brand[bg]));
+  const tinted = ratio(hexToRgb(brand['accent-strong']), surface);
+  if (tinted < 4.5) failed = true;
+  rows.push({
+    theme: 'brand',
+    pair: `accent-strong on accent-tint over ${bg}`,
+    ratio: tinted.toFixed(2),
+    target: 4.5,
+    ok: tinted >= 4.5,
+  });
+  for (const token of ['accent-fill', 'focus-ring']) {
+    const r = ratio(hexToRgb(brand[token]), hexToRgb(brand[bg]));
+    if (r < 3) failed = true;
+    rows.push({
+      theme: 'brand',
+      pair: `${token} on ${bg} (UI)`,
+      ratio: r.toFixed(2),
+      target: 3,
+      ok: r >= 3,
+    });
+  }
+}
+// Primary button on brand surfaces: navy text on the white fill.
+const brandBtn = ratio(hexToRgb(brand['on-accent']), hexToRgb(brand['accent-fill']));
+if (brandBtn < 4.5) failed = true;
+rows.push({
+  theme: 'brand',
+  pair: 'on-accent on accent-fill (primary button)',
+  ratio: brandBtn.toFixed(2),
+  target: 4.5,
+  ok: brandBtn >= 4.5,
+});
+// Hero scrim (src/components/sections/Hero.astro): every line of copy sits on `--brand-navy`
+// at 90% (`--hero-scrim-strong`); the band above the copy fades through 30% but carries no
+// text. Worst case: text over the 90% scrim composited on a pure white pixel, since the
+// banner's particle highlights reach #ffffff. The headline is large text (3:1) but is held to
+// the body target here, which it clears by a wide margin.
+const white = [255, 255, 255];
+const heroSurface = composite({ rgb: hexToRgb(brand['brand-navy']), alpha: 0.9 }, white);
+for (const token of ['label', 'label-secondary', 'accent']) {
+  const r = ratio(hexToRgb(brand[token]), heroSurface);
+  if (r < 4.5) failed = true;
+  rows.push({
+    theme: 'hero',
+    pair: `${token} on navy scrim (90%) over a white pixel`,
+    ratio: r.toFixed(2),
+    target: 4.5,
+    ok: r >= 4.5,
+  });
 }
 
 console.table(rows);

@@ -4,10 +4,10 @@
  *
  *   public/research/placeholder-NN.pdf   small but valid single-font PDFs (varying sizes,
  *                                         so file-size labels in the research library mean something)
- *   src/assets/gallery/placeholder-NN.svg solid-colour 1200x800 SVGs with a text label
  *   src/assets/blog/cover-NN.svg          solid-colour 1200x800 SVGs with a text label
  *
- * Nothing is downloaded. Run with: node scripts/make-placeholder-assets.mjs
+ * The gallery uses real photos (see scripts/prepare-photos.mjs), so no gallery placeholders
+ * are generated any more. Nothing is downloaded. Run with: node scripts/make-placeholder-assets.mjs
  * Existing files are overwritten. Delete this script once the owner supplies real assets.
  */
 import { mkdirSync, writeFileSync } from 'node:fs';
@@ -123,24 +123,6 @@ function svgPlaceholder({ fill, ink, title, label }) {
     '',
   ].join('\n');
 }
-
-const galleryPalette = ['#D6E4F0', '#DCEBDD', '#F3E3D3', '#E6DDF0', '#F0E6D2', '#D9ECEC'];
-const galleryDir = join(root, 'src', 'assets', 'gallery');
-mkdirSync(galleryDir, { recursive: true });
-galleryPalette.forEach((fill, index) => {
-  const n = index + 1;
-  const name = `placeholder-${String(n).padStart(2, '0')}.svg`;
-  writeFileSync(
-    join(galleryDir, name),
-    svgPlaceholder({
-      fill,
-      ink: '#1D1D1F',
-      title: `Placeholder gallery image ${n}`,
-      label: `Imagine exemplu ${n} / Placeholder image ${n}`,
-    }),
-  );
-  console.log(`wrote src/assets/gallery/${name}`);
-});
 
 const blogPalette = ['#C9DDF2', '#CFE8D4', '#F2DCC9', '#E0D6F2'];
 const blogDir = join(root, 'src', 'assets', 'blog');

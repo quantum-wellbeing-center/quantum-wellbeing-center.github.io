@@ -39,6 +39,9 @@ const colourTokens = [
   'material',
   'material-fallback',
   'focus-ring',
+  'brand-navy',
+  'brand-teal',
+  'brand-cyan',
 ];
 
 const textStyles = [
@@ -484,6 +487,13 @@ const sampleDate = new Date('2026-03-14');
   <Section tone="accent" spacing="compact">
     <h2>tone="accent"</h2>
     <p>Bandă de apel la acțiune. Textul moștenește --on-accent.</p>
+  </Section>
+  <Section tone="brand" spacing="compact">
+    <h2>tone="brand"</h2>
+    <p>
+      Gradientul de brand (--brand-gradient) cu maparea .surface-brand: text alb, butoane albe,
+      link-uri <a href="#sg-colours">cyan</a>.
+    </p>
   </Section>
   <Section spacing="none" container="none">
     <Container width="wide" class="sg-wide">

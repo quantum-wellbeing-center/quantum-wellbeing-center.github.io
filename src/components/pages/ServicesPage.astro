@@ -1,14 +1,16 @@
 ---
 /**
- * ServicesPage: every service described factually (what it is, how long it takes, what it
- * costs), each with a BookingLink that preselects the service in the WhatsApp chat and
- * prefills the service's own message without JavaScript. Then "Cum decurge o vizită" from the
- * Markdown body and the CTA band.
+ * ServicesPage: the intro, a wide photo of the main room, then every service described
+ * factually (what it is, how long it takes, what it costs), each with a BookingLink that
+ * preselects the service in the WhatsApp chat and prefills the service's own message without
+ * JavaScript. Then "Cum decurge o vizită" from the Markdown body and the CTA band.
  */
+import { Image } from 'astro:assets';
 import { render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { formatPrice, getRoute, useTranslations, type Locale } from '../../i18n';
 import { getPage, getServices, serviceAnchor } from '../../lib/content';
+import room from '../../assets/photos/room.jpg';
 import BookingLink from '../BookingLink.astro';
 import Badge from '../ui/Badge.astro';
 import Icon from '../ui/Icon.astro';
@@ -45,6 +47,21 @@ const items = services.map((service) => {
 
 <BaseLayout lang={lang} pageKey="services" title={page.title} description={page.description}>
   <PageIntro title={page.title} lead={page.subheading} />
+
+  <Section spacing="none" class="services-photo">
+    <figure class="services-photo__figure">
+      <Image
+        src={room}
+        alt={page.photo.alt}
+        widths={[640, 960, 1280, 1600]}
+        sizes="(min-width: 80em) 75rem, calc(100vw - 2rem)"
+        loading="lazy"
+        decoding="async"
+        class="services-photo__image"
+      />
+      <figcaption class="services-photo__caption">{page.photo.caption}</figcaption>
+    </figure>
+  </Section>
 
   <Section spacing="compact" class="services" aria-label={page.title}>
     <ul class="services__list" role="list">
@@ -124,16 +141,34 @@ const items = services.map((service) => {
     </Section>
   )}
 
-  <CtaBand
-    lang={lang}
-    heading={page.cta.heading}
-    text={page.cta.text}
-    id="services-cta"
-    tone={hasBody ? 'default' : 'secondary'}
-  />
+  <CtaBand lang={lang} heading={page.cta.heading} text={page.cta.text} id="services-cta" />
 </BaseLayout>
 
 <style>
+  /* The room photo: a wide, rounded figure between the intro and the list. */
+  .services-photo__figure {
+    display: grid;
+    gap: var(--space-3);
+    margin: 0;
+  }
+  .services-photo__image {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 2 / 1;
+    object-fit: cover;
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-md);
+  }
+  @media (max-width: 47.99em) {
+    .services-photo__image {
+      aspect-ratio: 4 / 3;
+    }
+  }
+  .services-photo__caption {
+    font-size: var(--text-footnote);
+    line-height: var(--leading-footnote);
+    color: var(--label-secondary);
+  }
   .services {
     padding-block-end: clamp(var(--space-7), 8vw, var(--space-9));
   }

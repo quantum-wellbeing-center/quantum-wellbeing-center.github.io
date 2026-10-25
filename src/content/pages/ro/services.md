@@ -4,6 +4,9 @@ translationKey: services
 title: Servicii
 description: Sesiuni individuale de 60 sau 120 de minute, o sesiune pentru două persoane și un pachet de cinci sesiuni. Ce include fiecare, cât durează, cât costă și cum te programezi. TODO(content) – text substituent.
 subheading: Fiecare serviciu este descris așa cum este – ce se întâmplă la vizită, cât durează și cât costă. Programarea se face pe WhatsApp, din butonul de lângă fiecare serviciu.
+photo:
+  alt: 'Sala principală: fotolii și un șezlong crem cu perne verzi, o canapea și trei tablouri înrămate pe peretele alb'
+  caption: Sala principală, cu fotolii, un șezlong și o canapea.
 visit:
   heading: Cum decurge o vizită
 cta:

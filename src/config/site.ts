@@ -90,7 +90,7 @@ export interface SiteConfig {
     /** Top info bar above the header. */
     topBar: boolean;
   };
-  /** Brand accent in hex. The default is the HIG blue; see tokens.css if the owner supplies one. */
+  /** Brand accent in hex (theme-color and the like); keep in sync with `--accent` in tokens.css. */
   accentColor: string;
   /** Cookie consent storage version. Bump to ask visitors again after a policy change. */
   consentVersion: number;
@@ -172,7 +172,7 @@ export const site: SiteConfig = {
     whatsappButton: true,
     topBar: true,
   },
-  accentColor: '#0066CC', // TODO(content): brand accent colour; check contrast per WEBSITE_PLAN.md section 5
+  accentColor: '#0E7390', // brand teal-blue derived from the banner; mirrors --accent in tokens.css
   consentVersion: 1,
 };
 

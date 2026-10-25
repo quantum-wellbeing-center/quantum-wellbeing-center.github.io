@@ -1,9 +1,10 @@
 ---
 /**
- * HomePage: the eight sections of WEBSITE_PLAN.md section 6, in order: hero, factual intro,
- * service cards, "Cum te programezi" in three steps, gallery strip, testimonials row, FAQ
- * teaser and the CTA band with the WhatsApp BookingLink and the phone number.
+ * HomePage: the eight sections of WEBSITE_PLAN.md section 6, in order: hero, factual intro
+ * (with the building photo), service cards, "Cum te programezi" in three steps, gallery carousel,
+ * testimonials row, FAQ teaser and the CTA band with the WhatsApp BookingLink and the phone number.
  */
+import { Image } from 'astro:assets';
 import { render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getRoute, useTranslations, type Locale } from '../../i18n';
@@ -14,12 +15,13 @@ import {
   getServices,
   getTestimonials,
 } from '../../lib/content';
+import building from '../../assets/photos/building.jpg';
 import Section from '../ui/Section.astro';
 import Button from '../ui/Button.astro';
 import BookingSteps from '../sections/BookingSteps.astro';
 import CtaBand from '../sections/CtaBand.astro';
 import FaqAccordion from '../sections/FaqAccordion.astro';
-import GalleryGrid from '../sections/GalleryGrid.astro';
+import GalleryCarousel from '../sections/GalleryCarousel.astro';
 import Hero from '../sections/Hero.astro';
 import SectionHeading from '../sections/SectionHeading.astro';
 import ServicesGrid from '../sections/ServicesGrid.astro';
@@ -56,13 +58,27 @@ const galleryHref = `${getRoute(lang, 'testimonials')}#gallery`;
 
   <Section tone="secondary" id="home-intro" aria-labelledby="home-intro-heading">
     <div class="home-intro">
-      <h2 id="home-intro-heading">{page.intro.heading}</h2>
-      <p class="home-intro__text">{page.intro.text}</p>
-      {hasBody && (
-        <div class="prose home-intro__body">
-          <Content />
-        </div>
-      )}
+      <div class="home-intro__copy">
+        <h2 id="home-intro-heading">{page.intro.heading}</h2>
+        <p class="home-intro__text">{page.intro.text}</p>
+        {hasBody && (
+          <div class="prose home-intro__body">
+            <Content />
+          </div>
+        )}
+      </div>
+      <figure class="home-intro__figure">
+        <Image
+          src={building}
+          alt={page.intro.photo.alt}
+          widths={[480, 720, 960]}
+          sizes="(min-width: 64em) 30rem, (min-width: 48em) 45vw, calc(100vw - 2rem)"
+          loading="lazy"
+          decoding="async"
+          class="home-intro__image"
+        />
+        <figcaption class="home-intro__caption">{page.intro.photo.caption}</figcaption>
+      </figure>
     </div>
   </Section>
 
@@ -91,7 +107,7 @@ const galleryHref = `${getRoute(lang, 'testimonials')}#gallery`;
       text={page.gallery.text}
       action={{ href: galleryHref, label: t('actions.seeGallery') }}
     />
-    <GalleryGrid lang={lang} entries={gallery} layout="strip" />
+    <GalleryCarousel lang={lang} entries={gallery} />
   </Section>
 
   <Section tone="secondary" id="home-testimonials" aria-labelledby="home-testimonials-heading">
@@ -120,11 +136,44 @@ const galleryHref = `${getRoute(lang, 'testimonials')}#gallery`;
 </BaseLayout>
 
 <style>
+  /* Copy on the left, the portrait photo of the building on the right; stacked on small screens. */
   .home-intro {
+    display: grid;
+    gap: var(--space-6);
+    align-items: center;
+  }
+  @media (min-width: 48em) {
+    .home-intro {
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+      gap: var(--space-8);
+    }
+  }
+  .home-intro__copy {
     display: grid;
     gap: var(--space-4);
     justify-items: start;
     max-width: var(--measure);
+  }
+  .home-intro__figure {
+    display: grid;
+    gap: var(--space-3);
+    margin: 0;
+    width: 100%;
+    max-width: 30rem;
+    justify-self: center;
+  }
+  .home-intro__image {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-md);
+  }
+  .home-intro__caption {
+    font-size: var(--text-footnote);
+    line-height: var(--leading-footnote);
+    color: var(--label-secondary);
   }
   .home-intro__text {
     font-size: var(--text-title-3);

@@ -146,6 +146,10 @@ const detailsHref = `${getRoute(lang, 'services')}#${serviceAnchor(entry)}`;
     align-items: center;
     gap: 0.4em;
   }
+  /* The duration and package icons carry the accent; the text next to them stays secondary. */
+  .service__facts :global(svg) {
+    color: var(--accent);
+  }
   .service__desc {
     font-size: var(--text-callout);
     line-height: var(--leading-body);

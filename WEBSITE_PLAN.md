@@ -134,7 +134,7 @@ Read the `hig-foundations` skill first. These rules translate its principles int
 3. **Platform type.** Use the system font stack and the Apple text-style scale below, in rem units so browser text size settings scale everything. This is the web equivalent of Dynamic Type.
 4. **Materials.** The sticky header and the chat panel use a translucent background with `backdrop-filter: saturate(180%) blur(20px)`. Fall back to a solid background when backdrop-filter is unsupported or `prefers-reduced-transparency: reduce` is set.
 5. **Shape.** Cards use a 16 to 20px radius. Buttons are capsules. The primary button is filled with the accent colour, and the secondary button uses a tinted fill.
-6. **Purposeful motion.** Use subtle fade-and-rise reveals on scroll, 200 to 400ms with ease-out. Under `prefers-reduced-motion: reduce`, remove transforms and keep at most a short crossfade. Nothing autoplays.
+6. **Purposeful motion.** Use subtle fade-and-rise reveals on scroll, 200 to 400ms with ease-out. Under `prefers-reduced-motion: reduce`, remove transforms and keep at most a short crossfade. Nothing autoplays, except the home gallery carousel (owner request): it has Pause/Play and Previous/Next controls, pauses on hover, focus, hidden tab and off-screen, and does not autoplay under reduced motion.
 7. **Accessibility from the start.** Meet WCAG 2.2 AA contrast: 4.5:1 for body text and 3:1 for large text and UI parts. Show a visible focus ring, use 44 by 44px minimum touch targets, a skip link, landmarks, alt text and correct `lang` attributes. The menu, chat panel, lightbox, accordion and filters must all work by keyboard.
 8. **Writing.** Use sentence-case headings, short verb-led button labels such as "Programează-te pe WhatsApp", and correct Romanian diacritics. Use comma-below ș and ț, not the cedilla forms ş and ţ.
 9. **Internationalization.** Leave room for text expansion between Romanian and English. Format dates and prices with `Intl` for the page locale.
@@ -207,7 +207,7 @@ Also create `.claude/apple-design-context.md` summarising these decisions. The s
 2. Short, factual introduction to the centre: who you are, where you are, what the space is like.
 3. Service cards: name, duration, price from, and a link.
 4. "Cum te programezi" in three steps: write on WhatsApp, confirm the time, come to the centre.
-5. Gallery strip with photos of the space.
+5. Gallery carousel with photos of the space, auto-advancing with the controls in section 5 principle 6; a plain scroll-snap strip without JavaScript.
 6. Testimonials, as a scroll-snap row with no autoplay.
 7. FAQ teaser with five questions.
 8. CTA band with the WhatsApp button and the phone number.

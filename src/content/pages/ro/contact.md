@@ -9,6 +9,9 @@ whatsapp:
   text: Programări, întrebări despre prețuri sau orice altceva – apasă butonul și se deschide o conversație cu un mesaj gata scris. Răspundem în timpul programului.
 details:
   heading: Date de contact
+  photo:
+    alt: Fațada clădirii centrului și curtea din față, cu jardiniera cu plante în ghivece
+    caption: Clădirea centrului, văzută din curte.
 map:
   heading: Cum ajungi
   text: Centrul este la câteva minute de mers pe jos de stația de metrou. Există locuri de parcare pe străzile din jur, iar intrarea este accesibilă cu scaun rulant. TODO(content) – confirmați indicațiile de acces.

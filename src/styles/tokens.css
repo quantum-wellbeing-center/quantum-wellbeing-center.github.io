@@ -6,12 +6,15 @@
   - Components use tokens only, never raw hex.
   - Every colour has a light value on :root and a dark value under prefers-color-scheme.
   - tests/contrast.mjs checks every text/background pair; keep the hex values 6-digit so it can parse them.
+  - `.surface-brand` (bottom of this file) re-maps the semantic tokens for the dark brand surfaces
+    (hero over the banner, CTA band), so components on them keep using the same token names.
 */
 
 :root {
   /* Backgrounds */
   --bg: #ffffff;
-  --bg-secondary: #f5f5f7;
+  /* Alternating sections carry a faint cool (brand) tint instead of Apple's neutral grey. */
+  --bg-secondary: #eef3f8;
   --bg-elevated: #ffffff;
 
   /* Text */
@@ -23,14 +26,25 @@
   --fill: rgba(120, 120, 128, 0.12);
   --fill-strong: rgba(120, 120, 128, 0.2);
 
-  /* Accent: links, tinted controls and the primary button fill. */
-  --accent: #0066cc;
-  --accent-fill: #0066cc;
+  /* Brand colours, sampled from the banner (src/assets/photos/banner.jpg): the navy of its
+     background, the teal of the glow under the logo and the cyan of the particle highlights.
+     They colour the hero, the CTA band and the secondary-section tint; everything else keeps
+     the neutral HIG palette. White text reaches 15.9:1 on the navy and 7.2:1 on the teal. */
+  --brand-navy: #0b2242;
+  --brand-teal: #1a5f6e;
+  --brand-cyan: #8fe3ff;
+  --brand-gradient: linear-gradient(135deg, var(--brand-navy) 0%, var(--brand-teal) 100%);
+
+  /* Accent: links, tinted controls and the primary button fill. A brand teal-blue between the
+     banner's navy and cyan, dark enough for 4.5:1 on every light background (4.86:1 on
+     --bg-secondary) and for white button text (5.42:1). */
+  --accent: #0e7390;
+  --accent-fill: #0e7390;
   --on-accent: #ffffff;
-  --accent-tint: rgba(0, 102, 204, 0.12);
+  --accent-tint: rgba(14, 115, 144, 0.12);
   /* "-strong" variants are the text colours used ON the matching tint (secondary button, badges):
      the tint lightens the surface, so they are slightly darker than the plain token. */
-  --accent-strong: #005ebd;
+  --accent-strong: #0a6681;
 
   /* Status: always paired with text or an icon, never colour alone. */
   /* Success was darkened from Apple's #248A3D (4.40:1 on white) to reach 4.5:1 on all backgrounds. */
@@ -59,7 +73,7 @@
   --scrim: rgba(0, 0, 0, 0.32);
 
   /* Focus ring (non-text contrast 3:1 on every background). */
-  --focus-ring: #0066cc;
+  --focus-ring: #0e7390;
 
   /* Shadows: subtle, content over chrome. */
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
@@ -117,8 +131,9 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --bg: #000000;
-    --bg-secondary: #1c1c1e;
-    --bg-elevated: #2c2c2e;
+    /* The same cool tint in dark mode: a navy-leaning grey for alternating sections and cards. */
+    --bg-secondary: #141e2b;
+    --bg-elevated: #232b36;
 
     --label: #f5f5f7;
     --label-secondary: #a1a1a6;
@@ -127,14 +142,20 @@
     --fill: rgba(120, 120, 128, 0.24);
     --fill-strong: rgba(120, 120, 128, 0.36);
 
-    /* Links stay the light blue; the button fill uses a deeper blue (#0071EE) so white text
-       reaches 4.5:1 and the fill itself keeps 3:1 against the elevated card surface. */
-    --accent: #2997ff;
-    --accent-fill: #0071ee;
-    --on-accent: #ffffff;
-    --accent-tint: rgba(41, 151, 255, 0.16);
+    /* The brand colours do not change with the scheme: they are the banner's own colours. */
+    --brand-navy: #0b2242;
+    --brand-teal: #1a5f6e;
+    --brand-cyan: #8fe3ff;
+    --brand-gradient: linear-gradient(135deg, var(--brand-navy) 0%, var(--brand-teal) 100%);
+
+    /* Links and the primary button fill are the brand cyan; the button carries navy text
+       (7.43:1) instead of white, so one fill serves links, buttons and the focus ring. */
+    --accent: #46bfe3;
+    --accent-fill: #46bfe3;
+    --on-accent: #0b2242;
+    --accent-tint: rgba(70, 191, 227, 0.16);
     /* In dark mode the tint lightens the surface, so on-tint text is lighter than the plain token. */
-    --accent-strong: #58aeff;
+    --accent-strong: #6fd0ec;
 
     --success: #30d158;
     --success-tint: rgba(48, 209, 88, 0.16);
@@ -156,10 +177,35 @@
     --material-fallback: #161617;
     --scrim: rgba(0, 0, 0, 0.55);
 
-    --focus-ring: #2997ff;
+    --focus-ring: #46bfe3;
 
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
     --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
     --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.6);
   }
+}
+
+/*
+  Dark brand surfaces: the home hero (over the banner, under a navy scrim) and the CTA band
+  (the navy-to-teal gradient). The same values apply in both colour schemes because the surface
+  is always dark. Components inside keep using `--label`, `--accent`, `--accent-fill` and the
+  focus ring; only the mapping changes. tests/contrast.mjs checks these against `--brand-navy`
+  and `--brand-teal`, the darkest and lightest points of the gradient.
+*/
+.surface-brand {
+  --label: #ffffff;
+  --label-secondary: #cfd9e4;
+  --separator: rgba(255, 255, 255, 0.28);
+  --fill: rgba(255, 255, 255, 0.12);
+  --fill-strong: rgba(255, 255, 255, 0.2);
+  /* Links and the eyebrow are the brand cyan (11.1:1 on navy, 5.0:1 on teal). */
+  --accent: #8fe3ff;
+  /* The primary button is a white capsule with navy text (15.9:1). */
+  --accent-fill: #ffffff;
+  --on-accent: #0b2242;
+  /* The secondary button is a translucent white capsule with white text (4.69:1 on teal). */
+  --accent-tint: rgba(255, 255, 255, 0.18);
+  --accent-strong: #ffffff;
+  --focus-ring: #ffffff;
+  color: var(--label);
 }

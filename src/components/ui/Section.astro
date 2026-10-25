@@ -7,8 +7,11 @@ import type { HTMLTag, Polymorphic } from 'astro/types';
 import Container from './Container.astro';
 
 type Props<Tag extends HTMLTag = 'section'> = Polymorphic<{ as: Tag }> & {
-  /** `secondary` gives the alternating --bg-secondary background. */
-  tone?: 'default' | 'secondary' | 'accent';
+  /**
+   * `secondary` gives the alternating --bg-secondary background; `brand` the navy-to-teal
+   * gradient with the `.surface-brand` token mapping (white text, white buttons).
+   */
+  tone?: 'default' | 'secondary' | 'accent' | 'brand';
   spacing?: 'default' | 'compact' | 'none';
   container?: 'default' | 'narrow' | 'wide' | 'none';
   class?: string;
@@ -24,7 +27,16 @@ const {
 } = Astro.props;
 ---
 
-<Tag class:list={['section', `section--${tone}`, `section--${spacing}`, className]} {...rest}>
+<Tag
+  class:list={[
+    'section',
+    `section--${tone}`,
+    `section--${spacing}`,
+    { 'surface-brand': tone === 'brand' },
+    className,
+  ]}
+  {...rest}
+>
   {container === 'none' ? (
     <slot />
   ) : (
@@ -54,10 +66,18 @@ const {
     background: var(--accent-fill);
     color: var(--on-accent);
   }
+  .section--brand {
+    background: var(--brand-navy);
+    background-image: var(--brand-gradient);
+  }
   .section--accent :global(h1),
   .section--accent :global(h2),
   .section--accent :global(h3),
-  .section--accent :global(p) {
+  .section--accent :global(p),
+  .section--brand :global(h1),
+  .section--brand :global(h2),
+  .section--brand :global(h3),
+  .section--brand :global(p) {
     color: inherit;
   }
 </style>

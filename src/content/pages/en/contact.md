@@ -9,6 +9,9 @@ whatsapp:
   text: Bookings, questions about prices or anything else – tap the button and a conversation opens with a ready-made message. We reply during opening hours.
 details:
   heading: Contact details
+  photo:
+    alt: The front of the centre's building and the courtyard, with the planter of potted plants
+    caption: The centre's building, seen from the courtyard.
 map:
   heading: How to get here
   text: The centre is a few minutes' walk from the metro station. There is street parking nearby, and the entrance is wheelchair accessible. TODO(content) – confirm the directions.

@@ -4,6 +4,9 @@ translationKey: services
 title: Services
 description: Individual sessions of 60 or 120 minutes, a session for two and a package of five sessions. What each includes, how long it lasts, what it costs and how to book. TODO(content) – placeholder text.
 subheading: Each service is described as it is – what happens during the visit, how long it lasts and what it costs. Booking is on WhatsApp, from the button next to each service.
+photo:
+  alt: 'The main room: cream armchairs and a lounger with green cushions, a sofa and three framed prints on the white wall'
+  caption: The main room, with armchairs, a lounger and a sofa.
 visit:
   heading: How a visit goes
 cta:

@@ -1,9 +1,0 @@
-{
-  "lang": "en",
-  "translationKey": "placeholder-01",
-  "image": "../../../assets/gallery/placeholder-01.svg",
-  "alt": "Solid-colour placeholder image labelled “Placeholder image 1”",
-  "caption": "The reception area. TODO(content): Replace with a real photo of the reception area.",
-  "identifiablePeople": false,
-  "order": 1
-}

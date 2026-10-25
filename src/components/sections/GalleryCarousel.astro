@@ -1,0 +1,474 @@
+---
+/**
+ * GalleryCarousel: the home page's photo strip, auto-advancing. Same data source and the same
+ * Phase 5 lightbox hooks as GalleryGrid (`[data-gallery]` on the track, `[data-gallery-item]`
+ * with index, full src, size, alt and caption on each link), so one lightbox attaches to both.
+ *
+ * Without JavaScript: a horizontal scroll-snap strip, every image reachable by swipe, scrollbar
+ * or Tab (focusing a link scrolls it into view); the controls stay `hidden`.
+ * With JavaScript (WAI-ARIA APG carousel pattern): the controls are revealed; the strip
+ * advances one slide every 5 s with smooth scrolling and loops; Previous/Next and a Pause/Play
+ * toggle whose label follows its state; the visible position text ("2 din 6") is the live
+ * region, `off` while rotating and `polite` when paused. Rotation pauses on hover, while focus
+ * is inside, while the tab is hidden and while the carousel is off-screen; a swipe, wheel or
+ * button press restarts the timer instead of fighting the user; Pause sticks until Play.
+ * Under `prefers-reduced-motion: reduce` nothing rotates until the user presses Play, and
+ * scrolling is instant.
+ *
+ * Slides are `div[role="group"]` rather than list items: `aria-roledescription="slide"` on an
+ * `li` would break the list semantics. Nothing is stored; no cookies.
+ */
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import { useTranslations, type Locale } from '../../i18n';
+import Icon from '../ui/Icon.astro';
+
+interface Props {
+  lang: Locale;
+  entries: CollectionEntry<'gallery'>[];
+}
+
+const { lang, entries } = Astro.props;
+const t = useTranslations(lang);
+const total = entries.length;
+const sizes = '(min-width: 75rem) 24rem, (min-width: 64em) 31vw, (min-width: 48em) 47vw, 88vw';
+---
+
+<div
+  class="carousel"
+  role="region"
+  aria-roledescription="carousel"
+  aria-label={t('carousel.label')}
+  data-carousel
+>
+  <div class="carousel__controls" data-carousel-controls hidden>
+    <p
+      class="carousel__status"
+      aria-live="polite"
+      aria-atomic="true"
+      data-carousel-status
+      data-template={t('carousel.slideLabel')}
+    >
+      {t('carousel.slideLabel', { n: 1, total })}
+    </p>
+    <div class="carousel__buttons">
+      <button class="carousel__button" type="button" data-carousel-prev>
+        <Icon name="chevron-left" size={22} />
+        <span class="visually-hidden">{t('carousel.previous')}</span>
+      </button>
+      <button class="carousel__button" type="button" data-carousel-next>
+        <Icon name="chevron-right" size={22} />
+        <span class="visually-hidden">{t('carousel.next')}</span>
+      </button>
+      <button
+        class="carousel__button"
+        type="button"
+        data-carousel-toggle
+        data-label-pause={t('carousel.pause')}
+        data-label-play={t('carousel.play')}
+      >
+        {/* Pause and play glyphs drawn in the Lucide style (Icon.astro does not ship them). */}
+        <svg
+          class="icon carousel__glyph carousel__glyph--pause"
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.75"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <rect x="6" y="4" width="4" height="16" rx="1" />
+          <rect x="14" y="4" width="4" height="16" rx="1" />
+        </svg>
+        <svg
+          class="icon carousel__glyph carousel__glyph--play"
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.75"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path d="M7 4.5v15a1 1 0 0 0 1.5.86l12.5-7.5a1 1 0 0 0 0-1.72L8.5 3.64A1 1 0 0 0 7 4.5z" />
+        </svg>
+        <span class="visually-hidden" data-carousel-toggle-label>
+          {t('carousel.play')}
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <div class="carousel__track" data-carousel-track data-gallery>
+    {entries.map((entry, index) => (
+      <div
+        class="carousel__slide"
+        role="group"
+        aria-roledescription="slide"
+        aria-label={t('carousel.slideLabel', { n: index + 1, total })}
+        data-carousel-slide
+      >
+        <figure class="carousel__figure">
+          <a
+            class="carousel__link"
+            href={entry.data.image.src}
+            data-gallery-item
+            data-gallery-index={index}
+            data-gallery-full={entry.data.image.src}
+            data-gallery-width={entry.data.image.width}
+            data-gallery-height={entry.data.image.height}
+            data-gallery-alt={entry.data.alt}
+            data-gallery-caption={entry.data.caption}
+            aria-label={`${t('actions.openImage')}: ${entry.data.alt}`}
+          >
+            <Image
+              src={entry.data.image}
+              alt={entry.data.alt}
+              width={1200}
+              height={800}
+              widths={[400, 600, 800, 1200]}
+              sizes={sizes}
+              loading={index === 0 ? 'eager' : 'lazy'}
+              decoding="async"
+              class="carousel__image"
+            />
+          </a>
+          <figcaption class="carousel__caption">{entry.data.caption}</figcaption>
+        </figure>
+      </div>
+    ))}
+  </div>
+</div>
+
+<script>
+  const INTERVAL = 5000;
+  /** Quiet time after the last scroll event before the position is read and the timer restarts. */
+  const SETTLE = 150;
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  interface Parts {
+    root: HTMLElement;
+    track: HTMLElement;
+    controls: HTMLElement;
+    status: HTMLElement;
+    prev: HTMLButtonElement;
+    next: HTMLButtonElement;
+    toggle: HTMLButtonElement;
+    toggleLabel: HTMLElement;
+    slides: HTMLElement[];
+  }
+
+  /** The carousel's parts, or null when the markup is incomplete or has nothing to rotate. */
+  function collect(root: HTMLElement): Parts | null {
+    const track = root.querySelector<HTMLElement>('[data-carousel-track]');
+    const controls = root.querySelector<HTMLElement>('[data-carousel-controls]');
+    const status = root.querySelector<HTMLElement>('[data-carousel-status]');
+    const prev = root.querySelector<HTMLButtonElement>('[data-carousel-prev]');
+    const next = root.querySelector<HTMLButtonElement>('[data-carousel-next]');
+    const toggle = root.querySelector<HTMLButtonElement>('[data-carousel-toggle]');
+    const toggleLabel = root.querySelector<HTMLElement>('[data-carousel-toggle-label]');
+    const slides = Array.from(root.querySelectorAll<HTMLElement>('[data-carousel-slide]'));
+    if (!track || !controls || !status || !prev || !next || !toggle || !toggleLabel) return null;
+    if (slides.length < 2) return null;
+    return { root, track, controls, status, prev, next, toggle, toggleLabel, slides };
+  }
+
+  function setup({
+    root,
+    track,
+    controls,
+    status,
+    prev,
+    next,
+    toggle,
+    toggleLabel,
+    slides,
+  }: Parts) {
+    const total = slides.length;
+    const template = status.dataset.template ?? '{n} / {total}';
+    const first = slides[0] as HTMLElement;
+
+    // The user's setting (the Pause/Play button) and the transient reasons to hold the timer.
+    let playing = !reduced.matches;
+    let hovered = false;
+    let focused = false;
+    let visible = !('IntersectionObserver' in window);
+    let index = 0;
+    let timer: number | undefined;
+    let settle: number | undefined;
+
+    const rotating = () => playing && !hovered && !focused && !document.hidden && visible;
+    const maxScroll = () => track.scrollWidth - track.clientWidth;
+    const atEnd = () => track.scrollLeft >= maxScroll() - 1;
+    const atStart = () => track.scrollLeft <= 1;
+    /** Scroll offset that puts slide `i` at the snap start. */
+    const offsetOf = (i: number) => (slides[i] as HTMLElement).offsetLeft - first.offsetLeft;
+
+    /** The slide whose snap position is closest to a scroll offset. */
+    function nearest(left: number): number {
+      let best = 0;
+      let distance = Infinity;
+      slides.forEach((_slide, i) => {
+        const d = Math.abs(offsetOf(i) - left);
+        if (d < distance) {
+          distance = d;
+          best = i;
+        }
+      });
+      return best;
+    }
+
+    function render() {
+      status.textContent = template
+        .replace('{n}', String(index + 1))
+        .replace('{total}', String(total));
+      toggleLabel.textContent = playing
+        ? (toggle.dataset.labelPause ?? 'Pause')
+        : (toggle.dataset.labelPlay ?? 'Play');
+      root.toggleAttribute('data-playing', playing);
+    }
+
+    /** (Re)starts the timer when rotation is allowed; the live region speaks only when it is not. */
+    function schedule() {
+      window.clearTimeout(timer);
+      const active = rotating();
+      if (active) timer = window.setTimeout(advance, INTERVAL);
+      status.setAttribute('aria-live', active ? 'off' : 'polite');
+    }
+
+    /**
+     * Scrolls slide `i` (wrapping) to the snap start. Near the end the offset is clamped by the
+     * scroller, so the index shown is the slide that really lands at the start position.
+     */
+    function goTo(i: number) {
+      const wrapped = ((i % total) + total) % total;
+      const left = Math.min(offsetOf(wrapped), maxScroll());
+      index = nearest(left);
+      track.scrollTo({ left, behavior: reduced.matches ? 'auto' : 'smooth' });
+      render();
+      schedule();
+    }
+
+    function advance() {
+      if (maxScroll() <= 0) {
+        schedule();
+        return;
+      }
+      goTo(atEnd() ? 0 : index + 1);
+    }
+
+    function back() {
+      goTo(atStart() ? total - 1 : index - 1);
+    }
+
+    // A swipe, wheel or programmatic scroll: read the position once it settles, restart the timer.
+    track.addEventListener(
+      'scroll',
+      () => {
+        window.clearTimeout(settle);
+        settle = window.setTimeout(() => {
+          index = nearest(track.scrollLeft);
+          render();
+          schedule();
+        }, SETTLE);
+      },
+      { passive: true },
+    );
+
+    prev.addEventListener('click', back);
+    next.addEventListener('click', advance);
+    toggle.addEventListener('click', () => {
+      playing = !playing;
+      render();
+      schedule();
+    });
+
+    // Hover: mouse and pen only. A touch "enters" on tap and would otherwise pause for good.
+    root.addEventListener('pointerenter', (event) => {
+      if (event.pointerType === 'touch') return;
+      hovered = true;
+      schedule();
+    });
+    root.addEventListener('pointerleave', () => {
+      hovered = false;
+      schedule();
+    });
+    root.addEventListener('focusin', () => {
+      focused = true;
+      schedule();
+    });
+    root.addEventListener('focusout', (event) => {
+      if (event.relatedTarget instanceof Node && root.contains(event.relatedTarget)) return;
+      focused = false;
+      schedule();
+    });
+    document.addEventListener('visibilitychange', schedule);
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(
+        (entries) => {
+          visible = entries.some((entry) => entry.isIntersecting);
+          schedule();
+        },
+        { threshold: 0.25 },
+      ).observe(root);
+    }
+    reduced.addEventListener('change', (event) => {
+      if (!event.matches) return;
+      playing = false;
+      render();
+      schedule();
+    });
+
+    controls.hidden = false;
+    root.setAttribute('data-enhanced', '');
+    render();
+    schedule();
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-carousel]').forEach((root) => {
+    const parts = collect(root);
+    if (parts) setup(parts);
+  });
+</script>
+
+<style>
+  .carousel {
+    display: grid;
+    gap: var(--space-4);
+  }
+
+  /* Controls: position text at the start, the three round buttons at the end. */
+  .carousel__controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3) var(--space-4);
+  }
+  /* Without JavaScript the controls stay hidden: `display` would otherwise beat the attribute. */
+  .carousel__controls[hidden] {
+    display: none;
+  }
+  .carousel__status {
+    font-size: var(--text-footnote);
+    line-height: var(--leading-footnote);
+    color: var(--label-secondary);
+    font-variant-numeric: tabular-nums;
+  }
+  .carousel__buttons {
+    display: flex;
+    gap: var(--space-2);
+    margin-inline-start: auto;
+  }
+  .carousel__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    /* 44px (the touch target), growing with the text size but more slowly than the rem token:
+       at 200% text three 88px circles would not fit a 320px screen beside the position text. */
+    width: max(44px, 2.25rem);
+    height: max(44px, 2.25rem);
+    border-radius: var(--radius-capsule);
+    background: var(--fill);
+    color: var(--label);
+    transition: background-color var(--duration-fast) var(--ease-out);
+  }
+  .carousel__button:hover {
+    background: var(--fill-strong);
+  }
+  .carousel__button:focus-visible {
+    border-radius: var(--radius-capsule);
+  }
+  /* The toggle shows the action it offers: pause while rotating, play otherwise. */
+  .carousel__glyph--pause {
+    display: none;
+  }
+  .carousel[data-playing] .carousel__glyph--pause {
+    display: block;
+  }
+  .carousel[data-playing] .carousel__glyph--play {
+    display: none;
+  }
+
+  /* Track: one row that scrolls under the gutters, snapping to each slide. One large slide on
+     small screens with the next one peeking; two, then three, on wider screens. */
+  .carousel__track {
+    position: relative;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: min(88%, 24rem);
+    gap: var(--space-4);
+    margin-inline: calc(-1 * var(--gutter));
+    padding-inline: var(--gutter);
+    /* Room for the focus ring. */
+    padding-block: var(--space-2);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--gutter);
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+  .carousel__slide {
+    scroll-snap-align: start;
+  }
+  @media (min-width: 48em) {
+    .carousel__track {
+      grid-auto-columns: calc((100% - var(--space-4)) / 2);
+      margin-inline: calc(-1 * var(--space-6));
+      padding-inline: var(--space-6);
+      scroll-padding-inline: var(--space-6);
+    }
+  }
+  @media (min-width: 64em) {
+    .carousel__track {
+      grid-auto-columns: calc((100% - 2 * var(--space-4)) / 3);
+    }
+  }
+
+  .carousel__figure {
+    display: grid;
+    gap: var(--space-2);
+    margin: 0;
+  }
+  .carousel__link {
+    display: block;
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    background: var(--bg-secondary);
+    box-shadow: inset 0 0 0 1px var(--separator);
+    transition: transform var(--duration-base) var(--ease-out);
+  }
+  .carousel__link:hover {
+    transform: translateY(-2px);
+  }
+  .carousel__link:focus-visible {
+    border-radius: var(--radius-card);
+  }
+  .carousel__image {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+  }
+  .carousel__caption {
+    font-size: var(--text-footnote);
+    line-height: var(--leading-footnote);
+    color: var(--label-secondary);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .carousel__link:hover {
+      transform: none;
+    }
+  }
+</style>

@@ -1,10 +1,29 @@
 ---
 /**
  * Hero: the "Centru de wellness" eyebrow, display headline, subheading, the
- * "Programează-te pe WhatsApp" BookingLink, a secondary link and a decorative placeholder
- * visual (concentric rings in the brand accent; no stock photography).
+ * "Programează-te pe WhatsApp" BookingLink and a secondary link, over the brand banner
+ * (src/assets/photos/banner.jpg) as a full-bleed background.
+ *
+ * The banner is decorative (`alt=""`): the brand name is in the header. Its logo sits in the
+ * middle third of the image, so the layout keeps the copy out of its way:
+ *
+ *   - below 80em the copy sits under a clear band (`--hero-band`) that shows the logo, with the
+ *     image cover-fitted and anchored to the top, centred on the logo (object-position 51% 0);
+ *   - from 80em the copy takes the left 34rem of the container and the image keeps its own
+ *     aspect ratio, as tall as the hero and anchored to the right edge, so the logo lands right
+ *     of the copy (its left arc may touch the copy between 80em and ~84em). On very wide
+ *     screens the space left of the image is the brand navy, feathered into the image.
+ *
+ * Contrast (tests/contrast.mjs, "hero scrim" rows): the scrim is `--brand-navy` at 90% behind
+ * the copy, and the worst case is white text over that scrim composited on a pure white pixel
+ * (the banner's particle highlights reach #ffffff). White on that surface is 11.88:1, the
+ * `--label-secondary` lead 8.31:1 and the cyan eyebrow 8.26:1; the band above the copy fades
+ * through 30%, where the headline never sits. Both colour schemes use the same values: the
+ * surface is always dark (`.surface-brand`).
  */
+import { Picture } from 'astro:assets';
 import type { Locale } from '../../i18n';
+import banner from '../../assets/photos/banner.jpg';
 import BookingLink from '../BookingLink.astro';
 import Button from '../ui/Button.astro';
 import Section from '../ui/Section.astro';
@@ -23,7 +42,21 @@ interface Props {
 const { lang, eyebrow, headline, subheading, bookingLabel, secondary, id = 'hero' } = Astro.props;
 ---
 
-<Section class="hero" spacing="compact" id={id} aria-labelledby={`${id}-title`}>
+<Section class="hero surface-brand" spacing="none" id={id} aria-labelledby={`${id}-title`}>
+  <div class="hero__media" aria-hidden="true">
+    <Picture
+      src={banner}
+      formats={['avif', 'webp']}
+      widths={[640, 960, 1280, banner.width]}
+      sizes="100vw"
+      alt=""
+      loading="eager"
+      fetchpriority="high"
+      decoding="async"
+      pictureAttributes={{ class: 'hero__picture' }}
+      class="hero__image"
+    />
+  </div>
   <div class="hero__inner">
     <div class="hero__copy">
       <p class="hero__eyebrow">{eyebrow}</p>
@@ -42,41 +75,60 @@ const { lang, eyebrow, headline, subheading, bookingLabel, secondary, id = 'hero
         )}
       </div>
     </div>
-    <div class="hero__visual" aria-hidden="true">
-      <svg viewBox="0 0 400 400" width="400" height="400" focusable="false">
-        <defs>
-          <radialGradient id="hero-glow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.22"></stop>
-            <stop offset="100%" stop-color="var(--accent)" stop-opacity="0"></stop>
-          </radialGradient>
-        </defs>
-        <circle cx="200" cy="200" r="200" fill="url(#hero-glow)"></circle>
-        <g fill="none" stroke="var(--accent)" stroke-linecap="round">
-          <circle cx="200" cy="200" r="150" stroke-width="1" opacity="0.25"></circle>
-          <circle cx="200" cy="200" r="112" stroke-width="1.5" opacity="0.4"></circle>
-          <circle cx="200" cy="200" r="74" stroke-width="2" opacity="0.6"></circle>
-          <circle cx="200" cy="200" r="36" stroke-width="2.5" opacity="0.85"></circle>
-        </g>
-        <circle cx="200" cy="200" r="10" fill="var(--accent)"></circle>
-      </svg>
-    </div>
   </div>
 </Section>
 
 <style>
-  .hero {
-    padding-block: clamp(var(--space-7), 7vw, var(--space-9));
+  /* `.section.hero` outranks Section's own `.section--none` padding rule. */
+  .section.hero {
+    /* Clear band above the copy on small screens: enough of the image to show the logo. */
+    --hero-band: clamp(13rem, 60vw, 24rem);
+    --hero-copy-width: 34rem;
+    --hero-scrim-strong: color-mix(in srgb, var(--brand-navy) 90%, transparent);
+    --hero-scrim-mid: color-mix(in srgb, var(--brand-navy) 30%, transparent);
+    --hero-scrim-weak: color-mix(in srgb, var(--brand-navy) 12%, transparent);
+    position: relative;
+    isolation: isolate;
     overflow: hidden;
+    background: var(--brand-navy);
+    padding-block: var(--hero-band) var(--space-7);
+  }
+  .hero__media {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
+  .hero__media :global(.hero__picture) {
+    position: absolute;
+    inset: 0;
+  }
+  .hero__media :global(.hero__image) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Centred on the logo, anchored to the top so the clear band shows it. */
+    object-position: 51% 0;
+  }
+  /* The scrim: light over the band, strong from just above the copy down. */
+  .hero__media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      var(--hero-scrim-weak) 0,
+      var(--hero-scrim-mid) calc(var(--hero-band) - 7rem),
+      var(--hero-scrim-strong) calc(var(--hero-band) - 1rem),
+      var(--hero-scrim-strong) 100%
+    );
   }
   .hero__inner {
     display: grid;
-    gap: var(--space-7);
-    align-items: center;
   }
   .hero__copy {
     display: grid;
     gap: var(--space-5);
-    max-width: 38rem;
+    max-width: var(--hero-copy-width);
   }
   .hero__eyebrow {
     font-size: var(--text-subheadline);
@@ -87,7 +139,12 @@ const { lang, eyebrow, headline, subheading, bookingLabel, secondary, id = 'hero
     color: var(--accent);
   }
   .hero__title {
+    /* A notch under `.text-display`: on wide screens the headline must hold two lines inside
+       the 34rem copy column, or the hero grows and the right-anchored image slides under it. */
+    font-size: clamp(2.5rem, 4.2vw, 4rem);
     max-width: 14ch;
+    text-wrap: balance;
+    color: var(--label);
   }
   .hero__lead {
     font-size: var(--text-title-3);
@@ -106,20 +163,45 @@ const { lang, eyebrow, headline, subheading, bookingLabel, secondary, id = 'hero
     white-space: normal;
     max-width: 100%;
   }
-  .hero__visual {
-    display: none;
-    justify-self: center;
-  }
-  .hero__visual svg {
-    width: min(100%, 26rem);
-    height: auto;
-  }
-  @media (min-width: 48em) {
-    .hero__inner {
-      grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+  @media (min-width: 80em) {
+    .section.hero {
+      /* Right edge of the copy column, measured from the hero's left edge. */
+      --hero-copy-edge: calc(
+        max(0px, (100cqw - var(--container)) / 2) + var(--space-6) + var(--hero-copy-width)
+      );
+      --hero-banner-ratio: 1553 / 775;
+      /* Kept short enough that the image, placed from the copy edge, still shows the red mark
+         on its right (90% of its width) inside the viewport from 1280px up. */
+      min-height: min(36vw, 44rem);
+      padding-block: clamp(3rem, 5vw, 6rem);
+      display: grid;
+      align-items: center;
     }
-    .hero__visual {
-      display: block;
+    /* A size container, so the image can be placed from the hero's own height (cqh). */
+    .hero__media {
+      container-type: size;
+    }
+    .hero__media :global(.hero__image) {
+      /* Own aspect ratio, as tall as the hero, placed so the wordmark's left edge (29% of the
+         banner's width) starts 2rem right of the copy column. Only the empty right margin of the
+         banner is cropped on narrower screens; the wordmark and logo never sit under the copy. */
+      left: calc(var(--hero-copy-edge) + var(--space-6) - 0.29 * 100cqh * var(--hero-banner-ratio));
+      right: auto;
+      width: auto;
+      max-width: none;
+      aspect-ratio: var(--hero-banner-ratio);
+      position: absolute;
+      /* Feather both edges into the navy that fills the rest on very wide screens. */
+      mask-image: linear-gradient(to right, transparent, #000 22%, #000 92%, transparent);
+    }
+    .hero__media::after {
+      background: linear-gradient(
+        to right,
+        var(--hero-scrim-strong) 0,
+        var(--hero-scrim-strong) var(--hero-copy-edge),
+        var(--hero-scrim-weak) calc(var(--hero-copy-edge) + var(--space-6)),
+        var(--hero-scrim-weak) 100%
+      );
     }
   }
 </style>

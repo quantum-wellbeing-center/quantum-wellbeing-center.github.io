@@ -21,41 +21,81 @@ Read by the `hig-foundations` skill before asking questions. Everything below is
 
 ## Colour tokens
 
-Apple system colours, with secondary text and accent darkened so small text passes AA on the web.
+Apple semantic colours, with the accent and the alternating backgrounds retuned to the brand
+hues sampled from the banner (`src/assets/photos/banner.jpg`): deep navy, teal and cyan. Colour
+lives in a few deliberate places (the hero, the CTA band, the secondary-section tint, step
+numbers, service-card icons, eyebrows and links); everything else stays neutral.
 
-| Token                 | Light                 | Dark                  | Use                                            |
-| --------------------- | --------------------- | --------------------- | ---------------------------------------------- |
-| `--bg`                | #FFFFFF               | #000000               | Page background                                |
-| `--bg-secondary`      | #F5F5F7               | #1C1C1E               | Alternating sections, footer                   |
-| `--bg-elevated`       | #FFFFFF               | #2C2C2E               | Cards, chat bubbles and inputs, consent dialog |
-| `--label`             | #1D1D1F               | #F5F5F7               | Primary text                                   |
-| `--label-secondary`   | #6E6E73               | #A1A1A6               | Captions and metadata                          |
-| `--separator`         | rgba(60,60,67,.29)    | rgba(84,84,88,.6)     | Hairlines                                      |
-| `--fill`              | rgba(120,120,128,.12) | rgba(120,120,128,.24) | Inputs, tinted controls                        |
-| `--accent`            | #0066CC               | #2997FF               | Links, text on tint                            |
-| `--accent-fill`       | #0066CC               | #0071EE               | Primary button background                      |
-| `--on-accent`         | #FFFFFF               | #FFFFFF               | Text on `--accent-fill`                        |
-| `--accent-tint`       | rgba(0,102,204,.12)   | rgba(41,151,255,.16)  | Secondary button, accent badge                 |
-| `--accent-strong`     | #005EBD               | #58AEFF               | Text on `--accent-tint`                        |
-| `--success`           | #1F7A35               | #30D158               | Success text, always with text                 |
-| `--success-strong`    | #1C7031               | #30D158               | Text on `--success-tint`                       |
-| `--danger`            | #D70015               | #FF6961               | Error text, always with text                   |
-| `--danger-strong`     | #C40013               | #FF8781               | Text on `--danger-tint`                        |
-| `--warning`           | #9A4A00               | #FFB340               | Caution text (footer SOL note)                 |
-| `--warning-strong`    | #9A4A00               | #FFB340               | Text on `--warning-tint`                       |
-| `--whatsapp`          | #128C7E               | #25D366               | Glyph-only floating WhatsApp button (3:1 UI)   |
-| `--whatsapp-fill`     | #107A6E               | #25D366               | WhatsApp buttons with a text label             |
-| `--on-whatsapp`       | #FFFFFF               | #000000               | Glyph and text on the two above                |
-| `--scrim`             | rgba(0,0,0,.32)       | rgba(0,0,0,.55)       | Backdrop of the chat panel                     |
-| `--material`          | rgba(255,255,255,.72) | rgba(22,22,23,.72)    | Translucent header and chat panel              |
-| `--material-fallback` | #FFFFFF               | #161617               | Header and chat panel without backdrop-filter  |
-| `--focus-ring`        | #0066CC               | #2997FF               | Focus outline                                  |
+| Token                 | Light                 | Dark                  | Use                                                   |
+| --------------------- | --------------------- | --------------------- | ----------------------------------------------------- |
+| `--bg`                | #FFFFFF               | #000000               | Page background                                       |
+| `--bg-secondary`      | #EEF3F8               | #141E2B               | Alternating sections, footer (cool brand tint)        |
+| `--bg-elevated`       | #FFFFFF               | #232B36               | Cards, chat bubbles and inputs, consent dialog        |
+| `--label`             | #1D1D1F               | #F5F5F7               | Primary text                                          |
+| `--label-secondary`   | #6E6E73               | #A1A1A6               | Captions and metadata                                 |
+| `--separator`         | rgba(60,60,67,.29)    | rgba(84,84,88,.6)     | Hairlines                                             |
+| `--fill`              | rgba(120,120,128,.12) | rgba(120,120,128,.24) | Inputs, tinted controls                               |
+| `--brand-navy`        | #0B2242               | #0B2242               | Banner navy: hero fill and scrim, gradient start      |
+| `--brand-teal`        | #1A5F6E               | #1A5F6E               | Banner teal: gradient end                             |
+| `--brand-cyan`        | #8FE3FF               | #8FE3FF               | Banner highlight: links and eyebrow on brand surfaces |
+| `--brand-gradient`    | navy → teal, 135deg   | same                  | CTA band (`Section tone="brand"`)                     |
+| `--accent`            | #0E7390               | #46BFE3               | Links, text on tint, eyebrows, small icons            |
+| `--accent-fill`       | #0E7390               | #46BFE3               | Primary button background, step numbers               |
+| `--on-accent`         | #FFFFFF               | #0B2242               | Text on `--accent-fill`                               |
+| `--accent-tint`       | rgba(14,115,144,.12)  | rgba(70,191,227,.16)  | Secondary button, accent badge                        |
+| `--accent-strong`     | #0A6681               | #6FD0EC               | Text on `--accent-tint`                               |
+| `--success`           | #1F7A35               | #30D158               | Success text, always with text                        |
+| `--success-strong`    | #1C7031               | #30D158               | Text on `--success-tint`                              |
+| `--danger`            | #D70015               | #FF6961               | Error text, always with text                          |
+| `--danger-strong`     | #C40013               | #FF8781               | Text on `--danger-tint`                               |
+| `--warning`           | #9A4A00               | #FFB340               | Caution text (footer SOL note)                        |
+| `--warning-strong`    | #9A4A00               | #FFB340               | Text on `--warning-tint`                              |
+| `--whatsapp`          | #128C7E               | #25D366               | Glyph-only floating WhatsApp button (3:1 UI)          |
+| `--whatsapp-fill`     | #107A6E               | #25D366               | WhatsApp buttons with a text label                    |
+| `--on-whatsapp`       | #FFFFFF               | #000000               | Glyph and text on the two above                       |
+| `--scrim`             | rgba(0,0,0,.32)       | rgba(0,0,0,.55)       | Backdrop of the chat panel                            |
+| `--material`          | rgba(255,255,255,.72) | rgba(22,22,23,.72)    | Translucent header and chat panel                     |
+| `--material-fallback` | #FFFFFF               | #161617               | Header and chat panel without backdrop-filter         |
+| `--focus-ring`        | #0E7390               | #46BFE3               | Focus outline                                         |
+
+### Brand surfaces (`.surface-brand`)
+
+The home hero (over the banner) and the CTA band are always dark, in both schemes. Instead of
+hard-coding colours there, `.surface-brand` in tokens.css re-maps the semantic tokens, so
+Button, BookingLink and links keep working unchanged: `--label` #FFFFFF, `--label-secondary`
+#CFD9E4, `--accent` #8FE3FF (cyan links and eyebrow), `--accent-fill` #FFFFFF with
+`--on-accent` #0B2242 (white primary button, navy text, 15.9:1), `--accent-tint`
+rgba(255,255,255,.18) with `--accent-strong` #FFFFFF (translucent secondary button, 4.69:1 on
+teal), `--focus-ring` #FFFFFF. `Section tone="brand"` applies the gradient plus this class.
+
+### Hero rules
+
+- The banner (`src/assets/photos/banner.jpg`, frame cropped off by `scripts/prepare-photos.mjs`)
+  is a decorative `<Picture>` (avif/webp, `alt=""`, eager, `fetchpriority="high"`) behind the copy.
+- Below 80em: cover-fitted, `object-position: 51% 0`, under a clear band (`--hero-band`,
+  clamp(13rem, 60vw, 24rem)) that shows the logo; the copy sits under the band on a vertical
+  scrim that fades from navy at 12% through 30% to 90% just above the first line.
+- From 80em: the copy takes the left 34rem of the container; the image keeps its own aspect
+  ratio, as tall as the hero (min-height min(42vw, 48rem)) and anchored right, so the logo lands
+  right of the copy (its left arc may touch the copy between 80em and ~84em); on very wide
+  screens the navy fills the left and the image's left edge is feathered with a mask. The scrim
+  is a horizontal gradient: navy 90% up to the copy's right edge, fading to 12% over 16rem.
+- The hero headline is `clamp(2.5rem, 4.2vw, 4rem)`, a notch under `.text-display`, so it holds
+  two lines in the copy column (a taller hero would slide the image under the copy).
+- Worst case contrast (tests/contrast.mjs "hero" rows): white text over the 90% navy scrim
+  composited on a pure white pixel is 11.88:1, the lead 8.31:1, the cyan eyebrow 8.26:1.
 
 ### Deviations from the plan's table, with reasons
 
+- **Accent retuned from HIG blue to the brand teal-blue.** Light #0E7390 reaches 5.42:1 on white
+  and 4.86:1 on `--bg-secondary`; white button text 5.42:1. In dark mode links and the button
+  fill are the brand cyan #46BFE3 (9.8:1 on black, 6.68:1 on cards) and the button carries navy
+  text (7.43:1) rather than white, so one fill serves links, buttons and the focus ring.
+- **`--bg-secondary` and dark `--bg-elevated` carry a cool brand tint** (#EEF3F8; #141E2B and
+  #232B36) instead of Apple's neutral greys. Light `--label-secondary` on #EEF3F8 is 4.54:1.
 - **`--success` light: #248A3D → #1F7A35.** Apple's green reaches only 4.40:1 on white; the darker value gives 5.39:1 on white and 4.95:1 on `--bg-secondary`.
 - **`--danger` dark: #FF453A → #FF6961.** Apple's red reaches only 4.10:1 on `--bg-elevated` (#2C2C2E); the lighter value gives 4.94:1 there and 7.45:1 on black.
-- **Added `--accent-fill` and `--on-accent`.** White text on the dark-mode accent #2997FF is 3.02:1, so the primary button uses a deeper fill in dark mode (#0071EE: 4.57:1 for white text, 3.05:1 against the elevated card). Links keep #2997FF.
+- **Added `--accent-fill` and `--on-accent`.** Kept as separate tokens so a scheme can use a different fill or text colour for the primary button than for links (dark mode now uses the same cyan fill with navy text; `.surface-brand` uses a white fill).
 - **Added `--warning`** (not in Apple's table) for caution text such as the footer's TODO(legal) note on the SOL badge; 6.26:1 light, 11.77:1 dark on `--bg`. It never labels research documents: the library carries neutral document-type badges only.
 - **Added `--accent-tint`, `--success-tint`, `--danger-tint`, `--warning-tint`, `--fill-strong`, `--focus-ring`** as derived tokens so components never write raw colours.
 - **Added `--whatsapp-fill` next to `--whatsapp`.** The plan's WhatsApp teal #128C7E gives white only 4.14:1, enough for the glyph-only floating button (UI target 3:1) but not for button text. Buttons that carry a label ("Trimite pe WhatsApp", "Programează-te pe WhatsApp") use the deeper #107A6E, 5.21:1 for white text. In dark mode both are the brand green #25D366 with a black glyph or label (10.59:1). The `whatsapp` Button variant uses `--whatsapp-fill`; only the floating button uses `--whatsapp`.
@@ -63,25 +103,26 @@ Apple system colours, with secondary text and accent darkened so small text pass
 
 ### Contrast results (tests/contrast.mjs)
 
-All 96 checked pairs pass (text on each background, button text on the fill, "-strong" text over each composited tint, label on `--fill`, the WhatsApp pairs, fill and focus ring as UI contrast). Lowest ratios: light `--label-secondary` on `--bg-secondary` 4.66:1; dark `--accent` on `--bg-elevated` 4.62:1; dark `--on-accent` on `--accent-fill` 4.57:1; dark `--accent-strong` on its tint over `--bg-elevated` 4.72:1; dark `--accent-fill` against `--bg-elevated` 3.05:1 (UI target 3:1); light `--whatsapp` against `--bg-secondary` 3.80:1 (UI target 3:1).
+All 112 checked pairs pass (text on each background, button text on the fill, "-strong" text over each composited tint, label on `--fill`, the WhatsApp pairs, fill and focus ring as UI contrast, the `.surface-brand` pairs against both ends of the gradient, and the hero scrim worst case). Lowest ratios: light `--label-secondary` on `--bg-secondary` 4.54:1; brand `--accent-strong` on its tint over `--brand-teal` 4.69:1; brand `--accent` (cyan) on `--brand-teal` 5.02:1; light `--accent` on `--bg-secondary` 4.86:1; light `--whatsapp` against `--bg-secondary` 3.70:1 (UI target 3:1).
 
 ## Type scale
 
 System font stack (`-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif`), all sizes in rem so browser text-size settings scale everything (the web stand-in for Dynamic Type).
 
-| Style                | Size / line height               | Weight | Class               |
-| -------------------- | -------------------------------- | ------ | ------------------- |
-| Display (hero only)  | clamp(2.75rem, 6vw, 5rem) / 1.05 | 700    | `.text-display`     |
-| Large title (h1)     | 2.125rem / 1.2                   | 700    | `.text-large-title` |
-| Title 1 (h2)         | 1.75rem / 1.2                    | 700    | `.text-title-1`     |
-| Title 2 (h3)         | 1.375rem / 1.27                  | 600    | `.text-title-2`     |
-| Title 3 (h4)         | 1.25rem / 1.25                   | 600    | `.text-title-3`     |
-| Headline (h5, h6)    | 1.0625rem / 1.3                  | 600    | `.text-headline`    |
-| Body (p)             | 1.0625rem / 1.47                 | 400    | `.text-body`        |
-| Callout              | 1rem / 1.31                      | 400    | `.text-callout`     |
-| Subheadline          | 0.9375rem / 1.33                 | 400    | `.text-subheadline` |
-| Footnote (small)     | 0.8125rem / 1.38                 | 400    | `.text-footnote`    |
-| Caption (figcaption) | 0.75rem / 1.33                   | 400    | `.text-caption`     |
+| Style                | Size / line height                | Weight | Class               |
+| -------------------- | --------------------------------- | ------ | ------------------- |
+| Display (hero only)  | clamp(2.75rem, 6vw, 5rem) / 1.05  | 700    | `.text-display`     |
+| Hero headline        | clamp(2.5rem, 4.2vw, 4rem) / 1.05 | 700    | `.hero__title`      |
+| Large title (h1)     | 2.125rem / 1.2                    | 700    | `.text-large-title` |
+| Title 1 (h2)         | 1.75rem / 1.2                     | 700    | `.text-title-1`     |
+| Title 2 (h3)         | 1.375rem / 1.27                   | 600    | `.text-title-2`     |
+| Title 3 (h4)         | 1.25rem / 1.25                    | 600    | `.text-title-3`     |
+| Headline (h5, h6)    | 1.0625rem / 1.3                   | 600    | `.text-headline`    |
+| Body (p)             | 1.0625rem / 1.47                  | 400    | `.text-body`        |
+| Callout              | 1rem / 1.31                       | 400    | `.text-callout`     |
+| Subheadline          | 0.9375rem / 1.33                  | 400    | `.text-subheadline` |
+| Footnote (small)     | 0.8125rem / 1.38                  | 400    | `.text-footnote`    |
+| Caption (figcaption) | 0.75rem / 1.33                    | 400    | `.text-caption`     |
 
 Negative letter-spacing only on Display (-0.02em) and Large title (-0.012em). Measure: `--measure` 65ch for running text, `.prose` applies it.
 
@@ -92,6 +133,7 @@ Header bar and chat panel: `background: var(--material); backdrop-filter: satura
 ## Shape
 
 - Cards: `--radius-card` 18px (range 16 to 20px), hairline or subtle shadow, never heavy borders.
+- Photos (`src/assets/photos/`, prepared by `scripts/prepare-photos.mjs`): `astro:assets` with explicit `widths`/`sizes`, lazy below the fold, `--radius-card` corners, `--shadow-md`, a footnote-size caption from page content. Alt text and captions live in the content collections, never in components, and describe only what is visible (never the room's equipment).
 - Buttons: capsules (`--radius-capsule`). Primary = filled `--accent-fill`; secondary = tinted `--accent-tint`; plain = text only; whatsapp = filled `--whatsapp-fill`. Labels wrap (`text-wrap: balance`, no `nowrap`), so "Programează-te pe WhatsApp" fits a 320px screen at 200% text without horizontal scroll; full-width buttons keep only 0.5rem of side padding because their content is centred anyway.
 - Logo: mark plus wordmark; the wordmark may wrap at 320px and 200% text, and the desktop header pins the brand (`flex-shrink: 0`) so it never wraps there.
 - Chat panel: a bottom sheet below 640px (top corners `--radius-lg`), a 24rem floating card above; bubbles use `--radius-lg` with one small corner; chips are capsules.

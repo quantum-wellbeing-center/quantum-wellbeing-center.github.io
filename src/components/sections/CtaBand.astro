@@ -2,7 +2,8 @@
 /**
  * CtaBand: a centred call-to-action band with a heading, a line of text, a BookingLink (the
  * WhatsApp chat) and, next to it, the `tel:` link from site config or a custom secondary link.
- * Tinted (secondary) by default so it stays subtle; `tone="accent"` for a filled band.
+ * The brand gradient band (navy to teal, white text, white buttons through `.surface-brand`)
+ * by default; `tone="secondary"` for the subtle tinted band, `tone="accent"` for a flat fill.
  */
 import { site, type ChatTopic } from '../../config/site';
 import { useTranslations, type Locale } from '../../i18n';
@@ -20,7 +21,7 @@ interface Props {
   bookingLabel?: string;
   /** Custom secondary link; by default the band shows the `tel:` link. */
   secondary?: { href: string; label: string };
-  tone?: 'default' | 'secondary' | 'accent';
+  tone?: 'default' | 'secondary' | 'accent' | 'brand';
   id?: string;
 }
 
@@ -31,10 +32,13 @@ const {
   topic = 'booking',
   bookingLabel,
   secondary,
-  tone = 'secondary',
+  tone = 'brand',
   id = 'cta',
 } = Astro.props;
 const t = useTranslations(lang);
+/* On the brand band the primary button is white (via `.surface-brand`), so the pair stays
+   primary + secondary; on the flat accent fill a tinted capsule would vanish, so the booking
+   button becomes secondary and the phone link plain. */
 const secondaryVariant = tone === 'accent' ? 'plain' : 'secondary';
 ---
 

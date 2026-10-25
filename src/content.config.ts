@@ -399,6 +399,15 @@ const step = z.object({
   text: z.string().min(1),
 });
 
+/**
+ * Alt text and caption of a photo a page component places (the file itself is imported by the
+ * component from `src/assets/photos/`). Both describe what the photo shows, factually.
+ */
+const photo = z.object({
+  alt: z.string().min(1),
+  caption: z.string().min(1),
+});
+
 const pages = defineCollection({
   loader: localizedGlob('pages', 'md'),
   schema: z.discriminatedUnion('translationKey', [
@@ -412,8 +421,11 @@ const pages = defineCollection({
         headline: z.string().min(1),
         subheading: z.string().min(1),
       }),
-      /** Who you are, where you are, what the space is like. The Markdown body may add detail. */
-      intro: headed,
+      /**
+       * Who you are, where you are, what the space is like. The Markdown body may add detail.
+       * `photo` describes the building photo shown next to the text.
+       */
+      intro: headed.extend({ photo }),
       services: headed,
       steps: z.object({
         heading: z.string().min(1),
@@ -429,6 +441,8 @@ const pages = defineCollection({
       ...pageBase,
       translationKey: z.literal('services'),
       subheading: z.string().min(1),
+      /** The photo of the main room shown between the intro and the list of services. */
+      photo,
       /** The Markdown body (optional) describes how a visit goes, factually. */
       visit: z.object({ heading: z.string().min(1) }),
       cta: headed,
@@ -475,7 +489,8 @@ const pages = defineCollection({
       subheading: z.string().min(1),
       /** The Markdown body is the short intro above the contact details. */
       whatsapp: headed,
-      details: z.object({ heading: z.string().min(1) }),
+      /** `photo` describes the building photo shown under the contact details. */
+      details: z.object({ heading: z.string().min(1), photo }),
       map: z.object({ heading: z.string().min(1), text: z.string().min(1) }),
     }),
     z.object({

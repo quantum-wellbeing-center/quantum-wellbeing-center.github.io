@@ -1,8 +1,9 @@
 ---
 /**
  * ContactPage: the WhatsApp BookingLink (topic "other") with the phone link beside it, the
- * contact details with hours and socials, and a static map placeholder with a link to Google
- * Maps (no iframe, which would set cookies). There is no contact form.
+ * contact details with hours and socials (and the photo of the building under them, so
+ * visitors recognise the place), and a static map placeholder with a link to Google Maps
+ * (no iframe, which would set cookies). There is no contact form.
  */
 import { Image } from 'astro:assets';
 import { render } from 'astro:content';
@@ -11,6 +12,7 @@ import { site } from '../../config/site';
 import { useTranslations, type Locale } from '../../i18n';
 import { getPage } from '../../lib/content';
 import mapPlaceholder from '../../assets/brand/map-placeholder.svg';
+import facade from '../../assets/photos/facade.jpg';
 import BookingLink from '../BookingLink.astro';
 import Button from '../ui/Button.astro';
 import Section from '../ui/Section.astro';
@@ -73,6 +75,18 @@ const hasBody = Boolean(entry.body && entry.body.trim());
           {page.details.heading}
         </h2>
         <ContactDetails lang={lang} />
+        <figure class="contact__photo">
+          <Image
+            src={facade}
+            alt={page.details.photo.alt}
+            widths={[480, 720, 960]}
+            sizes="(min-width: 56em) 32rem, calc(100vw - 2rem)"
+            loading="lazy"
+            decoding="async"
+            class="contact__photo-image"
+          />
+          <figcaption class="contact__photo-caption">{page.details.photo.caption}</figcaption>
+        </figure>
       </div>
       <div class="contact__map" aria-labelledby="contact-map-heading">
         <h2 id="contact-map-heading" class="contact__heading">
@@ -153,6 +167,24 @@ const hasBody = Boolean(entry.body && entry.body.trim());
     font-size: var(--text-title-2);
     line-height: var(--leading-title-2);
     margin-block-end: var(--space-4);
+  }
+  .contact__photo {
+    display: grid;
+    gap: var(--space-3);
+    margin: var(--space-6) 0 0;
+  }
+  .contact__photo-image {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-md);
+  }
+  .contact__photo-caption {
+    font-size: var(--text-footnote);
+    line-height: var(--leading-footnote);
+    color: var(--label-secondary);
   }
   .contact__map {
     display: grid;
