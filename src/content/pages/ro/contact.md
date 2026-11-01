@@ -14,7 +14,7 @@ details:
     caption: Clădirea centrului, văzută din curte.
 map:
   heading: Cum ajungi
-  text: Centrul este la câteva minute de mers pe jos de stația de metrou. Există locuri de parcare pe străzile din jur, iar intrarea este accesibilă cu scaun rulant. TODO(content) – confirmați indicațiile de acces.
+  text: Centrul se află în Iclod, județul Cluj. TODO(content) – adăugați strada, reperele din apropiere, opțiunile de parcare și detaliile de acces.
 ---
 
 Site-ul nu are formular de contact. Mesajele pe WhatsApp ajung direct la echipa centrului, în timpul programului; în afara lui, îți răspundem în următoarea zi lucrătoare. TODO(content): confirmați timpul de răspuns.

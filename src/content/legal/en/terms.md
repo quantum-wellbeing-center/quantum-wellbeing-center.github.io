@@ -3,7 +3,7 @@ lang: en
 translationKey: terms
 title: Terms and conditions
 description: The terms of use of the website and the conditions for booking on WhatsApp or by phone, cancelling and paying for sessions at the centre. Draft for legal review.
-updated: 2026-10-18
+updated: 2026-11-02
 ---
 
 ## The parties
@@ -12,7 +12,7 @@ TODO(legal): identification of the provider (legal name, CUI, Reg. Com., registe
 
 ## The services
 
-TODO(legal): description of the services offered – individual sessions of 60 or 120 minutes, the session for two and the package of five sessions – described factually: what happens during the visit, the duration, the price and what each service includes.
+TODO(legal): description of the services offered – EESystem sessions of 60 or 90 minutes, on your own or in a small group, the 3 + 1 package and the pensioners' rate – described factually: what happens during the visit, the duration, the price and what each service includes.
 
 TODO(legal): the conditions for attending (minimum age, accompanying minors, situations in which the centre may refuse entry) and the rules of conduct at the centre.
 

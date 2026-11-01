@@ -7,7 +7,7 @@ order: 2
 featured: false
 ---
 
-Prenumele tău, serviciul dorit (de exemplu sesiunea de 60 de minute) și una sau două variante de zi și oră. Atât.
+Prenumele tău, serviciul dorit (de exemplu sesiunea EESystem de 60 de minute), una sau două variante de zi și oră și, dacă veniți în grup, câte persoane sunteți. Atât.
 
 Dacă ai programat deja la noi, spune-ne doar ziua și ora. Pentru pachete, menționează că vrei să folosești o sesiune din pachet.
 

@@ -15,7 +15,7 @@ TODO(content): article in progress. The text below is a draft and is not publish
 
 ## Clothes you can sit in for an hour
 
-Choose loose clothes without tight belts or collars, that you can sit in for an hour or two in an armchair. The room is warm, but you can take a blanket if you like.
+Choose loose clothes without tight belts or collars, that you can sit in for an hour or an hour and a half in an armchair, on a lounger or on the sofa. The room is warm, but you can take a blanket if you like.
 
 ## Something to read or listen to
 

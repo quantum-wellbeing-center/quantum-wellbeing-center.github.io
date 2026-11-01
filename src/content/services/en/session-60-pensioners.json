@@ -1,0 +1,12 @@
+{
+  "lang": "en",
+  "translationKey": "session-60-pensioners",
+  "name": "EESystem session for pensioners – 60 minutes",
+  "description": "The 60-minute EESystem session at the pensioners' rate. It goes exactly like the regular one-hour session: you stay clothed, in an armchair, on a lounger or on the sofa, and spend the slot as you like. TODO(content): confirm which document is shown at the centre for the pensioners' rate.",
+  "durationMinutes": 60,
+  "price": 50,
+  "currency": "RON",
+  "highlighted": false,
+  "order": 4,
+  "whatsappMessage": "Hello! I would like to book an appointment. Service: EESystem session for pensioners – 60 minutes."
+}

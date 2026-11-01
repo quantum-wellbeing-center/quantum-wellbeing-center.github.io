@@ -10,7 +10,7 @@ import { routes } from '../src/i18n/routes';
  * with reduced motion. The URL is read from the send link's href; WhatsApp is never opened.
  */
 
-const NUMBER = '40748011259';
+const NUMBER = '40742644016';
 const waUrl = (text: string) => `https://wa.me/${NUMBER}?text=${encodeURIComponent(text)}`;
 
 const dialog = (page: Page) => page.locator('dialog[data-chat]');
@@ -58,7 +58,7 @@ test('opens from the floating button with booking preselected and focus on the c
   await expect(chip(page, 'Vreau o programare')).toBeFocused();
   await expect(page.locator('body')).toHaveClass(/is-locked/);
   // Header: brand name, hours line and a close control with a 44px target.
-  await expect(dialog(page).locator('.chat__title')).toContainText('Centrul Wellness');
+  await expect(dialog(page).locator('.chat__title')).toContainText('Quantum Wellbeing Center');
   await expect(dialog(page).locator('.chat__hours')).toContainText('09:00');
   const close = dialog(page).locator('[data-chat-close]');
   const box = await close.boundingBox();
@@ -145,8 +145,8 @@ test('the tel: link calls the centre', async ({ page }) => {
   await fab(page).click();
   const call = page.locator('[data-chat-call]');
   await expect(call).toBeVisible();
-  await expect(call).toHaveAttribute('href', 'tel:+40748011259');
-  await expect(call).toContainText('0748 011 259');
+  await expect(call).toHaveAttribute('href', 'tel:+40742644016');
+  await expect(call).toContainText('0742 644 016');
   await expect(call).not.toHaveAttribute('target', '_blank');
 });
 
@@ -297,7 +297,7 @@ test('the contact page opens the chat from its WhatsApp button', async ({ page }
   await page.goto(routes.contact.ro);
   const trigger = page.locator('main [data-chat-open]').first();
   await expect(trigger).toBeVisible();
-  expect(await trigger.getAttribute('href')).toMatch(/^https:\/\/wa\.me\/40748011259\?text=/);
+  expect(await trigger.getAttribute('href')).toMatch(/^https:\/\/wa\.me\/40742644016\?text=/);
   await trigger.click();
   await expect(dialog(page)).toBeVisible();
   await page.keyboard.press('Escape');

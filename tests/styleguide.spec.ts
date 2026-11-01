@@ -69,7 +69,7 @@ test('header renders exactly once with landmarks, one chat panel and the floatin
   const fabBox = await page.locator('[data-whatsapp-fab]').boundingBox();
   expect(fabBox && fabBox.width >= 56 && fabBox.height >= 56).toBe(true);
   // Top bar: phone, hours, email and socials from the config.
-  await expect(page.locator('.topbar a[href="tel:+40748011259"]')).toHaveCount(1);
+  await expect(page.locator('.topbar a[href="tel:+40742644016"]')).toHaveCount(1);
   await expect(page.locator('.topbar a[href^="mailto:"]')).toHaveCount(1);
   await expect(page.locator('.topbar .hours-inline')).toHaveCount(1);
   await expect(page.locator('.topbar .socials a')).toHaveCount(4);
@@ -93,9 +93,9 @@ test('LocalBusiness structured data uses HealthAndBeautyBusiness, once per page'
     openingHoursSpecification: { dayOfWeek: string[]; opens: string; closes: string }[];
     sameAs: string[];
   };
-  expect(data.name).toBe('Centrul Wellness');
+  expect(data.name).toBe('Quantum Wellbeing Center');
   expect(data.url).toMatch(/^https?:\/\/.+\/$/);
-  expect(data.telephone).toBe('+40748011259');
+  expect(data.telephone).toBe('+40742644016');
   expect(data.address['@type']).toBe('PostalAddress');
   expect(data.openingHoursSpecification.length).toBeGreaterThan(0);
   expect(data.openingHoursSpecification[0]?.dayOfWeek).toContain('https://schema.org/Monday');
@@ -140,7 +140,7 @@ test('keyboard-only navigation: skip link, top bar, nav, language, booking, foot
   const book = page.locator('.site-header__book');
   await expect(book).toBeFocused();
   await expect(book).toHaveAttribute('data-chat-open', /.*/);
-  await expect(book).toHaveAttribute('href', /^https:\/\/wa\.me\/40748011259\?text=/);
+  await expect(book).toHaveAttribute('href', /^https:\/\/wa\.me\/40742644016\?text=/);
   await expect(book).not.toHaveAttribute('target', '_blank');
 
   // Skip link really moves focus into main.
@@ -179,7 +179,7 @@ test('mobile menu: toggle, focus trap, escape, focus return, phone link', async 
   await expect(menu).toBeVisible();
   await expect(page.locator('body')).toHaveClass(/is-locked/);
   await expect(menu.locator('a').first()).toBeFocused();
-  await expect(menu.locator('a[href="tel:+40748011259"]')).toBeVisible();
+  await expect(menu.locator('a[href="tel:+40742644016"]')).toBeVisible();
 
   // Tab from the last focusable wraps to the toggle; Shift+Tab from the toggle wraps back.
   const last = menu.locator('.site-header__book');

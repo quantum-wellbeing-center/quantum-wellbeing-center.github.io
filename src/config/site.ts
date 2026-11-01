@@ -97,28 +97,28 @@ export interface SiteConfig {
 }
 
 export const site: SiteConfig = {
-  brandName: 'Centrul Wellness', // TODO(content): real brand name
+  brandName: 'Quantum Wellbeing Center',
   tagline: {
-    ro: 'Centru de wellness în București', // TODO(content): real tagline; keep the city in sync with address.city
-    en: 'Wellness centre in Bucharest', // TODO(content): real tagline; keep the city in sync with address.city
+    ro: 'Centru de wellness în Iclod, județul Cluj', // keep the place in sync with address
+    en: 'Wellness centre in Iclod, Cluj County', // keep the place in sync with address
   },
   legal: {
     legalName: 'Exemplu Wellness SRL', // TODO(content): company legal name
     cui: 'RO00000000', // TODO(content): CUI
     regCom: 'J00/000/2000', // TODO(content): Reg. Com. number
   },
-  domain: 'https://example.com', // TODO(content): real domain, also set in astro.config.mjs
+  domain: 'https://www.quantumwellbeing.ro', // also set in astro.config.mjs and public/robots.txt
   address: {
     street: 'Str. Exemplu nr. 1', // TODO(content): street address
-    city: 'București', // TODO(content): city
-    county: 'București', // TODO(content): county
+    city: 'Iclod',
+    county: 'Cluj',
     postalCode: '000000', // TODO(content): postal code
     country: 'RO',
   },
-  phone: '0748 011 259',
-  phoneHref: '+40748011259',
-  email: 'contact@example.com', // TODO(content): email
-  whatsappNumber: '40748011259',
+  phone: '0742 644 016',
+  phoneHref: '+40742644016',
+  email: 'contact@quantumwellbeing.ro',
+  whatsappNumber: '40742644016',
   whatsappMessages: {
     ro: {
       greeting: 'Bună ziua!',
@@ -164,7 +164,7 @@ export const site: SiteConfig = {
     provider: 'telegram',
     url: 'https://t.me/example', // TODO(content): community channel link
   },
-  mapUrl: 'https://maps.google.com/?q=Str.+Exemplu+nr.+1,+Bucure%C8%99ti', // TODO(content): Google Maps link
+  mapUrl: 'https://maps.google.com/?q=Iclod,+jude%C8%9Bul+Cluj', // TODO(content): link to the exact address once the street is known
   analytics: { provider: 'none' }, // TODO(content): set a provider only if the owner wants analytics
   features: {
     reviewsEmbed: false,

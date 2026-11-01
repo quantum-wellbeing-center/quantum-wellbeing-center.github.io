@@ -2,20 +2,20 @@
 lang: ro
 translationKey: home
 title: Centru de wellness
-description: Centru de wellness în București cu sesiuni individuale de 60 sau 120 de minute într-o încăpere liniștită. Programări pe WhatsApp, prețuri afișate în lei. TODO(content) – text substituent.
+description: Centru de wellness nou în Iclod, județul Cluj, cu sesiuni EESystem de 60 sau 90 de minute, individual sau în grup mic. Programări pe WhatsApp.
 hero:
   eyebrow: Centru de wellness
-  headline: O oră într-o încăpere liniștită
-  subheading: Sesiuni individuale de 60 sau 120 de minute, într-un fotoliu, cu lumină difuză. Te programezi printr-un mesaj pe WhatsApp și plătești la centru. TODO(content) – text substituent.
+  headline: Sesiuni EESystem într-un spațiu liniștit
+  subheading: Un centru nou în Iclod, județul Cluj. Sesiuni de 60 sau 90 de minute, individual sau în grup mic. Te programezi printr-un mesaj pe WhatsApp și plătești la centru.
 intro:
   heading: Despre centru
-  text: Suntem un centru de wellness din București, cu o încăpere de sesiune, o zonă de așteptare și o echipă mică. Vii la ora stabilită, te așezi într-un fotoliu și petreci intervalul cum vrei – citind, ascultând ceva la căști sau cu ochii închiși. TODO(content) – descrieți centrul, adresa și spațiul.
+  text: Quantum Wellbeing Center este un centru de wellness nou în Iclod, județul Cluj, într-o clădire cu curte și terasă. Sala de sesiune este echipată cu EESystem și are fotolii, șezlonguri cu perne și pături și o canapea. Vii la ora stabilită, singur sau într-un grup mic, și petreci intervalul cum vrei – citind, ascultând ceva la căști sau cu ochii închiși. TODO(content) – adăugați strada.
   photo:
     alt: Clădirea centrului, cu fațadă din cărămidă gri și acoperiș închis la culoare, văzută din curtea pavată, cu plante în ghivece și o bancă
     caption: Clădirea și curtea centrului.
 services:
   heading: Servicii
-  text: Sesiuni individuale, o sesiune pentru două persoane și un pachet de cinci sesiuni. Prețurile sunt afișate în lei; detaliile complete sunt pe pagina de servicii.
+  text: Sesiuni EESystem de 60 sau 90 de minute, pachetul 3 + 1 și tariful pentru pensionari. Prețurile sunt afișate în lei; detaliile complete sunt pe pagina de servicii.
 steps:
   heading: Cum te programezi
   text: Programarea este un mesaj pe WhatsApp. Fără formular, fără cont, fără plată în avans.

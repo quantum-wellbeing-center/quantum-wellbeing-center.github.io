@@ -7,7 +7,7 @@ order: 1
 featured: true
 ---
 
-You do not need anything special. Come in comfortable clothes you can sit in for an hour or two. The room is warm, and you can take a blanket at the entrance if you like.
+You do not need anything special. Come in comfortable clothes you can sit in for an hour or an hour and a half, in an armchair, on a lounger or on the sofa; you stay clothed for the whole session. The room is warm, and you can take a blanket at the entrance if you like.
 
 Feel free to bring a book, headphones and a bottle of water. You may keep your phone with you; we suggest switching it to silent, for you and for the others in the room.
 

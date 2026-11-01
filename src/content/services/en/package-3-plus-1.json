@@ -1,0 +1,13 @@
+{
+  "lang": "en",
+  "translationKey": "package-3-plus-1",
+  "name": "3 + 1 package – 60-minute EESystem sessions",
+  "description": "Four 60-minute EESystem sessions: you pay for three and the fourth is free. You book the sessions one at a time, at your own pace, each on WhatsApp as usual, and each goes exactly like the 60-minute session. TODO(content): confirm how long the package is valid.",
+  "durationMinutes": 60,
+  "price": 210,
+  "currency": "RON",
+  "sessionsPerPackage": 4,
+  "highlighted": true,
+  "order": 3,
+  "whatsappMessage": "Hello! I would like to book an appointment. Service: 3 + 1 package – 60-minute EESystem sessions."
+}

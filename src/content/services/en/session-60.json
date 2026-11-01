@@ -1,12 +1,12 @@
 {
   "lang": "en",
   "translationKey": "session-60",
-  "name": "Individual session – 60 minutes",
-  "description": "An hour in a quiet, softly lit room, in an armchair. You can read, listen to something on headphones or simply sit with your eyes closed. On your first visit, a member of the team shows you around in a few minutes. TODO(content): confirm the price and duration.",
+  "name": "EESystem session – 60 minutes",
+  "description": "An hour in the session room, which is equipped with the EESystem. You stay clothed, in an armchair, on a lounger or on the sofa, and spend the slot as you like: you read, listen to something on headphones or sit with your eyes closed. You can come on your own or in a small group. On your first visit, a member of the team shows you around in a few minutes.",
   "durationMinutes": 60,
-  "price": 150,
+  "price": 70,
   "currency": "RON",
   "highlighted": false,
   "order": 1,
-  "whatsappMessage": "Hello! I would like to book an appointment. Service: Individual session – 60 minutes."
+  "whatsappMessage": "Hello! I would like to book an appointment. Service: EESystem session – 60 minutes."
 }

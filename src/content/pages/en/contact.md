@@ -14,7 +14,7 @@ details:
     caption: The centre's building, seen from the courtyard.
 map:
   heading: How to get here
-  text: The centre is a few minutes' walk from the metro station. There is street parking nearby, and the entrance is wheelchair accessible. TODO(content) – confirm the directions.
+  text: The centre is in Iclod, Cluj County. TODO(content) – add the street address, nearby landmarks, the parking options and the access details.
 ---
 
 The site has no contact form. WhatsApp messages go straight to the centre team during opening hours; outside them, we reply on the next working day. TODO(content): confirm the response time.

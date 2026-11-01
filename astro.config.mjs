@@ -4,8 +4,8 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  // TODO(content): replace with the real domain once the owner provides it.
-  site: 'https://example.com',
+  // Keep in sync with `domain` in src/config/site.ts and the sitemap line in public/robots.txt.
+  site: 'https://www.quantumwellbeing.ro',
   output: 'static',
   trailingSlash: 'always',
   i18n: {

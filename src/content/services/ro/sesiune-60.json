@@ -1,12 +1,12 @@
 {
   "lang": "ro",
   "translationKey": "session-60",
-  "name": "Sesiune individuală – 60 de minute",
-  "description": "O oră într-o încăpere liniștită, cu lumină difuză, într-un fotoliu. Poți citi, asculta ceva la căști sau pur și simplu să stai cu ochii închiși. La prima vizită, un membru al echipei îți arată spațiul în câteva minute. TODO(content): confirmați prețul și durata.",
+  "name": "Sesiune EESystem – 60 de minute",
+  "description": "O oră în sala de sesiune, echipată cu EESystem. Stai îmbrăcat, într-un fotoliu, pe un șezlong sau pe canapea, și petreci intervalul cum vrei: citești, asculți ceva la căști sau stai cu ochii închiși. Poți veni individual sau într-un grup mic. La prima vizită, un membru al echipei îți arată spațiul în câteva minute.",
   "durationMinutes": 60,
-  "price": 150,
+  "price": 70,
   "currency": "RON",
   "highlighted": false,
   "order": 1,
-  "whatsappMessage": "Bună ziua! Aș dori o programare. Serviciul: Sesiune individuală – 60 de minute."
+  "whatsappMessage": "Bună ziua! Aș dori o programare. Serviciul: Sesiune EESystem – 60 de minute."
 }

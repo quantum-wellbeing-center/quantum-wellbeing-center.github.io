@@ -7,7 +7,9 @@ order: 2
 featured: false
 ---
 
-Da: un pachet de cinci sesiuni de 60 de minute, plătit o singură dată la prima sesiune și folosit în ritmul tău, în termen de șase luni. Fiecare sesiune se programează pe WhatsApp, ca de obicei. TODO(content): confirmați valabilitatea.
+Da: pachetul 3 + 1. Plătești trei sesiuni EESystem de 60 de minute, iar a patra este gratuită. Folosești sesiunile în ritmul tău și programezi fiecare sesiune pe WhatsApp, ca de obicei. TODO(content): confirmați perioada de valabilitate a pachetului.
+
+Pentru pensionari există un tarif separat: sesiunea de 60 de minute costă 50 de lei. TODO(content): confirmați ce act se prezintă la centru pentru tariful de pensionar.
 
 Pachetul este nominal, dar poți oferi o sesiune din pachet unei alte persoane dacă ne anunți la programare.
 

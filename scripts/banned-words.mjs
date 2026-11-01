@@ -49,14 +49,22 @@ export const BANNED_WORDS = [
   // Effect words shared by both languages
   { label: 'relaxare / relaxation', re: /\brelax\w*/giu },
   { label: 'detox', re: /\bdetox\w*/giu },
+  // Claim vocabulary from the owner's flyers, both languages
+  { label: 'toxins', re: /\btoxin\w*/giu },
+  { label: 'DNA', re: /\b(?:ADN|DNA)\w*/gu },
+  { label: 'rejuvenation', re: /\b(?:[îi]ntiner\w*|rejuvenat\w*)/giu },
+  { label: 'oxygenation', re: /\b(?:oxigen\w*|oxygen\w*)/giu },
+  { label: 'circulation', re: /\b(?:circula[țt]i\w*|circulat(?:ion|ory)\w*)/giu },
+  { label: 'cellular', re: /\b(?:celul(?:ar|e|ă|el)\w*|cellular\w*)/giu },
   // Medical vocabulary, both languages
   { label: 'medical vocabulary: medic*', re: /\bmedic\w*/giu },
   { label: 'medical vocabulary: patient', re: /\b(?:pacien[tț]\w*|patient\w*)/giu },
   { label: 'medical vocabulary: symptom', re: /\b(?:simptom\w*|symptom\w*)/giu },
   { label: 'medical vocabulary: diagnosis', re: /\bdiagnos\w*/giu },
-  // The old technology
-  { label: 'technology: EESystem', re: /\bEE\s?System\w*|\bEESystem\w*/giu },
+  // How the technology is marketed. The name "EESystem" itself is allowed (owner decision,
+  // 2026-11-02): the site may name the sessions, but not explain or promote what they do.
   { label: 'technology: scalar', re: /\bscalar\w*/giu },
+  { label: 'technology: biophoton', re: /\bbiofoton\w*|\bbiophoton\w*/giu },
   { label: 'technology: energy', re: /\benerg\w*/giu },
   { label: 'technology: frequency', re: /\b(?:frecven[țt][ăa]\w*|frequenc\w*)/giu },
   // Conditions and diseases, both languages

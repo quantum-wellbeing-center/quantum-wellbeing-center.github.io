@@ -15,7 +15,7 @@ TODO(content): articol în lucru. Textul de mai jos este o schiță și nu este 
 
 ## Haine în care poți sta o oră
 
-Alege haine largi, fără curele sau gulere strâmte, în care poți sta o oră sau două într-un fotoliu. În încăpere este cald, dar poți lua o pătură dacă vrei.
+Alege haine largi, fără curele sau gulere strâmte, în care poți sta o oră sau o oră și jumătate într-un fotoliu, pe un șezlong sau pe canapea. În încăpere este cald, dar poți lua o pătură dacă vrei.
 
 ## Ceva de citit sau de ascultat
 

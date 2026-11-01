@@ -2,20 +2,20 @@
 lang: en
 translationKey: home
 title: Wellness centre
-description: A wellness centre in Bucharest with individual 60- or 120-minute sessions in a quiet room. Bookings on WhatsApp, prices shown in lei. TODO(content) – placeholder text.
+description: A new wellness centre in Iclod, Cluj County, with 60- or 90-minute EESystem sessions, on your own or in a small group. Bookings on WhatsApp.
 hero:
   eyebrow: Wellness centre
-  headline: An hour in a quiet room
-  subheading: Individual sessions of 60 or 120 minutes, in an armchair, with soft lighting. You book with a WhatsApp message and pay at the centre. TODO(content) – placeholder text.
+  headline: EESystem sessions in a quiet space
+  subheading: A new centre in Iclod, Cluj County. Sessions of 60 or 90 minutes, on your own or in a small group. You book with a WhatsApp message and pay at the centre.
 intro:
   heading: About the centre
-  text: We are a wellness centre in Bucharest, with one session room, a waiting area and a small team. You come at the agreed time, settle into an armchair and spend the slot as you like – reading, listening to something on headphones or with your eyes closed. TODO(content) – describe the centre, the address and the space.
+  text: Quantum Wellbeing Center is a new wellness centre in Iclod, Cluj County, in a building with a courtyard and a terrace. The session room is equipped with the EESystem and has armchairs, loungers with cushions and blankets, and a sofa. You come at the agreed time, on your own or in a small group, and spend the slot as you like – reading, listening to something on headphones or with your eyes closed. TODO(content) – add the street address.
   photo:
     alt: The centre's building, with a grey brick façade and a dark roof, seen from the paved courtyard with potted plants and a bench
     caption: The building and the courtyard.
 services:
   heading: Services
-  text: Individual sessions, a session for two and a package of five sessions. Prices are shown in lei; the full details are on the services page.
+  text: EESystem sessions of 60 or 90 minutes, the 3 + 1 package and the pensioners' rate. Prices are shown in lei; the full details are on the services page.
 steps:
   heading: How to book
   text: Booking is a WhatsApp message. No form, no account, no advance payment.

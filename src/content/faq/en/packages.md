@@ -7,7 +7,9 @@ order: 2
 featured: false
 ---
 
-Yes: a package of five 60-minute sessions, paid once at the first session and used at your own pace within six months. Each session is booked on WhatsApp as usual. TODO(content): confirm the validity period.
+Yes: the 3 + 1 package. You pay for three 60-minute EESystem sessions and the fourth is free. You use the sessions at your own pace and book each one on WhatsApp as usual. TODO(content): confirm how long the package is valid.
+
+There is also a separate rate for pensioners: the 60-minute session costs 50 lei. TODO(content): confirm which document is shown at the centre for the pensioners' rate.
 
 The package is personal, but you can give a session from it to someone else if you tell us when booking.
 

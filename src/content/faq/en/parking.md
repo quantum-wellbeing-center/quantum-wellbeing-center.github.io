@@ -7,6 +7,6 @@ order: 2
 featured: false
 ---
 
-There is street parking around the centre, usually paid during the day. TODO(content): confirm the parking options, the fees and the nearest public car park.
+If you come by car, message us on WhatsApp and we will tell you where to park near the centre. TODO(content): confirm the parking options near the centre in Iclod.
 
 If you come by bike, you can leave it in front of the entrance. TODO(content): confirm whether there is a bike rack.

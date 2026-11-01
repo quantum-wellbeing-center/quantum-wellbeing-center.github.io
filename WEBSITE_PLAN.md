@@ -17,7 +17,7 @@ Before any visual work, invoke the project skill `hig-foundations` (.claude/skil
 
 Rules:
 - Static site. It must run locally with `npm run dev`, preview the production build with `npm run preview`, and deploy to any static host.
-- Appointments and contact go through an on-site WhatsApp chat panel that opens WhatsApp with a prefilled message to +40 748 011 259. There is no contact form and no booking backend. Section 8 specifies the chat.
+- Appointments and contact go through an on-site WhatsApp chat panel that opens WhatsApp with a prefilled message to +40 742 644 016. There is no contact form and no booking backend. Section 8 specifies the chat.
 - The site makes no claims of any kind. No health, therapeutic, medical or benefit claims, no before/after images, no lists of effects. Describe the centre and its services factually. Section 9 has the full rules.
 - All site content lives in content collections and config files, never hard-coded inside components.
 - Section 2 lists owner inputs. Where a value is blank, use a clearly fake placeholder and mark it with "TODO(content)". Mark draft legal text with "TODO(legal)".
@@ -37,18 +37,18 @@ Anything left blank becomes a TODO(content) placeholder.
 | Item | Value |
 |---|---|
 | Positioning | Centru de wellness (wellbeing centre) |
-| Phone | 0748 011 259 |
-| Phone link | tel:+40748011259 |
-| WhatsApp for appointments | +40 748 011 259, link base `https://wa.me/40748011259` |
-| Brand name | |
-| Domain | |
-| Address and city | |
+| Phone | 0742 644 016 |
+| Phone link | tel:+40742644016 |
+| WhatsApp for appointments | +40 742 644 016, link base `https://wa.me/40742644016` |
+| Brand name | Quantum Wellbeing Center |
+| Domain | https://www.quantumwellbeing.ro |
+| Address and city | Iclod, județul Cluj (street and postal code still missing) |
 | Opening hours | |
-| Email | |
+| Email | contact@quantumwellbeing.ro |
 | Social links (Facebook, Instagram, YouTube, TikTok) | |
 | Community channel (Telegram or WhatsApp channel) | |
 | Logo file and one brand accent colour (hex) | |
-| Services, session lengths and prices | |
+| Services, session lengths and prices | EESystem sessions, individual or in a small group: 60 min 70 RON; 90 min 90 RON; package of 3 + 1 free (four 60-min sessions, 210 RON); pensioners 50 RON per 60-min session |
 | Company legal details (name, CUI, Reg. Com.) | |
 | Analytics wanted? Which tool? | |
 | Research documents (PDFs and their metadata) | |
@@ -236,8 +236,8 @@ Site-wide values such as phone, WhatsApp number, prefilled messages, socials, op
   - Clicking it opens a chat-style panel built on the native `dialog` element, with the material background. It has a header with the centre's name and logo, plus a line such as "Îți răspundem în timpul programului" with the hours from config.
   - The panel shows a greeting bubble, "Bună! Cu ce te putem ajuta?", and quick-reply chips: "Vreau o programare", "Întrebare despre prețuri" and "Altă întrebare".
   - Below the bubble are optional fields for name and preferred day and time, a message box, and a "Trimite pe WhatsApp" button.
-  - Sending opens `https://wa.me/40748011259?text=` plus the URL-encoded message. The message is assembled from the chosen chip, the fields and the page language. Example: "Bună ziua! Aș dori o programare. Nume: Ana. Ziua/ora preferată: joi după-amiază."
-  - A secondary "Sună: 0748 011 259" link uses `tel:+40748011259`.
+  - Sending opens `https://wa.me/40742644016?text=` plus the URL-encoded message. The message is assembled from the chosen chip, the fields and the page language. Example: "Bună ziua! Aș dori o programare. Nume: Ana. Ziua/ora preferată: joi după-amiază."
+  - A secondary "Sună: 0742 644 016" link uses `tel:+40742644016`.
   - Every "Rezervă" and "Programează-te" button opens the same panel. Service cards preselect "Vreau o programare" and add the service name to the message.
   - Without JavaScript, each of those buttons is a plain `wa.me` link with a default prefilled message, so booking still works.
   - The panel loads no third-party script and sets no cookies. Nothing is sent anywhere until the visitor taps send. Focus is trapped while open, Escape closes it, and focus returns to the button that opened it.
@@ -278,6 +278,7 @@ The site presents a Centru de wellness and makes no claims of any kind.
 - **No health or benefit claims.** Do not say or imply that any service treats, cures, prevents, heals, repairs, detoxifies, boosts immunity, reduces stress or pain, slows ageing, or improves any condition. Avoid words such as "vindecă", "tratează", "previne", "terapie", "beneficii", "efecte" and their English equivalents.
 - **No conditions or diseases** mentioned anywhere, including in FAQ answers, testimonials, articles and image alt text.
 - **Describe services factually:** what the service is, what happens during a visit, how long it takes, what it costs, and how to book.
+- **EESystem by name only.** The sessions may be called EESystem sessions (owner decision, 2026-11-02). Do not expand the acronym, explain how the system works, or repeat any wording from the owner's flyers about what it does: scalar fields, biophotons, energy, frequencies, detox, cells, DNA, circulation, sleep, balance, or any condition.
 - **No before/after images.** The gallery shows the space, the team and the atmosphere only.
 - **Testimonials** talk about the experience, the staff, the space or the booking. Leave out any quote that mentions health results, even from a real client. Publish them only with written consent.
 - **Research library** lists documents neutrally, with no summaries of findings and no headline claims.

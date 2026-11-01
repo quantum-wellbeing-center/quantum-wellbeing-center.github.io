@@ -1,0 +1,12 @@
+{
+  "lang": "ro",
+  "translationKey": "session-60-pensioners",
+  "name": "Sesiune EESystem pentru pensionari – 60 de minute",
+  "description": "Sesiunea EESystem de 60 de minute, la tariful pentru pensionari. Decurge la fel ca sesiunea obișnuită de o oră: stai îmbrăcat, într-un fotoliu, pe un șezlong sau pe canapea, și petreci intervalul cum vrei. TODO(content): confirmați ce act se prezintă la centru pentru tariful de pensionar.",
+  "durationMinutes": 60,
+  "price": 50,
+  "currency": "RON",
+  "highlighted": false,
+  "order": 4,
+  "whatsappMessage": "Bună ziua! Aș dori o programare. Serviciul: Sesiune EESystem pentru pensionari – 60 de minute."
+}

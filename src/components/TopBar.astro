@@ -33,7 +33,7 @@ const t = useTranslations(lang);
           <span class="visually-hidden">{t('topBar.hours')}: </span>
           <OpeningHours lang={lang} inline />
         </li>
-        <li>
+        <li class="topbar__email">
           <a class="topbar__link" href={`mailto:${site.email}`}>
             <Icon name="mail" size={16} />
             <span class="visually-hidden">{t('topBar.email')}: </span>
@@ -57,6 +57,13 @@ const t = useTranslations(lang);
   @media (min-width: 56.25em) {
     .topbar {
       display: block;
+    }
+  }
+  /* Just above 900px the email would push the bar onto two lines; the footer and the contact
+     page still show it. */
+  @media (max-width: 59.99em) {
+    .topbar__email {
+      display: none;
     }
   }
   .topbar__inner {

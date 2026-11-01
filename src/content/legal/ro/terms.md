@@ -3,7 +3,7 @@ lang: ro
 translationKey: terms
 title: Termeni și condiții
 description: Termenii de utilizare a site-ului și condițiile de programare pe WhatsApp sau telefon, de anulare și de plată pentru sesiunile din centru. Schiță pentru revizuire juridică.
-updated: 2026-10-18
+updated: 2026-11-02
 ---
 
 ## Părțile
@@ -12,7 +12,7 @@ TODO(legal): identificarea prestatorului (denumire legală, CUI, Reg. Com., sedi
 
 ## Serviciile
 
-TODO(legal): descrierea serviciilor oferite – sesiuni individuale de 60 sau 120 de minute, sesiunea pentru două persoane și pachetul de cinci sesiuni – descrise factual: ce se întâmplă la vizită, durata, prețul și ce include fiecare serviciu.
+TODO(legal): descrierea serviciilor oferite – sesiunile EESystem de 60 sau 90 de minute, individual sau în grup mic, pachetul 3 + 1 și tariful pentru pensionari – descrise factual: ce se întâmplă la vizită, durata, prețul și ce include fiecare serviciu.
 
 TODO(legal): condițiile de participare (vârsta minimă, însoțirea minorilor, situațiile în care centrul poate refuza accesul) și regulile de conduită în centru.
 
