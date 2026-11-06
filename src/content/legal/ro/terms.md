@@ -12,7 +12,7 @@ TODO(legal): identificarea prestatorului (denumire legală, CUI, Reg. Com., sedi
 
 ## Serviciile
 
-TODO(legal): descrierea serviciilor oferite – sesiunile EESystem de 60 sau 90 de minute, individual sau în grup mic, pachetul 3 + 1 și tariful pentru pensionari – descrise factual: ce se întâmplă la vizită, durata, prețul și ce include fiecare serviciu.
+TODO(legal): descrierea serviciilor oferite – sesiunile EESystem de 60, 90 sau 120 de minute, individual sau în grup mic – descrise factual: ce se întâmplă la vizită, durata, prețul și ce include fiecare serviciu.
 
 TODO(legal): condițiile de participare (vârsta minimă, însoțirea minorilor, situațiile în care centrul poate refuza accesul) și regulile de conduită în centru.
 
@@ -22,11 +22,11 @@ TODO(legal): programarea se face printr-un mesaj pe WhatsApp la numărul afișat
 
 ## Anulări și reprogramări
 
-TODO(legal): anularea sau mutarea unei programări se face printr-un mesaj pe WhatsApp sau telefonic, fără cost, cu cel puțin 24 de ore înainte de ora stabilită. Precizați consecințele anulărilor târzii și ale neprezentării (inclusiv pentru sesiunile dintr-un pachet), regula pentru întârzieri și condițiile în care centrul poate anula sau muta o programare.
+TODO(legal): anularea sau mutarea unei programări se face printr-un mesaj pe WhatsApp sau telefonic, fără cost, cu cel puțin 24 de ore înainte de ora stabilită. Precizați consecințele anulărilor târzii și ale neprezentării, regula pentru întârzieri și condițiile în care centrul poate anula sau muta o programare.
 
 ## Plata și prețurile
 
-TODO(legal): prețurile afișate în lei, mențiunea privind TVA, modalitățile de plată acceptate la recepție, valabilitatea pachetelor, politica de rambursare pentru sesiunile neconsumate și emiterea bonului fiscal și a facturilor.
+TODO(legal): prețurile afișate în lei, mențiunea privind TVA, modalitățile de plată acceptate la recepție, politica de rambursare și emiterea bonului fiscal și a facturilor.
 
 ## Răspunderea
 

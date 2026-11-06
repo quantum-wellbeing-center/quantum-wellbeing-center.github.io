@@ -2,6 +2,7 @@
   "lang": "ro",
   "translationKey": "session-90",
   "name": "Sesiune EESystem – 90 de minute",
+  "durationLabel": "O oră și 30 min",
   "description": "O oră și jumătate în aceeași sală, echipată cu EESystem, pentru cine vrea un interval mai lung. Decurge la fel ca sesiunea de 60 de minute: stai îmbrăcat, într-un fotoliu, pe un șezlong sau pe canapea, cu pătură și apă la îndemână, fără nimic de făcut. Poți veni individual sau într-un grup mic.",
   "durationMinutes": 90,
   "price": 90,

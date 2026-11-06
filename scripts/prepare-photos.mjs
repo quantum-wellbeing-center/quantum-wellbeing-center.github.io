@@ -16,13 +16,8 @@
  * Output (long edge at most 2400px, mozjpeg at quality 82, metadata stripped):
  *
  *   banner.jpg       1553x775   the banner without its frame (home hero background)
- *   building.jpg     1500x2000  the building and courtyard, portrait (home intro)
  *   facade.jpg       1500x1000  the building and courtyard, landscape crop (gallery, contact)
- *   courtyard.jpg    780x520    the planter with the potted plants (gallery)
- *   room.jpg         2048x1408  the main room, cropped to start below the shelf (services, gallery)
- *   prints.jpg       1200x800   the three framed prints above the sofa (gallery)
- *   loungers.jpg     1148x765   the two loungers with their cushions (gallery)
- *   armchair.jpg     900x600    the armchair by the side table (gallery)
+ *   room.jpg         2048x1408  the main room, cropped to start below the shelf (gallery)
  *   public/og-default.png 1200x630  the banner, cover-cropped around the logo
  */
 import { existsSync, mkdirSync } from 'node:fs';
@@ -50,34 +45,14 @@ const BANNER_FRAME = { left: 31, top: 28, width: 1553, height: 775 };
 /** @type {{ file: string; from: string; crop?: sharp.Region }[]} */
 const photos = [
   { file: 'banner.jpg', from: 'backgroud.jpeg', crop: BANNER_FRAME },
-  { file: 'building.jpg', from: 'building.jpeg' },
   {
     file: 'facade.jpg',
     from: 'building.jpeg',
     crop: { left: 0, top: 700, width: 1500, height: 1000 },
   },
-  {
-    file: 'courtyard.jpg',
-    from: 'building.jpeg',
-    crop: { left: 600, top: 1120, width: 780, height: 520 },
-  },
   // The room is cropped just below the wall shelf, so the photo starts at the framed prints.
+  // No zoomed-in detail crops (owner's request, 2026-11-06): only whole views of the space.
   { file: 'room.jpg', from: 'wall.jpeg', crop: { left: 0, top: 640, width: 2048, height: 1408 } },
-  {
-    file: 'prints.jpg',
-    from: 'wall.jpeg',
-    crop: { left: 380, top: 650, width: 1200, height: 800 },
-  },
-  {
-    file: 'loungers.jpg',
-    from: 'wall.jpeg',
-    crop: { left: 900, top: 1000, width: 1148, height: 765 },
-  },
-  {
-    file: 'armchair.jpg',
-    from: 'wall.jpeg',
-    crop: { left: 60, top: 1000, width: 900, height: 600 },
-  },
 ];
 
 for (const { file, from, crop } of photos) {

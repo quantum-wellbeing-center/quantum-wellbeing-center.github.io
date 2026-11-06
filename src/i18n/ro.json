@@ -7,11 +7,10 @@
   },
   "nav": {
     "home": "Acasă",
-    "services": "Servicii",
+    "about": "Despre EESystem",
     "research": "Cercetări științifice",
     "testimonials": "Testimoniale",
     "pricing": "Prețuri",
-    "articles": "Articole",
     "faq": "Întrebări frecvente",
     "contact": "Contact",
     "terms": "Termeni și condiții",
@@ -31,34 +30,27 @@
     "brandHome": "{brand}, pagina principală",
     "whatsappButton": "Scrie-ne pe WhatsApp",
     "testimonialsRow": "Testimoniale, listă derulabilă orizontal",
-    "pagination": "Paginare",
-    "articleNav": "Articole alăturate",
-    "tableOfContents": "Cuprins",
-    "rss": "Flux RSS"
+    "tableOfContents": "Cuprins"
   },
   "actions": {
     "book": "Rezervă",
     "bookSession": "Rezervă o sesiune",
     "whatsapp": "WhatsApp",
     "openPdf": "Deschide PDF",
-    "openInMaps": "Deschide în Google Maps",
     "readMore": "Citește mai mult",
     "backHome": "Înapoi la pagina principală",
     "send": "Trimite",
     "close": "Închide",
     "search": "Caută",
     "clear": "Șterge",
-    "joinCommunity": "Intră în comunitate",
     "seeAllTestimonials": "Vezi toate testimonialele",
     "seeAllFaq": "Vezi toate întrebările",
     "seePricing": "Vezi prețurile",
     "contactUs": "Contactează-ne",
     "openImage": "Deschide imaginea",
-    "backToArticles": "Înapoi la articole",
     "openDocument": "Deschide documentul",
     "bookWhatsApp": "Programează-te pe WhatsApp",
     "bookShort": "Programează-te",
-    "seeServices": "Vezi serviciile",
     "writeWhatsApp": "Scrie-ne pe WhatsApp",
     "callNumber": "Sună: {phone}",
     "sendWhatsApp": "Trimite pe WhatsApp",
@@ -92,12 +84,8 @@
     "usefulLinks": "Linkuri utile",
     "company": "Companie",
     "contact": "Contact",
-    "community": "Comunitate",
-    "communityText": "Primește noutăți despre program și evenimente în canalul nostru.",
     "follow": "Urmărește-ne",
     "legalDetails": "{legalName} · CUI {cui} · {regCom}",
-    "anpcSal": "ANPC SAL: soluționarea alternativă a litigiilor",
-    "solNote": "TODO(legal): platforma europeană SOL s-a închis în iulie 2025. Confirmați cu consilierul juridic dacă insigna mai este necesară.",
     "copyright": "© {year} {brand}. Toate drepturile rezervate.",
     "cookiePreferences": "Preferințe cookie"
   },
@@ -136,12 +124,6 @@
     "close": "Închide"
   },
   "common": {
-    "readingTime": "{minutes} min de citit",
-    "published": "Publicat",
-    "updated": "Actualizat",
-    "by": "de",
-    "tags": "Etichete",
-    "page": "Pagina {current} din {total}",
     "next": "Următoarea",
     "previous": "Anterioara",
     "results": "{count} rezultate",
@@ -152,7 +134,6 @@
     "all": "Toate",
     "price": "Preț",
     "duration": "{minutes} min",
-    "vatNote": "TODO(content): precizați dacă prețurile includ TVA.",
     "placeholder": "Exemplu"
   },
   "documentType": {
@@ -167,59 +148,46 @@
   "research": {
     "count": "{count} documente",
     "countOne": "1 document",
+    "countMany": "{count} de documente",
     "externalLink": "Link extern",
     "fileMeta": "{type} · {size}",
     "doi": "DOI",
     "typeLabel": "Tip de document",
-    "noYear": "an nespecificat",
-    "searchLabel": "Caută în bibliotecă"
-  },
-  "carousel": {
-    "label": "Galerie foto",
-    "pause": "Oprește derularea automată",
-    "play": "Pornește derularea automată",
-    "previous": "Imaginea anterioară",
-    "next": "Imaginea următoare",
-    "slideLabel": "{n} din {total}"
+    "summary": "Rezumat",
+    "summaryLabel": "Rezumatul studiului",
+    "searchLabel": "Caută în bibliotecă",
+    "pilotHeading": "Studii pilot",
+    "othersHeading": "Alte documente"
   },
   "testimonials": {
     "rating": "{rating} din 5 stele",
     "source": {
       "google": "Recenzie Google",
       "in-person": "Spus în centru"
+    },
+    "world": {
+      "heading": "Experiențe din centrele EESystem din lume",
+      "text": "Centrul nostru s-a deschis de curând, așa că nu avem încă testimoniale proprii. Pe site-ul oficial EESystem (în limba engleză) poți citi și urmări experiențele oamenilor din centrele din întreaga lume.",
+      "read": "Citește testimonialele",
+      "watch": "Urmărește testimonialele video"
     }
   },
   "pricing": {
     "recommended": "Recomandat",
-    "from": "de la {price}",
-    "perSession": "{price} pe sesiune",
-    "package": "Pachet de {count} sesiuni",
-    "perSessionDuration": "{minutes} min pe sesiune"
-  },
-  "articles": {
-    "empty": "Nu există articole încă.",
-    "previous": "Articolul anterior",
-    "next": "Articolul următor",
-    "pageTitle": "{title} – pagina {page}",
-    "feedTitle": "{brand} – Articole",
-    "feedDescription": "Articole despre vizita la centru, programarea pe WhatsApp și echipa."
-  },
-  "faq": {
-    "category": {
-      "booking": "Programare",
-      "cancellation": "Anulare și reprogramare",
-      "visit": "Vizita",
-      "payment": "Plată și prețuri",
-      "location": "Locație și parcare"
-    }
+    "from": "de la {price}"
   },
   "contact": {
     "address": "Adresă",
     "phone": "Telefon",
     "email": "E-mail",
     "hours": "Program",
-    "socials": "Rețele sociale",
-    "mapAlt": "Hartă substituent spre adresa centrului. TODO(content): înlocuiți cu o imagine statică a hărții."
+    "county": "județul {county}",
+    "mapTitle": "Hartă Google Maps cu locația centrului"
+  },
+  "video": {
+    "play": "Pornește videoclipul: {title}",
+    "watchOnYouTube": "Vezi pe YouTube",
+    "consentNote": "Videoclipul se încarcă de pe YouTube doar după ce apeși pe el."
   },
   "legal": {
     "draftNotice": "TODO(legal): acest text este o schiță structurală pentru revizuire de către consilierul juridic al centrului. Nu este încă un document cu valoare juridică.",

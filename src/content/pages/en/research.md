@@ -2,16 +2,17 @@
 lang: en
 translationKey: research
 title: Scientific research
-description: A library of documents listed for information, with authors, year, document type and source. Some of them are not peer-reviewed. TODO(content) – placeholder text.
-subheading: The documents below are listed for information. Each has authors, a year, a document type and a source. Some of them are not peer-reviewed.
-groups:
-  publications:
-    heading: Published articles
-    text: Articles that appeared in peer-reviewed journals, and literature reviews.
-  studies:
-    heading: Studies and case reports
-    text: Studies with a registered protocol, pilot studies and case reports.
-  other-documents:
-    heading: Other documents
-    text: Reports by organisations, technical data sheets and documents hosted on other sites.
+description: Studies, reports and articles about the Energy Enhancement System (EESystem), with authors, year and the full document as a PDF.
+subheading: Studies, reports and articles about Energy Enhancement System technology, listed for information. Each one opens as a PDF document.
+library:
+  heading: Energy Enhancement System
+  link:
+    label: See testimonials from EESystem centres around the world
+    href: https://www.unifydhealing.com/testimonials
+cta:
+  heading: Quantum Wellbeing Center
+  text: Book an EESystem session at our centre in Iclod. Message us on WhatsApp and we will agree the day and time together.
+testimonials:
+  heading: What our clients say
+  text: A few words from people who have come to sessions.
 ---

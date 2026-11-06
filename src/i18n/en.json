@@ -7,11 +7,10 @@
   },
   "nav": {
     "home": "Home",
-    "services": "Services",
+    "about": "About EESystem",
     "research": "Scientific research",
     "testimonials": "Testimonials",
     "pricing": "Pricing",
-    "articles": "Articles",
     "faq": "FAQ",
     "contact": "Contact",
     "terms": "Terms and conditions",
@@ -31,34 +30,27 @@
     "brandHome": "{brand}, home page",
     "whatsappButton": "Message us on WhatsApp",
     "testimonialsRow": "Testimonials, horizontally scrollable list",
-    "pagination": "Pagination",
-    "articleNav": "Neighbouring articles",
-    "tableOfContents": "Contents",
-    "rss": "RSS feed"
+    "tableOfContents": "Contents"
   },
   "actions": {
     "book": "Book",
     "bookSession": "Book a session",
     "whatsapp": "WhatsApp",
     "openPdf": "Open PDF",
-    "openInMaps": "Open in Google Maps",
     "readMore": "Read more",
     "backHome": "Back to the home page",
     "send": "Send",
     "close": "Close",
     "search": "Search",
     "clear": "Clear",
-    "joinCommunity": "Join the community",
     "seeAllTestimonials": "See all testimonials",
     "seeAllFaq": "See all questions",
     "seePricing": "See prices",
     "contactUs": "Contact us",
     "openImage": "Open image",
-    "backToArticles": "Back to articles",
     "openDocument": "Open document",
     "bookWhatsApp": "Book on WhatsApp",
     "bookShort": "Book",
-    "seeServices": "See the services",
     "writeWhatsApp": "Message us on WhatsApp",
     "callNumber": "Call: {phone}",
     "sendWhatsApp": "Send on WhatsApp",
@@ -92,12 +84,8 @@
     "usefulLinks": "Useful links",
     "company": "Company",
     "contact": "Contact",
-    "community": "Community",
-    "communityText": "Get news about the schedule and events in our channel.",
     "follow": "Follow us",
     "legalDetails": "{legalName} · CUI {cui} · {regCom}",
-    "anpcSal": "ANPC SAL: alternative dispute resolution",
-    "solNote": "TODO(legal): the EU ODR (SOL) platform closed in July 2025. Confirm with the legal adviser whether the badge is still required.",
     "copyright": "© {year} {brand}. All rights reserved.",
     "cookiePreferences": "Cookie preferences"
   },
@@ -136,12 +124,6 @@
     "close": "Close"
   },
   "common": {
-    "readingTime": "{minutes} min read",
-    "published": "Published",
-    "updated": "Updated",
-    "by": "by",
-    "tags": "Tags",
-    "page": "Page {current} of {total}",
     "next": "Next",
     "previous": "Previous",
     "results": "{count} results",
@@ -152,7 +134,6 @@
     "all": "All",
     "price": "Price",
     "duration": "{minutes} min",
-    "vatNote": "TODO(content): state whether prices include VAT.",
     "placeholder": "Example"
   },
   "documentType": {
@@ -167,59 +148,46 @@
   "research": {
     "count": "{count} documents",
     "countOne": "1 document",
+    "countMany": "{count} documents",
     "externalLink": "External link",
     "fileMeta": "{type} · {size}",
     "doi": "DOI",
     "typeLabel": "Document type",
-    "noYear": "year not given",
-    "searchLabel": "Search the library"
-  },
-  "carousel": {
-    "label": "Photo gallery",
-    "pause": "Pause automatic scrolling",
-    "play": "Start automatic scrolling",
-    "previous": "Previous image",
-    "next": "Next image",
-    "slideLabel": "{n} of {total}"
+    "summary": "Summary",
+    "summaryLabel": "Summary of the study",
+    "searchLabel": "Search the library",
+    "pilotHeading": "Pilot studies",
+    "othersHeading": "Other documents"
   },
   "testimonials": {
     "rating": "{rating} out of 5 stars",
     "source": {
       "google": "Google review",
       "in-person": "Said at the centre"
+    },
+    "world": {
+      "heading": "Experiences from EESystem centres around the world",
+      "text": "Our centre has only just opened, so we do not have testimonials of our own yet. On the official EESystem site you can read and watch the experiences of people at centres around the world.",
+      "read": "Read the testimonials",
+      "watch": "Watch the video testimonials"
     }
   },
   "pricing": {
     "recommended": "Recommended",
-    "from": "from {price}",
-    "perSession": "{price} per session",
-    "package": "Package of {count} sessions",
-    "perSessionDuration": "{minutes} min per session"
-  },
-  "articles": {
-    "empty": "No articles yet.",
-    "previous": "Previous article",
-    "next": "Next article",
-    "pageTitle": "{title} – page {page}",
-    "feedTitle": "{brand} – Articles",
-    "feedDescription": "Articles about visiting the centre, booking on WhatsApp and the team."
-  },
-  "faq": {
-    "category": {
-      "booking": "Booking",
-      "cancellation": "Cancellation and rescheduling",
-      "visit": "The visit",
-      "payment": "Payment and prices",
-      "location": "Location and parking"
-    }
+    "from": "from {price}"
   },
   "contact": {
     "address": "Address",
     "phone": "Phone",
     "email": "Email",
     "hours": "Opening hours",
-    "socials": "Social media",
-    "mapAlt": "Placeholder map pointing to the centre's address. TODO(content): replace with a static map image."
+    "county": "{county} County",
+    "mapTitle": "Google Maps showing the centre's location"
+  },
+  "video": {
+    "play": "Play the video: {title}",
+    "watchOnYouTube": "Watch on YouTube",
+    "consentNote": "The video loads from YouTube only after you press it."
   },
   "legal": {
     "draftNotice": "TODO(legal): this text is a structural draft for review by the centre's legal adviser. It is not yet a legally binding document.",

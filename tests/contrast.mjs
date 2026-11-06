@@ -202,6 +202,20 @@ for (const bg of brandBackgrounds) {
       ok: r >= target,
     });
   }
+  // Draft-legal note in the page-intro band: amber text over its amber tint. The band is plain
+  // navy (it never sits on the teal end of the CTA gradient), so only navy is checked.
+  if (bg === 'brand-navy') {
+    const warnSurface = composite(parseRgba(brand['warning-tint']), hexToRgb(brand[bg]));
+    const warn = ratio(hexToRgb(brand['warning-strong']), warnSurface);
+    if (warn < 4.5) failed = true;
+    rows.push({
+      theme: 'brand',
+      pair: `warning-strong on warning-tint over ${bg}`,
+      ratio: warn.toFixed(2),
+      target: 4.5,
+      ok: warn >= 4.5,
+    });
+  }
   // Secondary button: white text over the translucent white tint.
   const surface = composite(parseRgba(brand['accent-tint']), hexToRgb(brand[bg]));
   const tinted = ratio(hexToRgb(brand['accent-strong']), surface);
@@ -235,19 +249,17 @@ rows.push({
   target: 4.5,
   ok: brandBtn >= 4.5,
 });
-// Hero scrim (src/components/sections/Hero.astro): every line of copy sits on `--brand-navy`
-// at 90% (`--hero-scrim-strong`); the band above the copy fades through 30% but carries no
-// text. Worst case: text over the 90% scrim composited on a pure white pixel, since the
-// banner's particle highlights reach #ffffff. The headline is large text (3:1) but is held to
-// the body target here, which it clears by a wide margin.
+// Hero (src/components/sections/Hero.astro): the copy sits on the banner under a `--brand-navy`
+// scrim at 80%. Worst case: that scrim composited on a pure white pixel (the banner's particle
+// highlights reach #ffffff). The headline is large text (3:1) but is held to the body target here.
 const white = [255, 255, 255];
-const heroSurface = composite({ rgb: hexToRgb(brand['brand-navy']), alpha: 0.9 }, white);
+const heroSurface = composite({ rgb: hexToRgb(brand['brand-navy']), alpha: 0.8 }, white);
 for (const token of ['label', 'label-secondary', 'accent']) {
   const r = ratio(hexToRgb(brand[token]), heroSurface);
   if (r < 4.5) failed = true;
   rows.push({
     theme: 'hero',
-    pair: `${token} on navy scrim (90%) over a white pixel`,
+    pair: `${token} on navy scrim (80%) over a white pixel`,
     ratio: r.toFixed(2),
     target: 4.5,
     ok: r >= 4.5,

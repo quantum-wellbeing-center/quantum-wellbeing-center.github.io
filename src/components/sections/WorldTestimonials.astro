@@ -1,0 +1,50 @@
+---
+/**
+ * WorldTestimonials: shown while the centre has no published testimonials of its own. A heading,
+ * a short lead and links to the written and video testimonials on the official EESystem site.
+ * Nothing from that site is copied here (its terms forbid it): the section only links out.
+ * Once a local testimonial with written consent exists, pages show TestimonialRow instead.
+ */
+import { useTranslations, type Locale } from '../../i18n';
+import Section from '../ui/Section.astro';
+import Button from '../ui/Button.astro';
+import SectionHeading from './SectionHeading.astro';
+
+interface Props {
+  lang: Locale;
+  id: string;
+  tone?: 'default' | 'secondary';
+}
+
+const EESYSTEM_TESTIMONIALS = 'https://www.eesystem.com/testimonials';
+const EESYSTEM_VIDEO_TESTIMONIALS = 'https://www.eesystem.com/testimonials-videos';
+
+const { lang, id, tone = 'default' } = Astro.props;
+const t = useTranslations(lang);
+const headingId = `${id}-heading`;
+---
+
+<Section tone={tone} id={id} aria-labelledby={headingId} class="world-testimonials">
+  <SectionHeading
+    id={headingId}
+    title={t('testimonials.world.heading')}
+    text={t('testimonials.world.text')}
+  />
+  <p class="world-testimonials__links">
+    <Button href={EESYSTEM_TESTIMONIALS} variant="secondary" newTabLabel={t('a11y.newTab')}>
+      {t('testimonials.world.read')}
+    </Button>
+    <Button href={EESYSTEM_VIDEO_TESTIMONIALS} variant="secondary" newTabLabel={t('a11y.newTab')}>
+      {t('testimonials.world.watch')}
+    </Button>
+  </p>
+</Section>
+
+<style>
+  .world-testimonials__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-block-start: calc(-1 * var(--space-3));
+  }
+</style>

@@ -2,13 +2,8 @@
 lang: en
 translationKey: how-to-book
 question: How do I book?
-category: booking
-order: 1
+order: 7
 featured: true
 ---
 
-On WhatsApp. Tap the "Book on WhatsApp" button on any page: a conversation opens with a ready-made message, where you add your preferred day and time. We reply during opening hours and confirm the slot.
-
-If you would rather talk to someone, you can call the number shown on the contact page during opening hours.
-
-There is no form on the site and no advance payment is needed. TODO(content): confirm the hours during which messages are answered.
+On WhatsApp: tap "Book on WhatsApp" and send us your preferred day and time. You can also call the number on the [Contact](/en/contact/) page. No advance payment is needed; you pay at the centre.

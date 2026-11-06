@@ -158,10 +158,12 @@ export function formatDate(
   return new Intl.DateTimeFormat(bcp47(lang), options).format(value);
 }
 
+/** "70 lei" in Romanian (the narrow symbol, as on the price list), "RON 70" in English. */
 export function formatPrice(lang: Locale, amount: number, currency = 'RON'): string {
   return new Intl.NumberFormat(bcp47(lang), {
     style: 'currency',
     currency,
+    currencyDisplay: lang === 'ro' ? 'narrowSymbol' : 'symbol',
     maximumFractionDigits: Number.isInteger(amount) ? 0 : 2,
   }).format(amount);
 }

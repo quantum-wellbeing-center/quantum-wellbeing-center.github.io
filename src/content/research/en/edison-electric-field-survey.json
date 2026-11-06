@@ -1,0 +1,13 @@
+{
+  "lang": "en",
+  "translationKey": "edison-electric-field-survey",
+  "title": "Edison Electric Field Survey",
+  "authors": [
+    "Brian Thorson",
+    "Frank Haggard Jr."
+  ],
+  "year": 2004,
+  "source": "Center of the Open Rose",
+  "pdf": "/research/edison-electric-field-survey.pdf",
+  "cover": "../../../assets/research/edison-electric-field-survey.jpg"
+}

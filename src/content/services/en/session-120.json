@@ -1,0 +1,13 @@
+{
+  "lang": "en",
+  "translationKey": "session-120",
+  "name": "EESystem session – 120 minutes",
+  "durationLabel": "Two hours",
+  "description": "Two hours in the same room, equipped with the EESystem, for anyone who wants the longest slot. It goes exactly like the 60-minute session: you stay clothed, in an armchair, on a lounger or on the sofa, with a blanket and water within reach, and nothing you have to do. You can come on your own or in a small group.",
+  "durationMinutes": 120,
+  "price": 120,
+  "currency": "RON",
+  "highlighted": false,
+  "order": 3,
+  "whatsappMessage": "Hello! I would like to book an appointment. Service: EESystem session – 120 minutes."
+}

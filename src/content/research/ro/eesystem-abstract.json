@@ -1,0 +1,10 @@
+{
+  "lang": "ro",
+  "translationKey": "eesystem-abstract",
+  "title": "EESystem Abstract",
+  "authors": [
+    "Dr. Greg Gerber, M.D."
+  ],
+  "pdf": "/research/eesystem-abstract.pdf",
+  "cover": "../../../assets/research/eesystem-abstract.jpg"
+}

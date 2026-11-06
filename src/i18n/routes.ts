@@ -9,12 +9,10 @@ export const defaultLocale: Locale = 'ro';
 
 export const routes = {
   home: { ro: '/', en: '/en/' },
-  services: { ro: '/servicii/', en: '/en/services/' },
+  about: { ro: '/despre-eesystem/', en: '/en/about-eesystem/' },
   research: { ro: '/cercetari-stiintifice/', en: '/en/research/' },
   testimonials: { ro: '/testimoniale/', en: '/en/testimonials/' },
   pricing: { ro: '/preturi/', en: '/en/pricing/' },
-  articles: { ro: '/articole/', en: '/en/articles/' },
-  article: { ro: '/articole/[slug]/', en: '/en/articles/[slug]/' },
   faq: { ro: '/intrebari-frecvente/', en: '/en/faq/' },
   contact: { ro: '/contact/', en: '/en/contact/' },
   terms: { ro: '/termeni-si-conditii/', en: '/en/terms/' },
@@ -29,20 +27,18 @@ export type PageKey = keyof typeof routes;
 
 /** Primary navigation order (section 6). FAQ lives in the footer and on the home page. */
 export const primaryNav = [
-  'services',
+  'about',
   'research',
   'testimonials',
   'pricing',
-  'articles',
   'contact',
 ] as const satisfies readonly PageKey[];
 
 export const footerUsefulNav = [
-  'services',
+  'about',
   'research',
   'testimonials',
   'pricing',
-  'articles',
   'faq',
   'contact',
 ] as const satisfies readonly PageKey[];

@@ -4,7 +4,8 @@
  * (WEBSITE_PLAN.md section 8). Mounted once per page by BaseLayout.
  *
  * Markup: a native <dialog> (opened with showModal(), so Escape closes it and the page behind
- * is inert) with the material background. Inside: a header with the logo and opening hours, a
+ * is inert) with an opaque background: a translucent material let the dark hero through and
+ * dropped the secondary text under 4.5:1. Inside: a header with the logo and opening hours, a
  * greeting bubble, quick-reply chips (a radio group styled as chips: single-select, arrow keys
  * move the selection, the checked state is exposed to assistive technology), optional name
  * and preferred-time fields, a message box, a preview bubble with the assembled text, and
@@ -315,9 +316,7 @@ const defaultMessage = buildWhatsAppMessage(lang, { topic: 'booking' });
     padding: 0;
     border: 0;
     border-radius: var(--radius-lg);
-    background: var(--material);
-    -webkit-backdrop-filter: saturate(180%) blur(20px);
-    backdrop-filter: saturate(180%) blur(20px);
+    background: var(--material-fallback);
     color: var(--label);
     box-shadow:
       var(--shadow-lg),
@@ -331,18 +330,6 @@ const defaultMessage = buildWhatsAppMessage(lang, { topic: 'booking' });
   }
   .chat::backdrop {
     background: var(--scrim);
-  }
-  @supports not (backdrop-filter: blur(1px)) {
-    .chat {
-      background: var(--material-fallback);
-    }
-  }
-  @media (prefers-reduced-transparency: reduce) {
-    .chat {
-      background: var(--material-fallback);
-      -webkit-backdrop-filter: none;
-      backdrop-filter: none;
-    }
   }
   @keyframes chat-in {
     from {

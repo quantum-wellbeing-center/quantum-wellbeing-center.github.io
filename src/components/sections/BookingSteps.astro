@@ -9,7 +9,7 @@ import SectionHeading from './SectionHeading.astro';
 
 interface Props {
   heading: string;
-  text: string;
+  text?: string;
   items: { title: string; text: string }[];
   id?: string;
   tone?: 'default' | 'secondary';

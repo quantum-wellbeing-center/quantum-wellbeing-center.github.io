@@ -29,11 +29,6 @@ export interface SocialLinks {
   tiktok?: string;
 }
 
-export interface CommunityChannel {
-  provider: 'telegram' | 'whatsapp';
-  url: string;
-}
-
 /** Quick-reply chips in the WhatsApp chat panel; also the topic of every booking link. */
 export type ChatTopic = 'booking' | 'pricing' | 'other';
 
@@ -70,6 +65,7 @@ export interface SiteConfig {
   phone: string;
   /** E.164 form used in tel: links. */
   phoneHref: string;
+  /** Leave empty to hide the email everywhere (footer, top bar, contact page, schema.org). */
   email: string;
   /** Digits only, international format, for wa.me links. */
   whatsappNumber: string;
@@ -77,14 +73,14 @@ export interface SiteConfig {
   whatsappMessages: Record<Locale, WhatsAppMessages>;
   openingHours: OpeningHoursEntry[];
   socials: SocialLinks;
-  community: CommunityChannel;
+  /** "Open in Google Maps" link to the address (new tab). */
   mapUrl: string;
+  /** Google Maps embed (no API key) with a pin on the address; the contact page adds `&hl=<lang>`. */
+  mapEmbedUrl: string;
   analytics: AnalyticsConfig;
   features: {
     /** Google reviews embed (third-party, consent-gated). Off by default. */
     reviewsEmbed: boolean;
-    /** EU SOL (ODR) badge: the platform closed in July 2025, keep off unless the adviser says otherwise. */
-    showSolBadge: boolean;
     /** Floating WhatsApp button. */
     whatsappButton: boolean;
     /** Top info bar above the header. */
@@ -95,6 +91,13 @@ export interface SiteConfig {
   /** Cookie consent storage version. Bump to ask visitors again after a policy change. */
   consentVersion: number;
 }
+
+/**
+ * What Google Maps searches for, both for the link and the embedded map's pin. Keep in sync
+ * with `address`. Google knows the centre as "DN1C 224"; "Strada Clujului 71" resolves to a
+ * street of the same name in Sânnicoară instead.
+ */
+const mapQuery = encodeURIComponent('DN1C 224, 407335 Iclod, România');
 
 export const site: SiteConfig = {
   brandName: 'Quantum Wellbeing Center',
@@ -107,18 +110,18 @@ export const site: SiteConfig = {
     cui: 'RO00000000', // TODO(content): CUI
     regCom: 'J00/000/2000', // TODO(content): Reg. Com. number
   },
-  domain: 'https://www.quantumwellbeing.ro', // also set in astro.config.mjs and public/robots.txt
+  domain: 'https://quantum-wellbeing-center.github.io', // also set in astro.config.mjs and public/robots.txt
   address: {
-    street: 'Str. Exemplu nr. 1', // TODO(content): street address
+    street: 'DN1C 224',
     city: 'Iclod',
     county: 'Cluj',
-    postalCode: '000000', // TODO(content): postal code
+    postalCode: '407335', // Iclod village; the village has one postal code for every street
     country: 'RO',
   },
-  phone: '0742 644 016',
-  phoneHref: '+40742644016',
-  email: 'contact@quantumwellbeing.ro',
-  whatsappNumber: '40742644016',
+  phone: '0748 011 259',
+  phoneHref: '+40748011259',
+  email: '', // TODO(content): the centre has no email yet; fill it in and it appears everywhere
+  whatsappNumber: '40748011259',
   whatsappMessages: {
     ro: {
       greeting: 'Bună ziua!',
@@ -160,17 +163,13 @@ export const site: SiteConfig = {
     youtube: 'https://www.youtube.com/@example',
     tiktok: 'https://www.tiktok.com/@example',
   },
-  community: {
-    provider: 'telegram',
-    url: 'https://t.me/example', // TODO(content): community channel link
-  },
-  mapUrl: 'https://maps.google.com/?q=Iclod,+jude%C8%9Bul+Cluj', // TODO(content): link to the exact address once the street is known
+  mapUrl: `https://www.google.com/maps/search/?api=1&query=${mapQuery}`,
+  mapEmbedUrl: `https://maps.google.com/maps?q=${mapQuery}&z=15&output=embed`,
   analytics: { provider: 'none' }, // TODO(content): set a provider only if the owner wants analytics
   features: {
     reviewsEmbed: false,
-    showSolBadge: false, // TODO(legal): confirm whether the EU SOL badge is still required after the platform closed in July 2025
     whatsappButton: true,
-    topBar: true,
+    topBar: false, // owner asked to remove the phone/hours/email strip above the header (2026-11-05)
   },
   accentColor: '#0E7390', // brand teal-blue derived from the banner; mirrors --accent in tokens.css
   consentVersion: 1,

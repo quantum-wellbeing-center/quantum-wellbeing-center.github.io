@@ -33,13 +33,17 @@ const t = useTranslations(lang);
           <span class="visually-hidden">{t('topBar.hours')}: </span>
           <OpeningHours lang={lang} inline />
         </li>
-        <li class="topbar__email">
-          <a class="topbar__link" href={`mailto:${site.email}`}>
-            <Icon name="mail" size={16} />
-            <span class="visually-hidden">{t('topBar.email')}: </span>
-            <span>{site.email}</span>
-          </a>
-        </li>
+        {
+          site.email && (
+            <li class="topbar__email">
+              <a class="topbar__link" href={`mailto:${site.email}`}>
+                <Icon name="mail" size={16} />
+                <span class="visually-hidden">{t('topBar.email')}: </span>
+                <span>{site.email}</span>
+              </a>
+            </li>
+          )
+        }
       </ul>
       <SocialLinks lang={lang} size="sm" class="topbar__socials" />
     </div>
@@ -54,7 +58,8 @@ const t = useTranslations(lang);
     font-size: var(--text-footnote);
     border-bottom: 1px solid var(--separator);
   }
-  @media (min-width: 56.25em) {
+  /* Same breakpoint as the desktop header (MobileMenu.astro). */
+  @media (min-width: 72em) {
     .topbar {
       display: block;
     }

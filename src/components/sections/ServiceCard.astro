@@ -1,11 +1,10 @@
 ---
 /**
- * ServiceCard: name, duration, price (Intl, RON), package details with the per-session price,
- * the factual description and a "Programează-te" BookingLink that preselects this service in
+ * ServiceCard: name, duration, price (Intl, RON), the factual description and a "Programează-te" BookingLink that preselects this service in
  * the WhatsApp chat (and prefills the service's own message without JavaScript).
  *
  * `compact` is the home-page teaser: name, duration, "price from" and a link to the service on
- * the services page instead of the description and the booking button.
+ * the pricing page instead of the description and the booking button.
  */
 import type { CollectionEntry } from 'astro:content';
 import { formatPrice, getRoute, useTranslations, type Locale } from '../../i18n';
@@ -28,11 +27,7 @@ const { lang, entry, compact = false, headingLevel: Heading = 'h3' } = Astro.pro
 const t = useTranslations(lang);
 const d = entry.data;
 const price = formatPrice(lang, d.price, d.currency);
-const perSession =
-  d.sessionsPerPackage && d.sessionsPerPackage > 1
-    ? formatPrice(lang, Math.round((d.price / d.sessionsPerPackage) * 100) / 100, d.currency)
-    : null;
-const detailsHref = `${getRoute(lang, 'services')}#${serviceAnchor(entry)}`;
+const detailsHref = `${getRoute(lang, 'pricing')}#${serviceAnchor(entry)}`;
 ---
 
 <Card
@@ -55,25 +50,12 @@ const detailsHref = `${getRoute(lang, 'services')}#${serviceAnchor(entry)}`;
     ) : (
       <span class="service__amount">{price}</span>
     )}
-    {!compact && perSession && (
-      <span class="service__per">{t('pricing.perSession', { price: perSession })}</span>
-    )}
   </p>
   <ul class="service__facts" role="list">
     <li>
       <Icon name="clock" size={16} />
-      <span>
-        {d.sessionsPerPackage
-          ? t('pricing.perSessionDuration', { minutes: d.durationMinutes })
-          : t('common.duration', { minutes: d.durationMinutes })}
-      </span>
+      <span>{t('common.duration', { minutes: d.durationMinutes })}</span>
     </li>
-    {d.sessionsPerPackage && (
-      <li>
-        <Icon name="calendar-check" size={16} />
-        <span>{t('pricing.package', { count: d.sessionsPerPackage })}</span>
-      </li>
-    )}
   </ul>
   {!compact && <p class="service__desc">{d.description}</p>}
   <div slot="footer" class="service__footer">
@@ -129,10 +111,6 @@ const detailsHref = `${getRoute(lang, 'services')}#${serviceAnchor(entry)}`;
     font-size: var(--text-title-2);
     line-height: var(--leading-title-2);
   }
-  .service__per {
-    font-size: var(--text-subheadline);
-    color: var(--label-secondary);
-  }
   .service__facts {
     display: flex;
     flex-wrap: wrap;
@@ -146,7 +124,7 @@ const detailsHref = `${getRoute(lang, 'services')}#${serviceAnchor(entry)}`;
     align-items: center;
     gap: 0.4em;
   }
-  /* The duration and package icons carry the accent; the text next to them stays secondary. */
+  /* The duration icon carries the accent; the text next to it stays secondary. */
   .service__facts :global(svg) {
     color: var(--accent);
   }

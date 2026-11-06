@@ -1,13 +1,11 @@
 ---
 /**
  * Footer: useful links, company and legal links, contact (WhatsApp chat trigger, phone, address,
- * email, hours), community CTA, socials, ANPC SAL badge, SOL badge behind a flag (TODO(legal)),
- * copyright with the build-time year, and the cookie-preferences link when the banner is on.
+ * email, hours), socials, copyright with the build-time year, and the cookie-preferences link when the banner is on.
  */
 import { needsConsentBanner, site } from '../config/site';
 import { footerLegalNav, footerUsefulNav, getRoute, useTranslations, type Locale } from '../i18n';
 import { buildWhatsAppMessage, whatsappHref } from '../lib/whatsapp';
-import Button from './ui/Button.astro';
 import Container from './ui/Container.astro';
 import Icon from './ui/Icon.astro';
 import Logo from './Logo.astro';
@@ -32,7 +30,6 @@ const legalLinks = footerLegalNav.map((key) => ({
   label: t(`nav.${key}`),
 }));
 const addressLine = `${site.address.street}, ${site.address.city}`;
-const communityIcon = site.community.provider === 'telegram' ? 'send' : 'whatsapp';
 /** No-JavaScript fallback for the WhatsApp trigger; the chat island takes over otherwise. */
 const whatsappFallback = whatsappHref(buildWhatsAppMessage(lang, { topic: 'other' }));
 ---
@@ -108,97 +105,25 @@ const whatsappFallback = whatsappHref(buildWhatsAppMessage(lang, { topic: 'other
               {addressLine} <span class="visually-hidden">({t('a11y.newTab')})</span>
             </span>
           </a>
-          <a class="site-footer__contact-line" href={`mailto:${site.email}`}>
-            <Icon name="mail" size={16} />
-            <span>{site.email}</span>
-          </a>
+          {
+            site.email && (
+              <a class="site-footer__contact-line" href={`mailto:${site.email}`}>
+                <Icon name="mail" size={16} />
+                <span>{site.email}</span>
+              </a>
+            )
+          }
         </address>
         <OpeningHours lang={lang} class="site-footer__hours" />
       </div>
 
       <div class="site-footer__col">
-        <h2 class="site-footer__heading">{t('footer.community')}</h2>
-        <p class="site-footer__text">{t('footer.communityText')}</p>
-        <Button
-          href={site.community.url}
-          variant="secondary"
-          size="sm"
-          icon={communityIcon}
-          iconPosition="start"
-          newTabLabel={t('a11y.newTab')}
-        >
-          {t('actions.joinCommunity')}
-        </Button>
-        <h2 class="site-footer__heading site-footer__heading--follow">{t('footer.follow')}</h2>
+        <h2 class="site-footer__heading">{t('footer.follow')}</h2>
         <SocialLinks lang={lang} size="sm" />
       </div>
     </div>
 
     <div class="site-footer__bottom">
-      <div class="site-footer__badges">
-        <a
-          class="site-footer__badge"
-          href="https://anpc.ro/ce-este-sal/"
-          target="_blank"
-          rel="noopener"
-        >
-          <span class="visually-hidden">
-            {t('footer.anpcSal')} ({t('a11y.newTab')})
-          </span>
-          <!-- Locally drawn placeholder badge; not the official artwork. -->
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 160 48"
-            width="160"
-            height="48"
-            aria-hidden="true"
-            focusable="false"
-          >
-            <rect
-              x="0.5"
-              y="0.5"
-              width="159"
-              height="47"
-              rx="10"
-              fill="none"
-              stroke="currentColor"
-            ></rect>
-            <path
-              d="M14 30 L24 12 L34 30 Z"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linejoin="round"
-            ></path>
-            <text
-              x="46"
-              y="21"
-              font-size="11"
-              font-weight="700"
-              fill="currentColor"
-              font-family="system-ui, sans-serif"
-            >
-              ANPC SAL
-            </text>
-            <text
-              x="46"
-              y="36"
-              font-size="9"
-              fill="currentColor"
-              font-family="system-ui, sans-serif"
-            >
-              anpc.ro/ce-este-sal
-            </text>
-          </svg>
-        </a>
-        {site.features.showSolBadge && (
-          <span class="site-footer__badge site-footer__badge--sol">
-            {/* TODO(legal): EU SOL badge placeholder; the platform closed in July 2025. */}
-            SOL
-          </span>
-        )}
-        <p class="site-footer__note">{t('footer.solNote')}</p>
-      </div>
       <p class="site-footer__copyright">{t('footer.copyright', { year, brand: site.brandName })}</p>
     </div>
   </Container>
@@ -243,9 +168,6 @@ const whatsappFallback = whatsappHref(buildWhatsAppMessage(lang, { topic: 'other
     text-transform: uppercase;
     color: var(--label);
     margin-block-end: var(--space-3);
-  }
-  .site-footer__heading--follow {
-    margin-block-start: var(--space-5);
   }
   .site-footer__list {
     display: grid;
@@ -298,10 +220,6 @@ const whatsappFallback = whatsappHref(buildWhatsAppMessage(lang, { topic: 'other
   .site-footer__contact-line:hover {
     color: var(--accent);
   }
-  .site-footer__text {
-    font-size: var(--text-subheadline);
-    margin-block-end: var(--space-4);
-  }
   .site-footer__bottom {
     margin-block-start: var(--space-8);
     padding-block-start: var(--space-6);
@@ -310,26 +228,6 @@ const whatsappFallback = whatsappHref(buildWhatsAppMessage(lang, { topic: 'other
     gap: var(--space-4);
     font-size: var(--text-footnote);
     line-height: var(--leading-footnote);
-  }
-  .site-footer__badges {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--space-4);
-  }
-  .site-footer__badge {
-    display: inline-flex;
-    color: var(--label);
-    border-radius: var(--radius-md);
-  }
-  .site-footer__badge--sol {
-    padding: var(--space-2) var(--space-4);
-    border: 1px solid var(--separator);
-    font-weight: 700;
-  }
-  .site-footer__note {
-    max-width: 48ch;
-    color: var(--warning);
   }
   @media (pointer: coarse) {
     .site-footer__link,

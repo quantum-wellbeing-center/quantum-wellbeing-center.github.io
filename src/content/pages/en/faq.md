@@ -2,7 +2,7 @@
 lang: en
 translationKey: faq
 title: Frequently asked questions
-description: Answers to the practical questions about booking, cancellation, the visit, payment, location and parking. TODO(content) – placeholder text.
+description: Short answers about the EESystem, sessions, booking, cancellation, location and parking.
 subheading: If you cannot find the answer here, message us on WhatsApp. We reply during opening hours.
 cta:
   heading: Still have a question?

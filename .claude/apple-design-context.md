@@ -17,7 +17,7 @@ Read by the `hig-foundations` skill before asking questions. Everything below is
 - Booking and contact: `src/components/BookingLink.astro` (every "Rezervă" / "Programează-te" button) opens the chat panel `src/components/islands/WhatsAppChat.astro`, mounted once by BaseLayout; message helpers in `src/lib/whatsapp.ts` and `src/lib/whatsapp-message.ts`. There is no contact form and no booking URL.
 - Styleguide: `/styleguide/` (noindex, excluded from the sitemap).
 - Contrast check: `node tests/contrast.mjs` (fails on any pair below target).
-- Content rules check: `node scripts/check-content.mjs` (banned words in content, i18n and `site.ts`).
+- Content rules check: `node scripts/check-content.mjs` (lang folders, translation twins and diacritics in content, i18n and `site.ts`).
 
 ## Colour tokens
 

@@ -10,7 +10,7 @@ import { routes } from '../src/i18n/routes';
  * with reduced motion. The URL is read from the send link's href; WhatsApp is never opened.
  */
 
-const NUMBER = '40742644016';
+const NUMBER = '40748011259';
 const waUrl = (text: string) => `https://wa.me/${NUMBER}?text=${encodeURIComponent(text)}`;
 
 const dialog = (page: Page) => page.locator('dialog[data-chat]');
@@ -145,8 +145,8 @@ test('the tel: link calls the centre', async ({ page }) => {
   await fab(page).click();
   const call = page.locator('[data-chat-call]');
   await expect(call).toBeVisible();
-  await expect(call).toHaveAttribute('href', 'tel:+40742644016');
-  await expect(call).toContainText('0742 644 016');
+  await expect(call).toHaveAttribute('href', 'tel:+40748011259');
+  await expect(call).toContainText('0748 011 259');
   await expect(call).not.toHaveAttribute('target', '_blank');
 });
 
@@ -261,9 +261,9 @@ test('service-card preselection from the footer trigger uses the "other" topic',
   await expect(trigger).toBeFocused();
 });
 
-// Service cards render through BookingLink with `service={d.name}` on the pricing and services
-// pages, and the contact page has its own chat trigger.
-for (const path of [routes.pricing.ro, routes.services.ro] as const) {
+// Service cards render through BookingLink with `service={d.name}` on the pricing page, and the
+// contact page has its own chat trigger.
+for (const path of [routes.pricing.ro] as const) {
   test(`service cards on ${path} preselect booking and name the service`, async ({ page }) => {
     await page.goto(path);
     const trigger = page.locator('main [data-chat-open][data-chat-service]').first();
@@ -297,7 +297,7 @@ test('the contact page opens the chat from its WhatsApp button', async ({ page }
   await page.goto(routes.contact.ro);
   const trigger = page.locator('main [data-chat-open]').first();
   await expect(trigger).toBeVisible();
-  expect(await trigger.getAttribute('href')).toMatch(/^https:\/\/wa\.me\/40742644016\?text=/);
+  expect(await trigger.getAttribute('href')).toMatch(/^https:\/\/wa\.me\/40748011259\?text=/);
   await trigger.click();
   await expect(dialog(page)).toBeVisible();
   await page.keyboard.press('Escape');

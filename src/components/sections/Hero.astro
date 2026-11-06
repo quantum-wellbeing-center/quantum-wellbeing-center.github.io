@@ -2,24 +2,22 @@
 /**
  * Hero: the "Centru de wellness" eyebrow, display headline, subheading, the
  * "Programează-te pe WhatsApp" BookingLink and a secondary link, over the brand banner
- * (src/assets/photos/banner.jpg) as a full-bleed background.
+ * (src/assets/photos/banner.jpg) as a full-bleed background behind the copy.
  *
- * The banner is decorative (`alt=""`): the brand name is in the header. Its logo sits in the
- * middle third of the image, so the layout keeps the copy out of its way:
+ * The banner is decorative (`alt=""`): the brand name is in the header. Two layers of it:
  *
- *   - below 80em the copy sits under a clear band (`--hero-band`) that shows the logo, with the
- *     image cover-fitted and anchored to the top, centred on the logo (object-position 51% 0);
- *   - from 80em the copy takes the left 34rem of the container and the image keeps its own
- *     aspect ratio, as tall as the hero and anchored to the right edge, so the logo lands right
- *     of the copy (its left arc may touch the copy between 80em and ~84em). On very wide
- *     screens the space left of the image is the brand navy, feathered into the image.
+ *   - the backdrop: the banner cover-fitted to the whole hero, blurred and dimmed, so the hero is
+ *     filled with its colours at every size and the copy always sits on the image;
+ *   - the banner itself, sharp and never cropped through its logo or wordmark (29%–90% of its
+ *     width). Below 80em it sits whole at the top of the hero at its own aspect ratio, the copy
+ *     under it. From 80em it is placed so the wordmark starts just right of the 34rem copy
+ *     column: its left part (the face) runs behind the copy and its right margin may be cut, and
+ *     it is sized from both the hero's height and the room to the right, so the red mark (90%)
+ *     always stays in view. Its edges are feathered into the backdrop.
  *
- * Contrast (tests/contrast.mjs, "hero scrim" rows): the scrim is `--brand-navy` at 90% behind
- * the copy, and the worst case is white text over that scrim composited on a pure white pixel
- * (the banner's particle highlights reach #ffffff). White on that surface is 11.88:1, the
- * `--label-secondary` lead 8.31:1 and the cyan eyebrow 8.26:1; the band above the copy fades
- * through 30%, where the headline never sits. Both colour schemes use the same values: the
- * surface is always dark (`.surface-brand`).
+ * Contrast (tests/contrast.mjs, "hero" rows): the scrim behind the copy is `--brand-navy` at 80%,
+ * held against a pure white pixel under it (the banner's particle highlights reach #ffffff).
+ * Both colour schemes use the same values: the surface is always dark (`.surface-brand`).
  */
 import { Picture } from 'astro:assets';
 import type { Locale } from '../../i18n';
@@ -47,8 +45,19 @@ const { lang, eyebrow, headline, subheading, bookingLabel, secondary, id = 'hero
     <Picture
       src={banner}
       formats={['avif', 'webp']}
+      widths={[480, 960]}
+      sizes="50vw"
+      alt=""
+      loading="eager"
+      decoding="async"
+      pictureAttributes={{ class: 'hero__backdrop' }}
+      class="hero__backdrop-image"
+    />
+    <Picture
+      src={banner}
+      formats={['avif', 'webp']}
       widths={[640, 960, 1280, banner.width]}
-      sizes="100vw"
+      sizes="(min-width: 80em) 60vw, 100vw"
       alt=""
       loading="eager"
       fetchpriority="high"
@@ -81,35 +90,70 @@ const { lang, eyebrow, headline, subheading, bookingLabel, secondary, id = 'hero
 <style>
   /* `.section.hero` outranks Section's own `.section--none` padding rule. */
   .section.hero {
-    /* Clear band above the copy on small screens: enough of the image to show the logo. */
-    --hero-band: clamp(13rem, 60vw, 24rem);
+    --hero-banner-ratio: 1553 / 775;
+    /* Below 80em: the whole banner at the top, full width up to a height of 24rem. */
+    --hero-band: min(100vw * 775 / 1553, 24rem);
     --hero-copy-width: 34rem;
-    --hero-scrim-strong: color-mix(in srgb, var(--brand-navy) 90%, transparent);
-    --hero-scrim-mid: color-mix(in srgb, var(--brand-navy) 30%, transparent);
-    --hero-scrim-weak: color-mix(in srgb, var(--brand-navy) 12%, transparent);
+    --hero-scrim-strong: color-mix(in srgb, var(--brand-navy) 80%, transparent);
+    --hero-scrim-mid: color-mix(in srgb, var(--brand-navy) 55%, transparent);
+    --hero-scrim-weak: color-mix(in srgb, var(--brand-navy) 10%, transparent);
     position: relative;
     isolation: isolate;
     overflow: hidden;
     background: var(--brand-navy);
-    padding-block: var(--hero-band) var(--space-7);
+    padding-block: calc(var(--hero-band) + var(--space-5)) var(--space-7);
   }
   .hero__media {
     position: absolute;
     inset: 0;
     z-index: -1;
+    overflow: hidden;
   }
-  .hero__media :global(.hero__picture) {
+
+  /* The backdrop: the whole hero, blurred so it reads as colour and light, not a second logo. */
+  .hero__media :global(.hero__backdrop) {
     position: absolute;
     inset: 0;
   }
-  .hero__media :global(.hero__image) {
+  .hero__media :global(.hero__backdrop-image) {
+    display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    /* Centred on the logo, anchored to the top so the clear band shows it. */
-    object-position: 51% 0;
+    object-position: 30% 50%;
+    filter: blur(24px) saturate(1.2);
+    /* Pushes the blur's soft edges out of view. */
+    transform: scale(1.15);
+    opacity: 0.85;
   }
-  /* The scrim: light over the band, strong from just above the copy down. */
+
+  /* The banner, whole, across the top; centred and side-feathered once the band is capped. */
+  .hero__media :global(.hero__picture) {
+    position: absolute;
+    inset: 0 0 auto;
+    height: var(--hero-band);
+    display: flex;
+    justify-content: center;
+  }
+  .hero__media :global(.hero__image) {
+    display: block;
+    width: auto;
+    max-width: none;
+    height: 100%;
+    aspect-ratio: var(--hero-banner-ratio);
+    /* Only the last few percent fade, below the wordmark's baseline (92%). */
+    mask-image: linear-gradient(to bottom, #000 93%, transparent);
+  }
+  @media (min-width: 48em) and (max-width: 79.99em) {
+    .hero__media :global(.hero__image) {
+      mask-image:
+        linear-gradient(to right, transparent, #000 12%, #000 88%, transparent),
+        linear-gradient(to bottom, #000 93%, transparent);
+      mask-composite: intersect;
+    }
+  }
+
+  /* The scrim: light over the banner, the tested 90% from where the copy starts. */
   .hero__media::after {
     content: '';
     position: absolute;
@@ -117,11 +161,12 @@ const { lang, eyebrow, headline, subheading, bookingLabel, secondary, id = 'hero
     background: linear-gradient(
       to bottom,
       var(--hero-scrim-weak) 0,
-      var(--hero-scrim-mid) calc(var(--hero-band) - 7rem),
-      var(--hero-scrim-strong) calc(var(--hero-band) - 1rem),
+      var(--hero-scrim-weak) var(--hero-band),
+      var(--hero-scrim-strong) calc(var(--hero-band) + var(--space-5)),
       var(--hero-scrim-strong) 100%
     );
   }
+
   .hero__inner {
     display: grid;
   }
@@ -139,9 +184,9 @@ const { lang, eyebrow, headline, subheading, bookingLabel, secondary, id = 'hero
     color: var(--accent);
   }
   .hero__title {
-    /* A notch under `.text-display`: on wide screens the headline must hold two lines inside
-       the 34rem copy column, or the hero grows and the right-anchored image slides under it. */
-    font-size: clamp(2.5rem, 4.2vw, 4rem);
+    /* Under `.text-display`: on wide screens the headline must hold two lines inside the 34rem
+       copy column (its longer line is ~8.7em), or the hero grows taller than it needs to. */
+    font-size: clamp(2.5rem, 4.2vw, 3.5rem);
     max-width: 14ch;
     text-wrap: balance;
     color: var(--label);
@@ -163,43 +208,58 @@ const { lang, eyebrow, headline, subheading, bookingLabel, secondary, id = 'hero
     white-space: normal;
     max-width: 100%;
   }
+
   @media (min-width: 80em) {
     .section.hero {
-      /* Right edge of the copy column, measured from the hero's left edge. */
-      --hero-copy-edge: calc(
-        max(0px, (100cqw - var(--container)) / 2) + var(--space-6) + var(--hero-copy-width)
-      );
-      --hero-banner-ratio: 1553 / 775;
-      /* Kept short enough that the image, placed from the copy edge, still shows the red mark
-         on its right (90% of its width) inside the viewport from 1280px up. */
-      min-height: min(36vw, 44rem);
+      min-height: min(40vw, 44rem);
       padding-block: clamp(3rem, 5vw, 6rem);
       display: grid;
       align-items: center;
     }
-    /* A size container, so the image can be placed from the hero's own height (cqh). */
+    /* A size container over the whole hero, so the banner is sized from it (cqw, cqh). */
     .hero__media {
       container-type: size;
     }
-    .hero__media :global(.hero__image) {
-      /* Own aspect ratio, as tall as the hero, placed so the wordmark's left edge (29% of the
-         banner's width) starts 2rem right of the copy column. Only the empty right margin of the
-         banner is cropped on narrower screens; the wordmark and logo never sit under the copy. */
-      left: calc(var(--hero-copy-edge) + var(--space-6) - 0.29 * 100cqh * var(--hero-banner-ratio));
-      right: auto;
-      width: auto;
-      max-width: none;
-      aspect-ratio: var(--hero-banner-ratio);
-      position: absolute;
-      /* Feather both edges into the navy that fills the rest on very wide screens. */
-      mask-image: linear-gradient(to right, transparent, #000 22%, #000 92%, transparent);
+    .hero__media :global(.hero__picture) {
+      inset: 0;
+      height: auto;
+      display: block;
     }
+    .hero__media :global(.hero__image) {
+      /* Right edge of the copy column, from the hero's left edge. */
+      --copy-edge: calc(
+        max(0px, (100cqw - var(--container)) / 2) + var(--space-6) + var(--hero-copy-width)
+      );
+      /* Where the wordmark (29% of the banner's width) starts: just right of the copy. */
+      --mark-start: calc(var(--copy-edge) + var(--space-6));
+      /* As tall as the hero, but no wider than lets the red mark (up to 90%) end a margin
+         short of the viewport: 0.61 of the width has to fit right of --mark-start. */
+      --w: min(
+        100cqh * var(--hero-banner-ratio),
+        (100cqw - var(--mark-start) - var(--space-6)) / 0.61
+      );
+      position: absolute;
+      top: 50%;
+      left: calc(var(--mark-start) - 0.29 * var(--w));
+      width: var(--w);
+      height: auto;
+      transform: translateY(-50%);
+      /* A long feather on the left so the face melts into the scrim behind the copy; short ones
+         elsewhere so the banner blends into the backdrop when it is shorter than the hero. */
+      mask-image:
+        linear-gradient(to right, transparent, #000 24%, #000 94%, transparent),
+        linear-gradient(to bottom, transparent, #000 8%, #000 94%, transparent);
+      mask-composite: intersect;
+    }
+    /* Strong behind the copy, clearing just before the wordmark (100% = the hero's width). */
     .hero__media::after {
+      --edge: calc(max(0px, (100% - var(--container)) / 2) + var(--space-6) + var(--hero-copy-width));
       background: linear-gradient(
         to right,
         var(--hero-scrim-strong) 0,
-        var(--hero-scrim-strong) var(--hero-copy-edge),
-        var(--hero-scrim-weak) calc(var(--hero-copy-edge) + var(--space-6)),
+        var(--hero-scrim-strong) var(--edge),
+        var(--hero-scrim-mid) calc(var(--edge) + var(--space-5)),
+        var(--hero-scrim-weak) calc(var(--edge) + 7rem),
         var(--hero-scrim-weak) 100%
       );
     }

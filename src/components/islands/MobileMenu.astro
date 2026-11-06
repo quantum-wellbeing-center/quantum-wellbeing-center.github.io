@@ -43,7 +43,9 @@ const t = useTranslations(lang);
 </div>
 
 <script>
-  const BREAKPOINT = '(min-width: 56.25em)';
+  /* Keep in sync with the CSS below, Header.astro and TopBar.astro. 72em is where the logo,
+     the five nav items, the language switcher and "Rezervă" fit on one row. */
+  const BREAKPOINT = '(min-width: 72em)';
   const FOCUSABLE =
     'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
@@ -155,13 +157,13 @@ const t = useTranslations(lang);
   }
 
   /* Desktop: the sheet wrapper disappears and its children join the header row. */
-  @media (min-width: 56.25em) {
+  @media (min-width: 72em) {
     .site-menu {
       display: contents;
     }
   }
 
-  @media (max-width: 56.24em) {
+  @media (max-width: 71.99em) {
     .menu-toggle:not([hidden]) {
       display: inline-flex;
     }

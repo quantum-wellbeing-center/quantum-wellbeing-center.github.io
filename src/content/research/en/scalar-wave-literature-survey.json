@@ -1,0 +1,12 @@
+{
+  "lang": "en",
+  "translationKey": "scalar-wave-literature-survey",
+  "title": "Scalar Wave Literature Survey",
+  "authors": [
+    "N. Loeffler"
+  ],
+  "year": 2005,
+  "documentType": "review",
+  "pdf": "/research/scalar-wave-literature-survey.pdf",
+  "cover": "../../../assets/research/scalar-wave-literature-survey.jpg"
+}

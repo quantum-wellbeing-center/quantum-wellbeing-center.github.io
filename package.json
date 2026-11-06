@@ -15,10 +15,10 @@
     "format:check": "prettier --check .",
     "test": "npm run build && playwright test",
     "lighthouse": "node scripts/lighthouse.mjs",
+    "research:covers": "node scripts/research-covers.mjs",
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.4",
     "@lucide/astro": "^1.59.0",
     "astro": "^7.4.0",

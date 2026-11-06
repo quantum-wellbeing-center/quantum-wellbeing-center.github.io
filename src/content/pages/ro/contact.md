@@ -1,20 +1,7 @@
 ---
 lang: ro
 translationKey: contact
-title: Contact
-description: Scrie-ne pe WhatsApp sau sună-ne. Adresa centrului, programul, e-mailul și linkul către Google Maps. TODO(content) – text substituent.
-subheading: Cel mai rapid ne găsești pe WhatsApp. Pentru orice altceva, ai mai jos telefonul, adresa, programul și e-mailul.
-whatsapp:
-  heading: Scrie-ne pe WhatsApp
-  text: Programări, întrebări despre prețuri sau orice altceva – apasă butonul și se deschide o conversație cu un mesaj gata scris. Răspundem în timpul programului.
-details:
-  heading: Date de contact
-  photo:
-    alt: Fațada clădirii centrului și curtea din față, cu jardiniera cu plante în ghivece
-    caption: Clădirea centrului, văzută din curte.
-map:
-  heading: Cum ajungi
-  text: Centrul se află în Iclod, județul Cluj. TODO(content) – adăugați strada, reperele din apropiere, opțiunile de parcare și detaliile de acces.
+title: Contactează-ne
+description: Scrie-ne pe WhatsApp sau sună-ne. Ne găsești la DN1C 224, în Iclod, județul Cluj.
+subheading: Ai întrebări, vrei o programare sau ai nevoie de mai multe informații? Scrie-ne pe WhatsApp sau sună-ne și îți răspundem în timpul programului.
 ---
-
-Site-ul nu are formular de contact. Mesajele pe WhatsApp ajung direct la echipa centrului, în timpul programului; în afara lui, îți răspundem în următoarea zi lucrătoare. TODO(content): confirmați timpul de răspuns.

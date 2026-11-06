@@ -1,23 +1,32 @@
 ---
 /**
- * ResearchPage: a neutral document library. The intro says the documents are listed for
- * information and that some are not peer-reviewed; the items are grouped into sections with
- * counts. No editorial commentary. Everything renders statically; the Phase 5 search and filter
- * island hooks into:
- *   [data-research-controls]           placeholder slot above the groups
- *   [data-research-status]             aria-live region for result counts
- *   [data-research-empty]              hidden empty state
- *   [data-research-group][data-count]  each group section
- *   [data-research-item] + data-title / data-authors / data-document-type / data-group
+ * ResearchPage, laid out like the reference page (quantumclinic.ro/cercetari-stiintifice/):
+ *   1. the h1 band;
+ *   2. an h2 "Energy Enhancement System" with the document count and a link to testimonials
+ *      from other centres;
+ *   3. the pilot studies as a grid of cards (thumbnail, title linked to the PDF, authors and
+ *      year), then every other document as a plain A–Z list (PDF icon, title, authors);
+ *   4. a booking band with the centre's name;
+ *   5. a row of testimonials, where the reference shows its Google reviews.
+ *
+ * Every card renders statically, so the page works without JavaScript. A later search and
+ * filter island can hook into:
+ *   [data-research-controls]  slot above the grid
+ *   [data-research-status]    aria-live region for result counts
+ *   [data-research-empty]     hidden empty state
+ *   [data-research-item]      each card, with data-title / data-authors / data-document-type
  */
-import { render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { RESEARCH_GROUPS } from '../../content.config';
-import { useTranslations, type Locale } from '../../i18n';
-import { getPage, getResearch } from '../../lib/content';
+import { getRoute, useTranslations, type Locale, bcp47 } from '../../i18n';
+import { getPage, getResearch, getTestimonials } from '../../lib/content';
 import Section from '../ui/Section.astro';
+import Button from '../ui/Button.astro';
+import CtaBand from '../sections/CtaBand.astro';
 import PageIntro from '../sections/PageIntro.astro';
 import ResearchCard from '../sections/ResearchCard.astro';
+import ResearchRow from '../sections/ResearchRow.astro';
+import SectionHeading from '../sections/SectionHeading.astro';
+import TestimonialRow from '../sections/TestimonialRow.astro';
 
 interface Props {
   lang: Locale;
@@ -25,78 +34,130 @@ interface Props {
 
 const { lang } = Astro.props;
 const t = useTranslations(lang);
-const { entry, data: page } = await getPage(lang, 'research');
-const { Content } = await render(entry);
-const hasBody = Boolean(entry.body && entry.body.trim());
-const items = await getResearch(lang);
+const { data: page } = await getPage(lang, 'research');
+const [items, testimonials] = await Promise.all([getResearch(lang), getTestimonials(lang)]);
+// Consent is enforced by the schema and the query; filter once more where the content is shown.
+const published = testimonials.filter((e) => e.data.consent === true);
+// Pilot studies keep the card grid; every other document is a plain list row, A–Z by title.
+const pilots = items.filter((e) => e.data.documentType === 'pilot-study');
+const others = items
+  .filter((e) => e.data.documentType !== 'pilot-study')
+  .sort((a, b) => a.data.title.localeCompare(b.data.title, bcp47(lang)));
 
-const groups = RESEARCH_GROUPS.map((group) => ({
-  group,
-  ...page.groups[group],
-  items: items.filter((item) => item.data.group === group),
-})).filter((group) => group.items.length > 0);
-const countLabel = (n: number) =>
-  n === 1 ? t('research.countOne') : t('research.count', { count: n });
+/** "1 document", "5 documente", "43 de documente": Romanian adds "de" from 20 up. */
+const plural = new Intl.PluralRules(bcp47(lang));
+const countLabel = (n: number) => {
+  const category = plural.select(n);
+  if (category === 'one') return t('research.countOne');
+  if (category === 'few') return t('research.count', { count: n });
+  return t('research.countMany', { count: n });
+};
 ---
 
 <BaseLayout lang={lang} pageKey="research" title={page.title} description={page.description}>
-  <PageIntro title={page.title} lead={page.subheading}>
-    {hasBody && (
-      <div class="prose research-intro">
-        <Content />
-      </div>
-    )}
-    <p class="research-total">{countLabel(items.length)}</p>
-  </PageIntro>
+  <PageIntro title={page.title} lead={page.subheading} />
 
-  <Section class="research-library" spacing="compact">
+  <Section class="research-library" spacing="compact" aria-labelledby="research-library-heading">
+    <div class="research-library__head">
+      <h2 id="research-library-heading" class="research-library__title">
+        {page.library.heading}
+        <span class="research-library__count">{countLabel(items.length)}</span>
+      </h2>
+      {page.library.text && <p class="research-library__text">{page.library.text}</p>}
+      {page.library.link && (
+        <Button
+          href={page.library.link.href}
+          variant="plain"
+          newTabLabel={t('a11y.newTab')}
+          class="research-library__link"
+        >
+          {page.library.link.label}
+        </Button>
+      )}
+    </div>
+
     <div data-research-controls></div>
     <p class="research-status" aria-live="polite" data-research-status></p>
     <p class="research-empty" data-research-empty hidden>
       {t('common.noResults')}
     </p>
 
-    {groups.map(({ group, heading, text, items: groupItems }) => (
-      <section
-        class="research-group"
-        data-research-group={group}
-        data-count={groupItems.length}
-        aria-labelledby={`research-${group}-heading`}
-      >
-        <div class="research-group__head">
-          <h2 id={`research-${group}-heading`} class="research-group__title">
-            {heading}
-            <span class="research-group__count" data-research-group-count>
-              {countLabel(groupItems.length)}
-            </span>
-          </h2>
-          <p class="research-group__text">{text}</p>
-        </div>
-        <ul class="research-group__list" role="list">
-          {groupItems.map((item) => (
-            <li>
-              <ResearchCard lang={lang} entry={item} />
+    {pilots.length > 0 && (
+      <div class="research-group">
+        <h3 class="research-group__title">{t('research.pilotHeading')}</h3>
+        <ul class="research-grid" role="list">
+          {pilots.map((item) => (
+            <li class:list={{ 'research-grid__featured': item.data.featured }}>
+              <ResearchCard lang={lang} entry={item} headingLevel="h4" />
             </li>
           ))}
         </ul>
-      </section>
-    ))}
+      </div>
+    )}
+
+    {others.length > 0 && (
+      <div class="research-group">
+        {pilots.length > 0 && (
+          <h3 class="research-group__title">{t('research.othersHeading')}</h3>
+        )}
+        <ul class="research-list" role="list">
+          {others.map((item) => (
+            <li>
+              <ResearchRow lang={lang} entry={item} headingLevel="h4" />
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
   </Section>
+
+  <CtaBand lang={lang} heading={page.cta.heading} text={page.cta.text} id="research-cta" />
+
+  {published.length > 0 && (
+    <Section aria-labelledby="research-testimonials-heading">
+      <SectionHeading
+        id="research-testimonials-heading"
+        title={page.testimonials.heading}
+        text={page.testimonials.text}
+        action={{ href: getRoute(lang, 'testimonials'), label: t('actions.seeAllTestimonials') }}
+      />
+      <TestimonialRow lang={lang} entries={published} />
+    </Section>
+  )}
 </BaseLayout>
 
 <style>
-  .research-intro {
-    color: var(--label-secondary);
+  .research-library {
+    padding-block-end: clamp(var(--space-7), 8vw, var(--space-9));
   }
-  .research-total {
+  .research-library__head {
+    display: grid;
+    justify-items: start;
+    gap: var(--space-2);
+    max-width: var(--measure);
+    margin-block-end: var(--space-6);
+  }
+  .research-library__title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-2) var(--space-3);
+  }
+  .research-library__count {
     font-size: var(--text-subheadline);
     line-height: var(--leading-subheadline);
     font-weight: 500;
     color: var(--label-secondary);
     font-variant-numeric: tabular-nums;
   }
-  .research-library {
-    padding-block-end: clamp(var(--space-7), 8vw, var(--space-9));
+  .research-library__text {
+    color: var(--label-secondary);
+  }
+  /* Line the plain button's text up with the heading above it. */
+  .research-library__head :global(.research-library__link) {
+    margin-inline-start: -0.75rem;
+    justify-content: flex-start;
+    text-align: start;
   }
   .research-status:empty,
   .research-empty[hidden] {
@@ -114,48 +175,37 @@ const countLabel = (n: number) =>
     text-align: center;
     color: var(--label-secondary);
   }
-  .research-group + .research-group {
-    margin-block-start: var(--space-8);
-    padding-block-start: var(--space-7);
-    border-top: 1px solid var(--separator);
-  }
-  .research-group[hidden] {
-    display: none;
-  }
-  .research-group__head {
+  .research-grid {
     display: grid;
-    gap: var(--space-3);
-    max-width: var(--measure);
-    margin-block-end: var(--space-5);
-  }
-  .research-group__title {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: var(--space-2) var(--space-3);
-  }
-  .research-group__count {
-    font-size: var(--text-subheadline);
-    line-height: var(--leading-subheadline);
-    font-weight: 500;
-    color: var(--label-secondary);
-    font-variant-numeric: tabular-nums;
-  }
-  .research-group__text {
-    color: var(--label-secondary);
-  }
-  .research-group__list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
-    gap: var(--space-4);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 16.5rem), 1fr));
+    gap: var(--space-5) var(--space-4);
     list-style: none;
     padding: 0;
     margin: 0;
   }
-  .research-group__list > li {
+  .research-grid > li {
     display: flex;
   }
-  .research-group__list > li > :global(*) {
+  .research-grid > li > :global(*) {
     width: 100%;
+  }
+  .research-grid__featured {
+    grid-column: 1 / -1;
+  }
+  .research-group + .research-group {
+    margin-block-start: clamp(var(--space-7), 6vw, var(--space-8));
+  }
+  .research-group__title {
+    margin-block-end: var(--space-4);
+    font-size: var(--text-title-3);
+    line-height: var(--leading-title-3);
+  }
+  .research-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .research-list > li + li {
+    border-block-start: 1px solid var(--separator);
   }
 </style>

@@ -10,15 +10,12 @@
  *      This covers every collection, including the `pages` and `legal` copy collections.
  *   2. Every `translationKey` exists in both languages, within one collection, exactly once each.
  *   3. No cedilla characters (ş ţ Ş Ţ) anywhere in the content: Romanian uses comma-below ș ț.
- *   4. No banned word (section 9 of WEBSITE_PLAN.md, see scripts/banned-words.mjs), in either
- *      language: claim words, effect words, medical vocabulary, the old technology, diseases.
- *   5. Checks 3 and 4 also run over the UI dictionaries in `src/i18n/*.json` and, read-only,
+ *   4. Check 3 also runs over the UI dictionaries in `src/i18n/*.json` and, read-only,
  *      over `src/config/site.ts` (brand tagline, WhatsApp messages and other visible strings).
  */
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { dirname, join, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { findBannedWords } from './banned-words.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const contentDir = join(root, 'src', 'content');
@@ -100,16 +97,12 @@ for (const file of walk(contentDir)) {
   scanText(display, text, collection);
 }
 
-/** Diacritics, banned words and TODO markers; shared by content, dictionaries and site config. */
+/** Diacritics and TODO markers; shared by content, dictionaries and site config. */
 function scanText(display, text, group) {
   for (const m of text.matchAll(CEDILLA)) {
     errors.push(
       `${display}:${lineOf(text, m.index)}: cedilla character "${m[0]}" (U+${m[0].codePointAt(0).toString(16).toUpperCase().padStart(4, '0')}); use comma-below ș/ț`,
     );
-  }
-
-  for (const { word, label, line } of findBannedWords(text)) {
-    errors.push(`${display}:${line}: banned word "${word}" (${label})`);
   }
 
   for (const m of text.matchAll(/TODO\((?:content|legal)\)[^\n]*/gu)) {
@@ -123,7 +116,7 @@ function scanText(display, text, group) {
   }
 }
 
-/* UI dictionaries: same diacritics and banned-word rules (key parity is asserted at build time). */
+/* UI dictionaries: same diacritics rule (key parity is asserted at build time). */
 let i18nCount = 0;
 for (const name of readdirSync(i18nDir).filter((n) => /^(ro|en)\.json$/.test(n))) {
   const file = join(i18nDir, name);
@@ -185,5 +178,5 @@ if (errors.length > 0) {
   process.exit(1);
 }
 console.log(
-  'All content checks passed: lang folders, translation twins, diacritics, banned words (content, i18n and site config).',
+  'All content checks passed: lang folders, translation twins, diacritics (content, i18n and site config).',
 );

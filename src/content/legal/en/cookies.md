@@ -3,12 +3,12 @@ lang: en
 translationKey: cookies
 title: Cookie policy
 description: In its default configuration, the site sets no cookies. What changes if analytics tools or embedded content are enabled. Draft for legal review.
-updated: 2026-10-18
+updated: 2026-11-05
 ---
 
 ## In short
 
-In its default configuration, this site sets no cookies and uses no similar tracking technologies. It loads no analytics scripts and embeds no third-party content. The booking buttons open the WhatsApp app, which has its own rules, described in the privacy policy.
+In its default configuration, this site sets no cookies and uses no similar tracking technologies. It loads no analytics scripts. The third-party content is the Google Maps map on the contact page: it loads from Google's servers, so Google receives your IP address and may set its own cookies under its own policy. TODO(legal): confirm with the legal adviser whether the map may load without consent or must be shown only after consent. The About EESystem page also has a YouTube video, which loads from youtube-nocookie.com only after you press it; from then on YouTube receives your IP address and may store data in your browser under its own policy. Until then the page shows only an image hosted on this site. The booking buttons open the WhatsApp app, which has its own rules, described in the privacy policy.
 
 The cookie inventory below is therefore empty. TODO(legal): if the owner enables an analytics tool or embedded content (for example Google reviews), fill in the inventory, describe the categories and confirm that the consent banner is shown before any non-essential script loads.
 

@@ -33,12 +33,11 @@ const { lang, pageKey, params, alternateUrl } = Astro.props;
 const t = useTranslations(lang);
 
 /** The nav item that counts as active for the current page. */
-const activeKey: PageKey = pageKey === 'article' ? 'articles' : pageKey;
 const navItems = primaryNav.map((key) => ({
   key,
   href: getRoute(lang, key),
   label: t(`nav.${key}`),
-  current: key === activeKey,
+  current: key === pageKey,
 }));
 ---
 
@@ -209,7 +208,8 @@ const navItems = primaryNav.map((key) => ({
     background: var(--fill);
   }
 
-  @media (min-width: 56.25em) {
+  /* Same breakpoint as MobileMenu.astro and TopBar.astro. */
+  @media (min-width: 72em) {
     .site-header__inner {
       flex-wrap: nowrap;
     }

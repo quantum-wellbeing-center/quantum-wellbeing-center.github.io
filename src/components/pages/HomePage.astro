@@ -1,31 +1,29 @@
 ---
 /**
- * HomePage: the eight sections of WEBSITE_PLAN.md section 6, in order: hero, factual intro
- * (with the building photo), service cards, "Cum te programezi" in three steps, gallery carousel,
- * testimonials row, FAQ teaser and the CTA band with the WhatsApp BookingLink and the phone number.
+ * HomePage, in order: hero, "Despre centru" (a title and a scrollable row of the featured
+ * gallery photos), service cards, "Cum te programezi" in three steps,
+ * testimonials row (links to EESystem centres worldwide while there are none), FAQ teaser and the CTA band with the WhatsApp BookingLink and the phone number.
  */
-import { Image } from 'astro:assets';
-import { render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getRoute, useTranslations, type Locale } from '../../i18n';
 import {
   getFeaturedFaqs,
-  getGallery,
+  getFeaturedGallery,
   getPage,
   getServices,
   getTestimonials,
 } from '../../lib/content';
-import building from '../../assets/photos/building.jpg';
 import Section from '../ui/Section.astro';
 import Button from '../ui/Button.astro';
 import BookingSteps from '../sections/BookingSteps.astro';
 import CtaBand from '../sections/CtaBand.astro';
 import FaqAccordion from '../sections/FaqAccordion.astro';
-import GalleryCarousel from '../sections/GalleryCarousel.astro';
+import GalleryStrip from '../sections/GalleryStrip.astro';
 import Hero from '../sections/Hero.astro';
 import SectionHeading from '../sections/SectionHeading.astro';
 import ServicesGrid from '../sections/ServicesGrid.astro';
 import TestimonialRow from '../sections/TestimonialRow.astro';
+import WorldTestimonials from '../sections/WorldTestimonials.astro';
 
 interface Props {
   lang: Locale;
@@ -33,17 +31,15 @@ interface Props {
 
 const { lang } = Astro.props;
 const t = useTranslations(lang);
-const { entry, data: page } = await getPage(lang, 'home');
-const { Content } = await render(entry);
-const hasBody = Boolean(entry.body && entry.body.trim());
+const { data: page } = await getPage(lang, 'home');
 
 const [services, gallery, testimonials, faqs] = await Promise.all([
   getServices(lang),
-  getGallery(lang),
+  getFeaturedGallery(lang),
   getTestimonials(lang),
   getFeaturedFaqs(lang, 5),
 ]);
-const galleryHref = `${getRoute(lang, 'testimonials')}#gallery`;
+const photos = gallery.map((entry) => ({ src: entry.data.image, alt: entry.data.alt }));
 ---
 
 <BaseLayout lang={lang} pageKey="home" title={page.title} description={page.description}>
@@ -53,33 +49,16 @@ const galleryHref = `${getRoute(lang, 'testimonials')}#gallery`;
     headline={page.hero.headline}
     subheading={page.hero.subheading}
     bookingLabel={t('actions.bookWhatsApp')}
-    secondary={{ href: getRoute(lang, 'services'), label: t('actions.seeServices') }}
+    secondary={{ href: getRoute(lang, 'pricing'), label: t('actions.seePricing') }}
   />
 
-  <Section tone="secondary" id="home-intro" aria-labelledby="home-intro-heading">
-    <div class="home-intro">
-      <div class="home-intro__copy">
-        <h2 id="home-intro-heading">{page.intro.heading}</h2>
-        <p class="home-intro__text">{page.intro.text}</p>
-        {hasBody && (
-          <div class="prose home-intro__body">
-            <Content />
-          </div>
-        )}
-      </div>
-      <figure class="home-intro__figure">
-        <Image
-          src={building}
-          alt={page.intro.photo.alt}
-          widths={[480, 720, 960]}
-          sizes="(min-width: 64em) 30rem, (min-width: 48em) 45vw, calc(100vw - 2rem)"
-          loading="lazy"
-          decoding="async"
-          class="home-intro__image"
-        />
-        <figcaption class="home-intro__caption">{page.intro.photo.caption}</figcaption>
-      </figure>
-    </div>
+  <Section tone="secondary" id="home-about" aria-labelledby="home-about-heading">
+    <GalleryStrip
+      lang={lang}
+      heading={page.about.heading}
+      headingId="home-about-heading"
+      photos={photos}
+    />
   </Section>
 
   <ServicesGrid
@@ -87,7 +66,7 @@ const galleryHref = `${getRoute(lang, 'testimonials')}#gallery`;
     entries={services}
     heading={page.services.heading}
     text={page.services.text}
-    action={{ href: getRoute(lang, 'services'), label: t('actions.seeServices') }}
+    action={{ href: getRoute(lang, 'pricing'), label: t('actions.seePricing') }}
     compact
     id="home-services"
   />
@@ -100,27 +79,21 @@ const galleryHref = `${getRoute(lang, 'testimonials')}#gallery`;
     tone="secondary"
   />
 
-  <Section id="home-gallery" aria-labelledby="home-gallery-heading">
-    <SectionHeading
-      id="home-gallery-heading"
-      title={page.gallery.heading}
-      text={page.gallery.text}
-      action={{ href: galleryHref, label: t('actions.seeGallery') }}
-    />
-    <GalleryCarousel lang={lang} entries={gallery} />
-  </Section>
+  {testimonials.length > 0 ? (
+    <Section id="home-testimonials" aria-labelledby="home-testimonials-heading">
+      <SectionHeading
+        id="home-testimonials-heading"
+        title={page.testimonials.heading}
+        text={page.testimonials.text}
+        action={{ href: getRoute(lang, 'testimonials'), label: t('actions.seeAllTestimonials') }}
+      />
+      <TestimonialRow lang={lang} entries={testimonials} />
+    </Section>
+  ) : (
+    <WorldTestimonials lang={lang} id="home-testimonials" />
+  )}
 
-  <Section tone="secondary" id="home-testimonials" aria-labelledby="home-testimonials-heading">
-    <SectionHeading
-      id="home-testimonials-heading"
-      title={page.testimonials.heading}
-      text={page.testimonials.text}
-      action={{ href: getRoute(lang, 'testimonials'), label: t('actions.seeAllTestimonials') }}
-    />
-    <TestimonialRow lang={lang} entries={testimonials} />
-  </Section>
-
-  <Section id="home-faq" aria-labelledby="home-faq-heading">
+  <Section tone="secondary" id="home-faq" aria-labelledby="home-faq-heading">
     <div class="home-faq">
       <SectionHeading id="home-faq-heading" title={page.faq.heading} text={page.faq.text} />
       <FaqAccordion entries={faqs} />
@@ -136,54 +109,6 @@ const galleryHref = `${getRoute(lang, 'testimonials')}#gallery`;
 </BaseLayout>
 
 <style>
-  /* Copy on the left, the portrait photo of the building on the right; stacked on small screens. */
-  .home-intro {
-    display: grid;
-    gap: var(--space-6);
-    align-items: center;
-  }
-  @media (min-width: 48em) {
-    .home-intro {
-      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
-      gap: var(--space-8);
-    }
-  }
-  .home-intro__copy {
-    display: grid;
-    gap: var(--space-4);
-    justify-items: start;
-    max-width: var(--measure);
-  }
-  .home-intro__figure {
-    display: grid;
-    gap: var(--space-3);
-    margin: 0;
-    width: 100%;
-    max-width: 30rem;
-    justify-self: center;
-  }
-  .home-intro__image {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 4 / 5;
-    object-fit: cover;
-    border-radius: var(--radius-card);
-    box-shadow: var(--shadow-md);
-  }
-  .home-intro__caption {
-    font-size: var(--text-footnote);
-    line-height: var(--leading-footnote);
-    color: var(--label-secondary);
-  }
-  .home-intro__text {
-    font-size: var(--text-title-3);
-    line-height: 1.4;
-    font-weight: 400;
-    color: var(--label-secondary);
-  }
-  .home-intro__body {
-    color: var(--label-secondary);
-  }
   .home-faq {
     max-width: 48rem;
   }

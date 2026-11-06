@@ -2,6 +2,7 @@
   "lang": "en",
   "translationKey": "session-60",
   "name": "EESystem session – 60 minutes",
+  "durationLabel": "One hour",
   "description": "An hour in the session room, which is equipped with the EESystem. You stay clothed, in an armchair, on a lounger or on the sofa, and spend the slot as you like: you read, listen to something on headphones or sit with your eyes closed. You can come on your own or in a small group. On your first visit, a member of the team shows you around in a few minutes.",
   "durationMinutes": 60,
   "price": 70,

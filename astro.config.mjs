@@ -5,7 +5,9 @@ import sitemap from '@astrojs/sitemap';
 // https://astro.build/config
 export default defineConfig({
   // Keep in sync with `domain` in src/config/site.ts and the sitemap line in public/robots.txt.
-  site: 'https://www.quantumwellbeing.ro',
+  // GitHub Pages address until the owner buys quantumwellbeing.ro. The repo must be named
+  // quantum-wellbeing-center.github.io so the site is served from the root (no `base` needed).
+  site: 'https://quantum-wellbeing-center.github.io',
   output: 'static',
   trailingSlash: 'always',
   i18n: {

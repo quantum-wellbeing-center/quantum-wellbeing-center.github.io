@@ -1,7 +1,7 @@
 /**
  * Content helpers shared by the page components: typed access to the `pages` and `legal`
- * collections, sorted and filtered queries for the other collections, article slugs and twins,
- * reading time, and the document-type badge tone.
+ * collections, sorted and filtered queries for the other collections and the document-type
+ * badge tone.
  *
  * Every query filters on `lang`. Testimonials are additionally filtered on `consent === true`
  * and gallery images on the consent rule (consent needed only when people are identifiable),
@@ -9,7 +9,6 @@
  */
 import { getCollection, getEntry, type CollectionEntry } from 'astro:content';
 import type { Locale } from '../config/site';
-import { getRoute, otherLocale } from '../i18n';
 import type { BadgeTone } from '../components/ui/Badge.astro';
 import type { DocumentType, LEGAL_KEYS, PageContentKey } from '../content.config';
 
@@ -47,7 +46,7 @@ export async function getServices(lang: Locale): Promise<ServiceEntry[]> {
   return entries.sort((a, b) => a.data.order - b.data.order);
 }
 
-/** Anchor id of a service on the services page, shared by the home teaser links. */
+/** Anchor id of a service on the pricing page, shared by the home teaser links. */
 export function serviceAnchor(entry: ServiceEntry): string {
   return `service-${entry.data.translationKey}`;
 }
@@ -87,11 +86,19 @@ export async function getGallery(lang: Locale): Promise<GalleryEntry[]> {
   return entries.sort((a, b) => a.data.order - b.data.order);
 }
 
-/** Research items, newest year first; undated items last. */
+/** The gallery images marked `featured`, for the home page's showcase. */
+export async function getFeaturedGallery(lang: Locale): Promise<GalleryEntry[]> {
+  return (await getGallery(lang)).filter((e) => e.data.featured);
+}
+
+/** Research items: featured first, then newest year first; undated items last. */
 export async function getResearch(lang: Locale) {
   const entries = await getCollection('research', (e) => e.data.lang === lang);
   return entries.sort(
-    (a, b) => (b.data.year ?? 0) - (a.data.year ?? 0) || a.data.title.localeCompare(b.data.title),
+    (a, b) =>
+      Number(b.data.featured) - Number(a.data.featured) ||
+      (b.data.year ?? 0) - (a.data.year ?? 0) ||
+      a.data.title.localeCompare(b.data.title),
   );
 }
 
@@ -105,51 +112,6 @@ export function documentTypeTone(type: DocumentType): BadgeTone {
     default:
       return 'neutral';
   }
-}
-
-/* ---------------------------------------------------------------- articles */
-
-export type ArticleEntry = CollectionEntry<'blog'>;
-
-/** Published (non-draft) articles in one language, newest first. */
-export async function getArticles(lang: Locale): Promise<ArticleEntry[]> {
-  const entries = await getCollection('blog', (e) => e.data.lang === lang && !e.data.draft);
-  return entries.sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime());
-}
-
-/** `ro/prima-sesiune` → `prima-sesiune`. */
-export function articleSlug(entry: ArticleEntry): string {
-  return entry.id.replace(/^(ro|en)\//, '');
-}
-
-export function articlePath(entry: ArticleEntry): string {
-  return getRoute(entry.data.lang, 'article', { slug: articleSlug(entry) });
-}
-
-/** Path of the same article in the other language, or null when it is missing or a draft. */
-export async function getArticleTwinPath(entry: ArticleEntry): Promise<string | null> {
-  const other = otherLocale(entry.data.lang);
-  const twins = await getArticles(other);
-  const twin = twins.find((e) => e.data.translationKey === entry.data.translationKey);
-  return twin ? articlePath(twin) : null;
-}
-
-/** Previous (older) and next (newer) published articles around `entry`. */
-export async function getArticleNeighbours(entry: ArticleEntry) {
-  const all = await getArticles(entry.data.lang);
-  const index = all.findIndex((e) => e.id === entry.id);
-  return {
-    newer: index > 0 ? all[index - 1] : undefined,
-    older: index >= 0 && index < all.length - 1 ? all[index + 1] : undefined,
-  };
-}
-
-/** Minutes to read a Markdown body at about 200 words per minute, at least 1. */
-export function readingTimeMinutes(body: string | undefined): number {
-  const words = markdownToText(body ?? '')
-    .split(/\s+/)
-    .filter(Boolean).length;
-  return Math.max(1, Math.ceil(words / 200));
 }
 
 /* ---------------------------------------------------------------- markdown */

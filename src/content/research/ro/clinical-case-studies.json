@@ -1,0 +1,11 @@
+{
+  "lang": "ro",
+  "translationKey": "clinical-case-studies",
+  "title": "Clinical Case Studies",
+  "authors": [
+    "Dr. Greg Gerber, M.D."
+  ],
+  "documentType": "case-report",
+  "pdf": "/research/clinical-case-studies.pdf",
+  "cover": "../../../assets/research/clinical-case-studies.jpg"
+}

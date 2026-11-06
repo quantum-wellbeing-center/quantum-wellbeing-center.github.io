@@ -1,20 +1,17 @@
 ---
 /**
- * ContactPage: the WhatsApp BookingLink (topic "other") with the phone link beside it, the
- * contact details with hours and socials (and the photo of the building under them, so
- * visitors recognise the place), and a static map placeholder with a link to Google Maps
- * (no iframe, which would set cookies). There is no contact form.
+ * ContactPage: the h1, then two columns. Left: the intro paragraph, the contact rows (email,
+ * phone, address linking to Google Maps, hours) and the WhatsApp BookingLink (topic "other").
+ * Right: an embedded Google Maps iframe with a pin on the address (`site.mapEmbedUrl`), in the
+ * page's language. Google loads the map from its own servers and may set its own cookies; the
+ * cookie policy mentions it. There is no contact form.
  */
-import { Image } from 'astro:assets';
 import { render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { site } from '../../config/site';
 import { useTranslations, type Locale } from '../../i18n';
 import { getPage } from '../../lib/content';
-import mapPlaceholder from '../../assets/brand/map-placeholder.svg';
-import facade from '../../assets/photos/facade.jpg';
 import BookingLink from '../BookingLink.astro';
-import Button from '../ui/Button.astro';
 import Section from '../ui/Section.astro';
 import ContactDetails from '../sections/ContactDetails.astro';
 import PageIntro from '../sections/PageIntro.astro';
@@ -28,187 +25,105 @@ const t = useTranslations(lang);
 const { entry, data: page } = await getPage(lang, 'contact');
 const { Content } = await render(entry);
 const hasBody = Boolean(entry.body && entry.body.trim());
+const mapSrc = `${site.mapEmbedUrl}&hl=${lang}`;
 ---
 
 <BaseLayout lang={lang} pageKey="contact" title={page.title} description={page.description}>
-  <PageIntro title={page.title} lead={page.subheading}>
-    {hasBody && (
-      <div class="prose contact-intro">
-        <Content />
-      </div>
-    )}
-  </PageIntro>
-
-  <Section
-    tone="secondary"
-    spacing="compact"
-    id="contact-whatsapp"
-    aria-labelledby="contact-whatsapp-heading"
-  >
-    <div class="contact-whatsapp">
-      <h2 id="contact-whatsapp-heading" class="contact__heading">
-        {page.whatsapp.heading}
-      </h2>
-      <p class="contact-whatsapp__text">{page.whatsapp.text}</p>
-      <div class="contact-whatsapp__actions">
-        <BookingLink lang={lang} topic="other" size="lg" icon="whatsapp" iconPosition="start">
-          {t('actions.writeWhatsApp')}
-        </BookingLink>
-        <Button
-          href={`tel:${site.phoneHref}`}
-          variant="secondary"
-          size="lg"
-          icon="phone"
-          iconPosition="start"
-          class="contact-whatsapp__phone"
-        >
-          {t('actions.callNumber', { phone: site.phone })}
-        </Button>
-      </div>
-    </div>
-  </Section>
+  <PageIntro title={page.title} class="contact-intro" />
 
   <Section class="contact">
     <div class="contact__grid">
-      <div class="contact__details" aria-labelledby="contact-details-heading">
-        <h2 id="contact-details-heading" class="contact__heading">
-          {page.details.heading}
-        </h2>
+      <div class="contact__info">
+        <p class="contact__lead">{page.subheading}</p>
         <ContactDetails lang={lang} />
-        <figure class="contact__photo">
-          <Image
-            src={facade}
-            alt={page.details.photo.alt}
-            widths={[480, 720, 960]}
-            sizes="(min-width: 56em) 32rem, calc(100vw - 2rem)"
-            loading="lazy"
-            decoding="async"
-            class="contact__photo-image"
-          />
-          <figcaption class="contact__photo-caption">{page.details.photo.caption}</figcaption>
-        </figure>
+        <div class="contact__actions">
+          <BookingLink lang={lang} topic="other" size="lg" icon="whatsapp" iconPosition="start">
+            {t('actions.writeWhatsApp')}
+          </BookingLink>
+        </div>
+        {hasBody && (
+          <div class="prose contact__note">
+            <Content />
+          </div>
+        )}
       </div>
-      <div class="contact__map" aria-labelledby="contact-map-heading">
-        <h2 id="contact-map-heading" class="contact__heading">
-          {page.map.heading}
-        </h2>
-        <p class="contact__map-text">{page.map.text}</p>
-        <figure class="contact__map-figure">
-          <Image
-            src={mapPlaceholder}
-            alt={t('contact.mapAlt')}
-            width={900}
-            height={600}
-            loading="lazy"
-            decoding="async"
-            class="contact__map-image"
-          />
-        </figure>
-        <Button
-          href={site.mapUrl}
-          variant="secondary"
-          icon="map-pin"
-          iconPosition="start"
-          newTabLabel={t('a11y.newTab')}
-          data-map-link
-        >
-          {t('actions.openInMaps')}
-        </Button>
+      <div class="contact__map">
+        <iframe
+          class="contact__map-frame"
+          src={mapSrc}
+          title={t('contact.mapTitle')}
+          loading="lazy"
+          allowfullscreen
+        ></iframe>
       </div>
     </div>
   </Section>
 </BaseLayout>
 
 <style>
-  .contact-intro {
-    color: var(--label-secondary);
-  }
-  .contact-whatsapp {
-    display: grid;
-    gap: var(--space-4);
-    justify-items: start;
-    max-width: var(--measure);
-  }
-  .contact-whatsapp .contact__heading {
-    margin-block-end: 0;
-  }
-  .contact-whatsapp__text {
-    color: var(--label-secondary);
-  }
-  .contact-whatsapp__actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-3);
-    margin-block-start: var(--space-2);
-  }
-  /* Long labels wrap instead of overflowing at 320px. */
-  .contact-whatsapp__actions :global(.btn) {
-    white-space: normal;
-    max-width: 100%;
-  }
-  .contact-whatsapp__phone {
-    font-variant-numeric: tabular-nums;
+  .contact-intro :global(.page-intro__title) {
+    font-size: clamp(var(--text-large-title), 6vw, 4rem);
   }
   .contact {
-    padding-block-end: clamp(var(--space-7), 8vw, var(--space-9));
+    padding-block: var(--space-7) clamp(var(--space-7), 8vw, var(--space-9));
   }
   .contact__grid {
     display: grid;
     gap: var(--space-7);
-    align-items: start;
   }
   @media (min-width: 56em) {
     .contact__grid {
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
       gap: var(--space-8);
+      align-items: stretch;
     }
   }
-  .contact__heading {
-    font-size: var(--text-title-2);
-    line-height: var(--leading-title-2);
-    margin-block-end: var(--space-4);
-  }
-  .contact__photo {
+  .contact__info {
     display: grid;
+    gap: var(--space-6);
+    align-content: start;
+  }
+  .contact__lead {
+    max-width: 40ch;
+    font-size: var(--text-title-3);
+    line-height: 1.5;
+    color: var(--label-secondary);
+  }
+  .contact__actions {
+    display: flex;
+    flex-wrap: wrap;
     gap: var(--space-3);
-    margin: var(--space-6) 0 0;
   }
-  .contact__photo-image {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 3 / 2;
-    object-fit: cover;
-    border-radius: var(--radius-card);
-    box-shadow: var(--shadow-md);
+  /* Long labels wrap instead of overflowing at 320px. */
+  .contact__actions :global(.btn) {
+    white-space: normal;
+    max-width: 100%;
   }
-  .contact__photo-caption {
+  .contact__note {
+    color: var(--label-secondary);
     font-size: var(--text-footnote);
     line-height: var(--leading-footnote);
-    color: var(--label-secondary);
   }
   .contact__map {
-    display: grid;
-    gap: var(--space-4);
-    justify-items: start;
-  }
-  .contact__map .contact__heading {
-    margin-block-end: 0;
-  }
-  .contact__map-text {
-    color: var(--label-secondary);
-  }
-  .contact__map-figure {
-    width: 100%;
-    margin: 0;
+    position: relative;
+    min-height: 22rem;
     border-radius: var(--radius-card);
     overflow: hidden;
-    box-shadow: inset 0 0 0 1px var(--separator);
     background: var(--bg-secondary);
+    box-shadow:
+      inset 0 0 0 1px var(--separator),
+      var(--shadow-md);
   }
-  .contact__map-image {
+  @media (min-width: 56em) {
+    .contact__map {
+      min-height: 30rem;
+    }
+  }
+  .contact__map-frame {
+    position: absolute;
+    inset: 0;
     width: 100%;
-    height: auto;
-    aspect-ratio: 3 / 2;
-    object-fit: cover;
+    height: 100%;
+    border: 0;
   }
 </style>

@@ -207,5 +207,9 @@
   --accent-tint: rgba(255, 255, 255, 0.18);
   --accent-strong: #ffffff;
   --focus-ring: #ffffff;
+  /* The draft-legal note in the legal pages' intro: the dark-scheme amber (11.0:1 on navy). */
+  --warning: #ffb340;
+  --warning-tint: rgba(255, 179, 64, 0.16);
+  --warning-strong: #ffb340;
   color: var(--label);
 }

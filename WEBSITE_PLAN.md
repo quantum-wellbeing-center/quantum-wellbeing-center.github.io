@@ -17,8 +17,8 @@ Before any visual work, invoke the project skill `hig-foundations` (.claude/skil
 
 Rules:
 - Static site. It must run locally with `npm run dev`, preview the production build with `npm run preview`, and deploy to any static host.
-- Appointments and contact go through an on-site WhatsApp chat panel that opens WhatsApp with a prefilled message to +40 742 644 016. There is no contact form and no booking backend. Section 8 specifies the chat.
-- The site makes no claims of any kind. No health, therapeutic, medical or benefit claims, no before/after images, no lists of effects. Describe the centre and its services factually. Section 9 has the full rules.
+- Appointments and contact go through an on-site WhatsApp chat panel that opens WhatsApp with a prefilled message to +40 748 011 259. There is no contact form and no booking backend. Section 8 specifies the chat.
+- The owner decides the wording about the centre, the EESystem and its effects, and takes responsibility for it (section 9).
 - All site content lives in content collections and config files, never hard-coded inside components.
 - Section 2 lists owner inputs. Where a value is blank, use a clearly fake placeholder and mark it with "TODO(content)". Mark draft legal text with "TODO(legal)".
 - Never copy text or images from the reference sites.
@@ -37,21 +37,20 @@ Anything left blank becomes a TODO(content) placeholder.
 | Item | Value |
 |---|---|
 | Positioning | Centru de wellness (wellbeing centre) |
-| Phone | 0742 644 016 |
-| Phone link | tel:+40742644016 |
-| WhatsApp for appointments | +40 742 644 016, link base `https://wa.me/40742644016` |
+| Phone | 0748 011 259 |
+| Phone link | tel:+40748011259 |
+| WhatsApp for appointments | +40 748 011 259, link base `https://wa.me/40748011259` |
 | Brand name | Quantum Wellbeing Center |
 | Domain | https://www.quantumwellbeing.ro |
 | Address and city | Iclod, județul Cluj (street and postal code still missing) |
 | Opening hours | |
 | Email | contact@quantumwellbeing.ro |
 | Social links (Facebook, Instagram, YouTube, TikTok) | |
-| Community channel (Telegram or WhatsApp channel) | |
 | Logo file and one brand accent colour (hex) | |
-| Services, session lengths and prices | EESystem sessions, individual or in a small group: 60 min 70 RON; 90 min 90 RON; package of 3 + 1 free (four 60-min sessions, 210 RON); pensioners 50 RON per 60-min session |
+| Services, session lengths and prices | EESystem sessions, individual or in a small group: 60 min ("O oră") 70 RON; 90 min ("O oră și 30 min") 90 RON; 120 min ("Două ore") 120 RON. No packages and no pensioners' rate (removed 2026-11-06) |
 | Company legal details (name, CUI, Reg. Com.) | |
 | Analytics wanted? Which tool? | |
-| Research documents (PDFs and their metadata) | |
+| Research documents (PDFs and their metadata) | 43 EESystem documents from the materials board (https://widgets.getgorilla.app/2072c7d4375fdbf5), plus the ADHD pilot study and its summary supplied by the owner (2026-11-06); in `public/research/` |
 | Photos of the centre and team | |
 | Real testimonials, with written consent | |
 
@@ -71,15 +70,14 @@ The merged feature set to build:
 | Top info bar with phone, hours, email, socials | quantumspace | Same, hidden on small screens |
 | Sticky header, menu, language switcher, "Rezervă" button | both | Same, with a translucent material header. "Rezervă" opens the WhatsApp chat |
 | Hero with headline and booking CTA | quantumclinic | Same, with "Centru de wellness" as the eyebrow label |
-| Services description | both | Factual service cards and a services page |
-| Research library: grouped cards linking to PDFs | quantumspace | A neutral document library with metadata, search and filters |
+| Services description | both | Factual service cards on the home page; no separate services page (removed 2026-11-06, it repeated the pricing page) |
+| Research page: "Energy Enhancement System" heading, document cards with thumbnails linking to PDFs, booking block, reviews | quantumclinic.ro/cercetari-stiintifice/ | Same structure (owner's request, 2026-11-06), with the reviews replaced by our testimonials row |
 | Photo gallery | quantumspace | Gallery of the centre's space, with an accessible lightbox |
 | Testimonials and Google reviews widget | both | Testimonials from a local collection; reviews embed optional, consent-gated |
-| Grouped FAQ | quantumclinic | Accordion built on native details elements |
+| FAQ, one short flat list | quantumclinic | Accordion built on native details elements |
 | Pricing | both | Pricing page with service cards |
-| Blog / articles | both | Articles with pagination and RSS |
 | Contact, floating WhatsApp button | both | An on-site WhatsApp chat panel, plus phone, address and hours |
-| Footer: useful links, company links, socials, community CTA, ANPC badges, copyright | both | Same |
+| Footer: useful links, company links, socials, ANPC badges, copyright | both | Same |
 | Cookie consent | quantumclinic | Only if the site sets non-essential cookies, with reject as easy as accept |
 | Skip link | quantumspace | Same |
 
@@ -111,7 +109,7 @@ Target layout, high level only:
 src/
   config/site.ts          brand, phone, WhatsApp number and messages, socials, hours, feature flags
   content.config.ts       collection schemas (check the location for the installed Astro version)
-  content/                services, research, testimonials, faq, blog, gallery
+  content/                services, research, testimonials, faq, gallery
   i18n/                   ro.json, en.json UI strings, route map between languages, helpers
   layouts/BaseLayout.astro
   components/             ui/ primitives, sections/ page sections, islands/ interactive parts
@@ -187,25 +185,24 @@ Also create `.claude/apple-design-context.md` summarising these decisions. The s
 | Romanian route | English route | Purpose |
 |---|---|---|
 | `/` | `/en/` | Home |
-| `/servicii/` | `/en/services/` | Services, described factually |
+| `/despre-eesystem/` | `/en/about-eesystem/` | Dr. Sandra Rose Michael, the EESystem's inventor: biography and a click-to-play YouTube interview |
 | `/cercetari-stiintifice/` | `/en/research/` | Document library |
 | `/testimoniale/` | `/en/testimonials/` | Testimonials and gallery of the centre |
 | `/preturi/` | `/en/pricing/` | Services and prices |
-| `/articole/` and `/articole/[slug]/` | `/en/articles/` and `/en/articles/[slug]/` | Blog |
 | `/intrebari-frecvente/` | `/en/faq/` | FAQ |
-| `/contact/` | `/en/contact/` | WhatsApp, phone, address, hours, map link |
+| `/contact/` | `/en/contact/` | WhatsApp, phone, address, hours, embedded Google map |
 | `/termeni-si-conditii/` | `/en/terms/` | Terms |
 | `/politica-de-confidentialitate/` | `/en/privacy/` | Privacy policy |
 | `/politica-cookies/` | `/en/cookies/` | Cookie policy |
 | 404 page | 404 page | Not found, in both languages |
 
-**Primary navigation:** Servicii, Cercetări științifice, Testimoniale, Prețuri, Articole, Contact, then the language switcher and the "Rezervă" button. FAQ sits in the footer and as a section on the home page.
+**Primary navigation:** Despre EESystem, Cercetări științifice, Testimoniale, Prețuri, Contact, then the language switcher and the "Rezervă" button. FAQ sits in the footer and as a section on the home page.
 
 **Home page sections, in order:**
 
-1. Hero with the "Centru de wellness" eyebrow, headline, subheading, a "Programează-te pe WhatsApp" button and a secondary "Vezi serviciile" link.
+1. Hero with the "Centru de wellness" eyebrow, headline, subheading, a "Programează-te pe WhatsApp" button and a secondary "Vezi prețurile" link.
 2. Short, factual introduction to the centre: who you are, where you are, what the space is like.
-3. Service cards: name, duration, price from, and a link.
+3. Service cards: name, duration, price from, and a link to that session on the pricing page.
 4. "Cum te programezi" in three steps: write on WhatsApp, confirm the time, come to the centre.
 5. Gallery carousel with photos of the space, auto-advancing with the controls in section 5 principle 6; a plain scroll-snap strip without JavaScript.
 6. Testimonials, as a scroll-snap row with no autoplay.
@@ -218,12 +215,11 @@ Also create `.claude/apple-design-context.md` summarising these decisions. The s
 
 Define every collection with a schema. Each entry has `lang` ("ro" or "en") and a `translationKey` that links the Romanian and English versions.
 
-- **services:** name, factual description, duration in minutes, price, currency RON, sessions per package (optional), highlighted flag, order, and the WhatsApp message to prefill when booking this service.
-- **research:** title, authors, year (optional), `documentType` (peer-reviewed article, clinical study, pilot study, case report, review, report, other), source or publisher, DOI (optional), pdf path or URL, a one-line neutral description of what the document is, `group`, featured flag. The description says what the document is, never what it claims. The build must fail on duplicate pdf paths.
+- **services:** name, the duration in words (the pricing card title), factual description, duration in minutes, price, currency RON, highlighted flag, order, and the WhatsApp message to prefill when booking this service.
+- **research:** title, authors (may be empty), year (optional), `documentType` (optional: peer-reviewed article, clinical study, pilot study, case report, review, report, other), source or affiliation (optional), DOI (optional), pdf path or URL, an optional summary PDF, a cover image (the first page, made by `npm run research:covers`), an optional one-line description, featured flag. The build must fail on duplicate pdf paths.
 - **testimonials:** first name and initial, quote, date, rating (optional), source (google or in-person), `consent: true` required to render.
 - **gallery:** image of the centre or team, alt text, caption, `consent: true` required when a person is identifiable.
-- **faq:** question, answer in Markdown, category, order. Cover practical topics: booking, what to bring, duration, cancellation, payment, location, parking.
-- **blog:** title, description, publish date, updated date (optional), cover image, author, tags, draft flag.
+- **faq:** question, answer in Markdown, order. Essentials only, one or two sentences each: what the EESystem is, session length, preparing, during and after a session, how often, booking, cancellation, location, parking.
 
 Site-wide values such as phone, WhatsApp number, prefilled messages, socials, opening hours and analytics settings live in `src/config/site.ts`. UI strings live in the i18n JSON files.
 
@@ -236,30 +232,28 @@ Site-wide values such as phone, WhatsApp number, prefilled messages, socials, op
   - Clicking it opens a chat-style panel built on the native `dialog` element, with the material background. It has a header with the centre's name and logo, plus a line such as "Îți răspundem în timpul programului" with the hours from config.
   - The panel shows a greeting bubble, "Bună! Cu ce te putem ajuta?", and quick-reply chips: "Vreau o programare", "Întrebare despre prețuri" and "Altă întrebare".
   - Below the bubble are optional fields for name and preferred day and time, a message box, and a "Trimite pe WhatsApp" button.
-  - Sending opens `https://wa.me/40742644016?text=` plus the URL-encoded message. The message is assembled from the chosen chip, the fields and the page language. Example: "Bună ziua! Aș dori o programare. Nume: Ana. Ziua/ora preferată: joi după-amiază."
-  - A secondary "Sună: 0742 644 016" link uses `tel:+40742644016`.
+  - Sending opens `https://wa.me/40748011259?text=` plus the URL-encoded message. The message is assembled from the chosen chip, the fields and the page language. Example: "Bună ziua! Aș dori o programare. Nume: Ana. Ziua/ora preferată: joi după-amiază."
+  - A secondary "Sună: 0748 011 259" link uses `tel:+40748011259`.
   - Every "Rezervă" and "Programează-te" button opens the same panel. Service cards preselect "Vreau o programare" and add the service name to the message.
   - Without JavaScript, each of those buttons is a plain `wa.me` link with a default prefilled message, so booking still works.
   - The panel loads no third-party script and sets no cookies. Nothing is sent anywhere until the visitor taps send. Focus is trapped while open, Escape closes it, and focus returns to the button that opened it.
   - The privacy policy explains that messages are handled by WhatsApp, which Meta operates.
 - **Header.** Sticky with the material background. Below about 900px it collapses into a full-screen sheet menu with a focus trap, Escape to close, and `aria-expanded` on the toggle. Render the header once, not twice as on the reference site.
 - **Top info bar.** Phone, hours, email and socials. Hidden on small screens, where the phone moves into the menu.
-- **Research library.**
-  - Present it as a document library with no editorial commentary. A short intro says the documents are listed for information and that some are not peer-reviewed.
-  - Group items into sections with counts. Each card shows title, authors, year, a document-type badge, source, and an "Deschide PDF" link labelled with file type and size.
-  - Add a search box over titles and authors, and document-type filter chips styled as a segmented control.
-  - Mirror search and filters in the URL query string, show an empty state, and announce result counts through an `aria-live` region.
-  - Without JavaScript, every item still renders.
+- **Research page.** Revised 2026-11-06 at the owner's request to follow the structure of quantumclinic.ro/cercetari-stiintifice/:
+  - The h1 band with a short lead, then an h2 "Energy Enhancement System" with the document count and a link to testimonials from other EESystem centres (unifydhealing.com).
+  - One grid of document cards, featured first, then newest year first. Each card shows a thumbnail of the PDF's first page, the title (the link to the PDF), authors, year and source, a document-type badge when the entry sets one, and the file type and size. A featured card is wide and can carry a second "Rezumat" file. On narrow screens the cards become a compact list.
+  - Then a booking band with the centre's name, then the testimonials row (where the reference shows Google reviews).
+  - Without JavaScript, every item still renders. Optional later: a search box and type filters through the `data-research-*` hooks, with results announced in the `aria-live` region.
 - **Gallery lightbox.** Built on the native `dialog` element. Arrow keys move between images, Escape closes, and focus returns to the opening thumbnail.
-- **FAQ.** Native `details` and `summary`, grouped by category, with FAQPage structured data.
-- **Pricing.** Service cards with prices formatted by `Intl` in RON, each with a "Programează-te" button that opens the chat. Add a TODO(content) note about VAT.
-- **Articles.** Paginated list of 9 per page, reading time, RSS feed, and per-article Open Graph data.
-- **Contact page.** The WhatsApp button that opens the chat, the phone link, address, hours, email, and socials. Use a static map image with an "Deschide în Google Maps" link instead of an iframe, because the embed sets cookies.
+- **FAQ.** Native `details` and `summary` in one flat list (no categories), with FAQPage structured data.
+- **Pricing.** A simple price list: one wide horizontal card per session (duration in words, price formatted by `Intl` as "70 lei", a "Programează-te" button that opens the chat), then a short note on what a session includes and a TODO(content) note about VAT.
+- **Contact page.** A large title, then two columns: an intro paragraph, icon rows for email, phone, address (linking to Google Maps) and hours, and the WhatsApp button that opens the chat; beside them an embedded Google Maps iframe with a pin on the address. Revised 2026-11-05 at the owner's request: the embed replaces the earlier static map image. Google may set its own cookies through it, so the cookie policy says so (TODO(legal): confirm whether the map needs consent).
 - **Cookie consent.**
   - By default the site sets no cookies, so it shows no banner.
   - If the owner turns on analytics or embeds that set cookies, show a banner with necessary, statistics and marketing categories. "Acceptă tot", "Respinge tot" and "Preferințe" get equal visual weight. Store the choice with a version number, load nothing non-essential before consent, and add a footer link to reopen preferences.
 - **Footer.**
-  - Columns: useful links, company and legal links, contact with the WhatsApp and phone links, community CTA, and socials.
+  - Columns: useful links, company and legal links, contact with the WhatsApp and phone links, and socials. No community channel.
   - Add the ANPC SAL badge linking to ANPC. The EU online dispute resolution (SOL) platform closed in July 2025. Add a TODO(legal) to confirm with the owner whether the SOL badge is still required.
   - Include a copyright line with the current year computed at build time.
 - **SEO.**
@@ -271,18 +265,11 @@ Site-wide values such as phone, WhatsApp number, prefilled messages, socials, op
 
 ---
 
-## 9. Content rules: no claims
+## 9. Content rules
 
-The site presents a Centru de wellness and makes no claims of any kind.
+**Wording is the owner's decision (2026-11-06).** The owner decides what the site says about the centre, the EESystem and its effects, and takes responsibility for it. There is no automated word check: the earlier "no claims" rules and the banned-word test (`scripts/banned-words.mjs`) were removed at the owner's request. Write the copy the owner supplies; don't add or remove claims on your own initiative.
 
-- **No health or benefit claims.** Do not say or imply that any service treats, cures, prevents, heals, repairs, detoxifies, boosts immunity, reduces stress or pain, slows ageing, or improves any condition. Avoid words such as "vindecă", "tratează", "previne", "terapie", "beneficii", "efecte" and their English equivalents.
-- **No conditions or diseases** mentioned anywhere, including in FAQ answers, testimonials, articles and image alt text.
-- **Describe services factually:** what the service is, what happens during a visit, how long it takes, what it costs, and how to book.
-- **EESystem by name only.** The sessions may be called EESystem sessions (owner decision, 2026-11-02). Do not expand the acronym, explain how the system works, or repeat any wording from the owner's flyers about what it does: scalar fields, biophotons, energy, frequencies, detox, cells, DNA, circulation, sleep, balance, or any condition.
-- **No before/after images.** The gallery shows the space, the team and the atmosphere only.
-- **Testimonials** talk about the experience, the staff, the space or the booking. Leave out any quote that mentions health results, even from a real client. Publish them only with written consent.
-- **Research library** lists documents neutrally, with no summaries of findings and no headline claims.
-- **Articles** stay on practical or lifestyle topics with no health claims. Placeholder articles are about visiting the centre, booking and the team.
+- **Testimonials** are published only with the client's written consent.
 - **Fresh copy only.** Never copy text or images from the reference sites, which would also breach their copyright.
 - **Placeholder images** are neutral local SVGs with a label. No stock photos posing as clients, and no hotlinked images.
 - **Legal pages** are drafted as structure plus placeholder text marked TODO(legal), for review by the owner's adviser.
@@ -298,9 +285,9 @@ Run `npm run build` and `npm run check` at the end of every phase, in addition t
 | 0. Setup | `git init`. Scaffold Astro (minimal template) into this folder without overwriting CLAUDE.md, WEBSITE_PLAN.md or `.claude/`. Add `.nvmrc`, `.gitignore`, Prettier, the scripts in section 11, and Playwright with Chromium. | `npm run dev` serves on localhost:4321. Build passes. |
 | 1. Design system | Tokens, base styles, typography, and UI primitives: Button, Card, Section, Container, Badge, SegmentedControl, Icon. Add a noindex `/_styleguide/` page showing every primitive. Create `.claude/apple-design-context.md`. | Every text and background pair passes AA in both themes. The styleguide renders correctly in light and dark. |
 | 2. Layout and i18n | BaseLayout, TopBar, Header, mobile menu, LanguageSwitcher, Footer, SkipLink, SEO head, WhatsApp chat panel, i18n config and route map. | Keyboard-only navigation works. The axe test passes. The language switcher keeps the current page. The chat builds a correct `wa.me` link in both languages. |
-| 3. Content | Collection schemas. Placeholder content in both languages: 4 services, about 10 research items across all groups, 6 testimonials, 12 FAQs, 3 articles and 6 gallery images. | Schemas reject bad data. The duplicate-PDF rule fails the build when triggered. A search of all content for the banned words in section 9 finds nothing. |
+| 3. Content | Collection schemas. Placeholder content in both languages: 4 services, about 10 research items across all groups, 6 testimonials, 12 FAQs and 6 gallery images. | Schemas reject bad data. The duplicate-PDF rule fails the build when triggered. |
 | 4. Pages | Every page in section 6, in both languages, plus the 404 pages. | Every route returns 200 in `npm run preview`. No missing translations. |
-| 5. Enhancements | Research search and filters, lightbox, scroll reveal, service preselection in the chat, structured data, sitemap, RSS, and the optional consent banner behind a config flag. | Features work with JavaScript on. Booking links and content still work with JavaScript off. Reduced motion is respected. |
+| 5. Enhancements | Research search and filters, lightbox, scroll reveal, service preselection in the chat, structured data, sitemap and the optional consent banner behind a config flag. | Features work with JavaScript on. Booking links and content still work with JavaScript off. Reduced motion is respected. |
 | 6. QA | Playwright smoke and axe tests across all routes. Lighthouse on home, research and contact. Test at 320px width, in both themes and at 200% text size. Check diacritics and links. | All tests pass. Lighthouse targets are met. No horizontal scroll at 320px. |
 | 7. Deploy prep | `netlify.toml` with build command, publish folder, Node version and basic security headers. A README with local and deploy steps. Replace the placeholder CLAUDE.md with real commands and architecture. | `npm run build && npm run preview` serves the final site. |
 
@@ -330,11 +317,11 @@ Test the real WhatsApp hand-off by hand on a phone using `npm run dev -- --host`
 ## 12. Definition of done
 
 - [ ] All routes in section 6 exist in Romanian and English and build without warnings.
-- [ ] The site presents itself as a Centru de wellness and contains no claims, as defined in section 9.
+- [ ] The owner has approved the site's wording (section 9).
 - [ ] The WhatsApp chat opens from every booking button, builds the right message in both languages, and falls back to a plain link without JavaScript.
 - [ ] Light and dark modes both follow the token table and pass AA contrast.
 - [ ] Keyboard, screen reader landmarks, reduced motion and 200% text size all work.
-- [ ] The research library searches, filters and labels document types, and works without JavaScript.
+- [ ] The research page follows the reference structure, every card opens its PDF, and it works without JavaScript.
 - [ ] The default build sets no cookies.
 - [ ] Lighthouse mobile scores are 95 or higher on home, research and contact.
 - [ ] Playwright and axe tests pass.

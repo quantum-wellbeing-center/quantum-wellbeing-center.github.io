@@ -1,14 +1,16 @@
 ---
 /**
- * ResearchCard: one document of the library with its document-type badge, authors, year,
- * source, DOI, the one-line neutral description (what the document is, never what it claims)
- * and the file link labelled with type and size.
+ * ResearchCard: one document of the research page, laid out like the reference library: a
+ * thumbnail of the first page, the title (the link to the PDF, stretched over the whole card),
+ * then authors, year and source. A document-type badge shows when the entry sets one, and a
+ * second link opens the summary when the document has one. `featured` gives the wide card.
  *
  * Data attributes (`data-research-item`, `data-title`, `data-authors`, `data-document-type`,
- * `data-group`) are the hooks for the Phase 5 search and filter island. Everything renders
+ * `data-year`) are the hooks for a later search and filter island. Everything renders
  * statically, so every item is visible without JavaScript.
  */
 import type { CollectionEntry } from 'astro:content';
+import { Image } from 'astro:assets';
 import { useTranslations, type Locale } from '../../i18n';
 import { documentTypeTone } from '../../lib/content';
 import { formatFileSize } from '../../lib/format';
@@ -26,105 +28,265 @@ const { lang, entry, headingLevel: Heading = 'h3' } = Astro.props;
 const t = useTranslations(lang);
 const d = entry.data;
 
-const isExternal = /^https?:\/\//i.test(d.pdf);
-const fileType = d.fileType ?? 'PDF';
-const linkLabel = fileType === 'PDF' ? t('actions.openPdf') : t('actions.openDocument');
-/** "PDF · 3,4 KB" for local files; "Link extern" for documents hosted elsewhere. */
-const fileMeta =
-  typeof d.fileSizeBytes === 'number'
-    ? t('research.fileMeta', { type: fileType, size: formatFileSize(lang, d.fileSizeBytes) })
-    : isExternal
+const isExternal = (path: string) => /^https?:\/\//i.test(path);
+/** "PDF · 3,4 MB" for local files; "Link extern" for documents hosted elsewhere. */
+const fileMeta = (path: string, size: number | undefined) =>
+  typeof size === 'number'
+    ? t('research.fileMeta', { type: d.fileType ?? 'PDF', size: formatFileSize(lang, size) })
+    : isExternal(path)
       ? t('research.externalLink')
-      : fileType;
-const isPlaceholder = /TODO\(content\)/.test(`${d.title} ${d.description} ${d.source}`);
+      : (d.fileType ?? 'PDF');
+
+const metaParts = [d.authors.join(', '), d.year ? String(d.year) : '', d.source ?? ''].filter(
+  Boolean,
+);
 const doiUrl = d.doi ? (/^https?:\/\//i.test(d.doi) ? d.doi : `https://doi.org/${d.doi}`) : null;
-const metaParts = [d.authors.join(', '), d.year ? String(d.year) : t('research.noYear'), d.source];
 ---
 
 <Card
   as="article"
   variant="elevated"
-  class="research-card"
+  padding="sm"
+  interactive
+  class:list={['doc-card', { 'doc-card--featured': d.featured }]}
   data-research-item
   data-title={d.title}
   data-authors={d.authors.join('; ')}
-  data-document-type={d.documentType}
-  data-group={d.group}
+  data-document-type={d.documentType ?? ''}
+  data-year={d.year ?? ''}
 >
-  <div class="research-card__badges">
-    <Badge tone={documentTypeTone(d.documentType)}>{t(`documentType.${d.documentType}`)}</Badge>
-    {isPlaceholder && <Badge tone="neutral">{t('common.placeholder')}</Badge>}
+  <div slot="media" class="doc-card__preview">
+    {d.cover ? (
+      <Image
+        src={d.cover}
+        alt=""
+        widths={[280, 420, 560]}
+        sizes={d.featured ? '(min-width: 46rem) 22rem, 80vw' : '(min-width: 40rem) 16rem, 80vw'}
+        loading={d.featured ? 'eager' : 'lazy'}
+        decoding="async"
+        class="doc-card__page"
+      />
+    ) : (
+      <span class="doc-card__fallback">
+        <Icon name="file-text" size={40} />
+      </span>
+    )}
   </div>
-  <Heading class="research-card__title">{d.title}</Heading>
-  <p class="research-card__meta">
-    {metaParts.map((part, i) => (
-      <>
-        {i > 0 && <span aria-hidden="true"> · </span>}
-        <span>{part}</span>
-      </>
-    ))}
-  </p>
-  <p class="research-card__description">{d.description}</p>
+
+  {d.documentType && (
+    <p class="doc-card__badges">
+      <Badge tone={documentTypeTone(d.documentType)}>{t(`documentType.${d.documentType}`)}</Badge>
+    </p>
+  )}
+  <Heading class="doc-card__title">
+    <a class="card__link doc-card__link" href={d.pdf} target="_blank" rel="noopener">
+      {d.title}
+      <span class="visually-hidden"> ({t('a11y.newTab')})</span>
+    </a>
+  </Heading>
+  {metaParts.length > 0 && (
+    <p class="doc-card__meta">
+      {metaParts.map((part, i) => (
+        <>
+          {i > 0 && <span aria-hidden="true"> · </span>}
+          <span>{part}</span>
+        </>
+      ))}
+    </p>
+  )}
+  {d.description && <p class="doc-card__description">{d.description}</p>}
   {doiUrl && (
-    <p class="research-card__doi">
+    <p class="doc-card__doi">
       <span class="text-secondary">{t('research.doi')}: </span>
-      <a href={doiUrl} target="_blank" rel="noopener">
+      <a class="doc-card__raised" href={doiUrl} target="_blank" rel="noopener">
         {d.doi}
         <span class="visually-hidden"> ({t('a11y.newTab')})</span>
       </a>
     </p>
   )}
-  <p slot="footer" class="research-card__file">
-    <a class="research-card__link" href={d.pdf} target="_blank" rel="noopener">
-      <Icon name={isExternal ? 'external-link' : 'file-text'} size={18} />
-      <span>{linkLabel}</span>
-      <span class="research-card__file-meta">{fileMeta}</span>
-      <span class="visually-hidden">({t('a11y.newTab')})</span>
-    </a>
+
+  <p slot="footer" class="doc-card__files">
+    <span class="doc-card__file">
+      <Icon name={isExternal(d.pdf) ? 'external-link' : 'file-text'} size={16} />
+      {fileMeta(d.pdf, d.fileSizeBytes)}
+    </span>
+    {d.summaryPdf && (
+      <a
+        class="doc-card__summary doc-card__raised"
+        href={d.summaryPdf}
+        target="_blank"
+        rel="noopener"
+      >
+        <Icon name="file-text" size={16} />
+        <span>
+          {t('research.summary')}
+          <span class="visually-hidden">: {d.title}</span>
+        </span>
+        <span class="doc-card__size">{fileMeta(d.summaryPdf, d.summaryFileSizeBytes)}</span>
+        <span class="visually-hidden">({t('a11y.newTab')})</span>
+      </a>
+    )}
   </p>
 </Card>
 
 <style>
-  .research-card__badges {
+  /* The first page as a sheet of paper on a tinted panel, cut off at the bottom. */
+  .doc-card__preview {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    aspect-ratio: 4 / 3;
+    padding: var(--space-5) var(--space-5) 0;
+    background: var(--accent-tint);
+    overflow: hidden;
+  }
+  .doc-card__preview .doc-card__page {
+    width: 76%;
+    height: auto;
+    border-radius: 3px 3px 0 0;
+    background: #fff;
+    box-shadow: var(--shadow-md);
+    transition: transform var(--duration-base) var(--ease-out);
+  }
+  :global(.card--interactive:hover) .doc-card__page {
+    transform: translateY(-4px);
+  }
+  .doc-card__fallback {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    color: var(--accent);
+  }
+
+  .doc-card__badges {
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-2);
   }
-  .research-card__title {
-    font-size: var(--text-title-3);
-    line-height: var(--leading-title-3);
+  .doc-card__title {
+    font-size: var(--text-headline);
+    line-height: var(--leading-headline);
+    overflow-wrap: anywhere;
   }
-  .research-card__meta {
+  .doc-card__link {
+    color: var(--label);
+    text-decoration: none;
+  }
+  .doc-card__link:hover {
+    color: var(--accent);
+  }
+  .doc-card__meta {
     font-size: var(--text-subheadline);
     line-height: var(--leading-subheadline);
     color: var(--label-secondary);
   }
-  .research-card__description {
+  .doc-card__description {
     font-size: var(--text-callout);
     line-height: var(--leading-body);
   }
-  .research-card__doi {
+  .doc-card__doi {
     font-size: var(--text-subheadline);
     overflow-wrap: anywhere;
   }
-  .research-card__link {
-    display: inline-flex;
+
+  .doc-card__files {
+    display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 0.4em;
-    min-height: var(--touch-target);
-    font-weight: 600;
-    text-decoration: none;
-  }
-  .research-card__link:hover span:first-of-type {
-    text-decoration: underline;
-  }
-  .research-card__file-meta {
+    gap: var(--space-2) var(--space-4);
     font-size: var(--text-footnote);
     font-weight: 500;
     color: var(--label-secondary);
   }
-  .research-card__file-meta::before {
+  .doc-card__file,
+  .doc-card__summary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+  }
+  /* Links that sit above the stretched title link, so they stay clickable on their own. */
+  .doc-card__raised {
+    position: relative;
+    z-index: 1;
+  }
+  .doc-card__summary {
+    min-height: var(--touch-target);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .doc-card__summary:hover > span:first-of-type {
+    text-decoration: underline;
+  }
+  .doc-card__size {
+    font-weight: 500;
+    color: var(--label-secondary);
+  }
+  .doc-card__size::before {
     content: '· ';
+  }
+
+  /* Featured: the wide card, thumbnail beside the text on larger screens. The `article` in
+     the selectors outranks Card's own `.card` rules, which have the same class weight. */
+  :global(article.card.doc-card--featured) .doc-card__title {
+    font-size: var(--text-title-2);
+    line-height: var(--leading-title-2);
+  }
+  @media (min-width: 46rem) {
+    :global(article.card.doc-card--featured) {
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+      /* Body and footer sit in the middle rows, so the text block is centred vertically. */
+      grid-template-rows: 1fr auto 1fr;
+    }
+    :global(article.card.doc-card--featured > .card__media) {
+      grid-row: 1 / 4;
+    }
+    :global(article.card.doc-card--featured) .doc-card__preview {
+      aspect-ratio: auto;
+      height: 100%;
+      min-height: 20rem;
+      padding: var(--space-6) var(--space-6) 0;
+    }
+    :global(article.card.doc-card--featured > .card__body) {
+      align-self: end;
+      padding: var(--space-6) var(--space-6) var(--space-3);
+    }
+    :global(article.card.doc-card--featured > .card__footer) {
+      padding: 0 var(--space-6) var(--space-6);
+    }
+  }
+
+  /* Narrow screens: a compact list row, small thumbnail beside the text (featured stays big). */
+  @media (max-width: 39.99rem) {
+    :global(article.card.doc-card:not(.doc-card--featured)) {
+      display: grid;
+      grid-template-columns: 5.5rem minmax(0, 1fr);
+      grid-template-rows: 1fr auto;
+    }
+    :global(article.card.doc-card:not(.doc-card--featured) > .card__media) {
+      grid-row: 1 / 3;
+    }
+    :global(article.card.doc-card:not(.doc-card--featured)) .doc-card__preview {
+      aspect-ratio: auto;
+      height: 100%;
+      min-height: 7.5rem;
+      padding: var(--space-3) var(--space-3) 0;
+    }
+    :global(article.card.doc-card:not(.doc-card--featured)) .doc-card__preview .doc-card__page {
+      width: 100%;
+    }
+    :global(article.card.doc-card:not(.doc-card--featured) > .card__body) {
+      padding-block-end: var(--space-2);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .doc-card__preview .doc-card__page {
+      transition: none;
+    }
+    :global(.card--interactive:hover) .doc-card__page {
+      transform: none;
+    }
   }
 </style>

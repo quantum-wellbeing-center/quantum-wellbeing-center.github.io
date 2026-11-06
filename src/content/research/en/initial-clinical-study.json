@@ -1,0 +1,12 @@
+{
+  "lang": "en",
+  "translationKey": "initial-clinical-study",
+  "title": "Initial Clinical Study",
+  "authors": [
+    "Dr. Victor Marcial-Vega"
+  ],
+  "year": 2001,
+  "documentType": "clinical-study",
+  "pdf": "/research/initial-clinical-study.pdf",
+  "cover": "../../../assets/research/initial-clinical-study.jpg"
+}

@@ -1,13 +1,10 @@
 ---
 /**
- * TestimonialsPage: the consent-gated testimonials grid, the gallery of the centre's space and
- * team (links to full images; Phase 5 adds the dialog lightbox through the `data-gallery-*`
- * hooks) and the Google reviews section. The reviews embed only renders when
- * `site.features.reviewsEmbed` is on (off by default, consent-gated in Phase 5); otherwise the
- * page shows the plain text from the page copy.
+ * TestimonialsPage: the consent-gated testimonials grid (or, while there are none, links to
+ * testimonials from EESystem centres worldwide), and the gallery of the centre's
+ * space and team (whole photos, no captions, no lightbox).
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { site } from '../../config/site';
 import type { Locale } from '../../i18n';
 import { canShowGalleryImage, getGallery, getPage, getTestimonials } from '../../lib/content';
 import Section from '../ui/Section.astro';
@@ -15,6 +12,7 @@ import GalleryGrid from '../sections/GalleryGrid.astro';
 import PageIntro from '../sections/PageIntro.astro';
 import SectionHeading from '../sections/SectionHeading.astro';
 import TestimonialCard from '../sections/TestimonialCard.astro';
+import WorldTestimonials from '../sections/WorldTestimonials.astro';
 
 interface Props {
   lang: Locale;
@@ -31,32 +29,23 @@ const images = gallery.filter(canShowGalleryImage);
 <BaseLayout lang={lang} pageKey="testimonials" title={page.title} description={page.description}>
   <PageIntro title={page.title} lead={page.subheading} />
 
-  <Section spacing="compact" class="testimonials-list" aria-label={page.title}>
-    <ul class="testimonials-grid" role="list">
-      {published.map((entry) => (
-        <li>
-          <TestimonialCard lang={lang} entry={entry} />
-        </li>
-      ))}
-    </ul>
-  </Section>
+  {published.length > 0 ? (
+    <Section spacing="compact" class="testimonials-list" aria-label={page.title}>
+      <ul class="testimonials-grid" role="list">
+        {published.map((entry) => (
+          <li>
+            <TestimonialCard lang={lang} entry={entry} />
+          </li>
+        ))}
+      </ul>
+    </Section>
+  ) : (
+    <WorldTestimonials lang={lang} id="world-testimonials" />
+  )}
 
   <Section tone="secondary" id="gallery" aria-labelledby="gallery-heading">
-    <SectionHeading id="gallery-heading" title={page.gallery.heading} text={page.gallery.text} />
-    <GalleryGrid lang={lang} entries={images} />
-  </Section>
-
-  <Section spacing="compact" aria-labelledby="reviews-heading" class="reviews">
-    <h2 id="reviews-heading" class="reviews__title">
-      {page.reviews.heading}
-    </h2>
-    {site.features.reviewsEmbed ? (
-      <div class="reviews__embed" data-reviews-embed hidden>
-        {/* Phase 5: consent-gated Google reviews widget mounts here after marketing consent. */}
-      </div>
-    ) : (
-      <p class="reviews__text">{page.reviews.text}</p>
-    )}
+    <SectionHeading id="gallery-heading" title={page.gallery.heading} />
+    <GalleryGrid entries={images} />
   </Section>
 </BaseLayout>
 
@@ -77,16 +66,5 @@ const images = gallery.filter(canShowGalleryImage);
   }
   .testimonials-grid > li > :global(*) {
     width: 100%;
-  }
-  .reviews :global(.container) > * {
-    max-width: var(--measure);
-  }
-  .reviews__title {
-    font-size: var(--text-title-2);
-    line-height: var(--leading-title-2);
-    margin-block-end: var(--space-3);
-  }
-  .reviews__text {
-    color: var(--label-secondary);
   }
 </style>

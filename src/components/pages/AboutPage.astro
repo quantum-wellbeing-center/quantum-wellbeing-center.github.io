@@ -1,0 +1,138 @@
+---
+/**
+ * AboutPage ("Despre EESystem"), after the Dr. Sandra Rose Michael block on quantumspace.ro:
+ *   1. the h1 band;
+ *   2. the inventor's card: a round portrait over the card's top edge, her name and role, and
+ *      the biography (the page's Markdown body), in two columns on wide screens;
+ *   3. the interview: an h2 over a click-to-play YouTube video (VideoEmbed);
+ *   4. the booking band.
+ */
+import { Image } from 'astro:assets';
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import type { Locale } from '../../i18n';
+import { getPage } from '../../lib/content';
+import portrait from '../../assets/people/sandra-rose-michael.jpg';
+import Section from '../ui/Section.astro';
+import CtaBand from '../sections/CtaBand.astro';
+import PageIntro from '../sections/PageIntro.astro';
+import VideoEmbed from '../sections/VideoEmbed.astro';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const { entry, data: page } = await getPage(lang, 'about');
+const { Content } = await render(entry);
+---
+
+<BaseLayout lang={lang} pageKey="about" title={page.title} description={page.description}>
+  <PageIntro title={page.title} lead={page.subheading} />
+
+  <Section tone="secondary" class="inventor" aria-labelledby="inventor-heading">
+    <article class="inventor__card">
+      <Image
+        src={portrait}
+        alt={page.inventor.photoAlt}
+        width={176}
+        height={176}
+        densities={[1.5, 2]}
+        class="inventor__photo"
+      />
+      <h2 id="inventor-heading" class="inventor__name">
+        {page.inventor.name}
+      </h2>
+      <p class="inventor__role">{page.inventor.role}</p>
+      <div class="prose inventor__bio">
+        <Content />
+      </div>
+    </article>
+  </Section>
+
+  <Section class="interview" aria-labelledby="interview-heading">
+    <div class="interview__inner">
+      <h2 id="interview-heading" class="interview__title">
+        {page.video.heading}
+      </h2>
+      <VideoEmbed lang={lang} id={page.video.youtubeId} title={page.video.title} />
+    </div>
+  </Section>
+
+  <CtaBand lang={lang} heading={page.cta.heading} text={page.cta.text} id="about-cta" />
+</BaseLayout>
+
+<style>
+  /* Room above the card for the half of the portrait that sits over its edge. */
+  .inventor {
+    padding-block-start: calc(var(--section-padding) + 5.5rem);
+  }
+  .inventor__card {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    max-width: 64rem;
+    margin-inline: auto;
+    padding: 7.5rem clamp(var(--space-5), 5vw, var(--space-8))
+      clamp(var(--space-6), 5vw, var(--space-8));
+    border-radius: var(--radius-lg);
+    background: var(--bg);
+    box-shadow:
+      inset 0 0 0 1px var(--separator),
+      var(--shadow-md);
+    text-align: center;
+  }
+  .inventor__photo {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 11rem;
+    height: 11rem;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--accent);
+    box-shadow:
+      0 0 0 5px var(--bg),
+      var(--shadow-md);
+    transform: translate(-50%, -50%);
+  }
+  .inventor__name {
+    font-size: clamp(var(--text-title-1), 4vw, 2.5rem);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+  }
+  .inventor__role {
+    margin-block-start: var(--space-2);
+    font-size: var(--text-subheadline);
+    line-height: var(--leading-subheadline);
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .inventor__bio {
+    margin-block-start: var(--space-6);
+    text-align: start;
+  }
+  /* Two columns of about 60 characters each, like the reference layout. */
+  @media (min-width: 56em) {
+    .inventor__bio {
+      max-width: none;
+      columns: 2;
+      column-gap: var(--space-8);
+      orphans: 3;
+      widows: 3;
+    }
+  }
+
+  .interview__inner {
+    display: grid;
+    gap: var(--space-6);
+    max-width: 64rem;
+    margin-inline: auto;
+  }
+  .interview__title {
+    max-width: 30ch;
+    margin-inline: auto;
+    text-align: center;
+    text-wrap: balance;
+  }
+</style>

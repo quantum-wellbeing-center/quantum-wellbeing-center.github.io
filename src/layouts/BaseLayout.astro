@@ -5,7 +5,7 @@
  * `pageKey` so the language switcher and hreflang alternates point to the same page in the
  * other language.
  *
- * For dynamic routes (articles) pass `alternateUrl` with the translated path,
+ * For dynamic routes pass `alternateUrl` with the translated path,
  * or `alternateUrl={null}` when no translation exists (no hreflang is emitted then).
  *
  * The cookie consent island is rendered only when `needsConsentBanner()` is true, so the
@@ -112,7 +112,7 @@ const localBusiness = {
   description: site.tagline[lang],
   url: new URL('/', siteUrl).href,
   telephone: site.phoneHref,
-  email: site.email,
+  ...(site.email && { email: site.email }),
   image: new URL('/og-default.png', siteUrl).href,
   address: {
     '@type': 'PostalAddress',
@@ -166,9 +166,10 @@ const localBusinessJson = JSON.stringify(localBusiness).replace(/</g, '\\u003c')
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000000" />
     <meta name="color-scheme" content="light dark" />
 
-    <link rel="icon" href="/favicon.ico" sizes="32x32" />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <!-- ?v= forces browsers to drop a cached icon; bump it whenever the icon changes -->
+    <link rel="icon" href="/favicon.ico?v=3" sizes="16x16 32x32 48x48" />
+    <link rel="icon" href="/icon-192.png?v=3" type="image/png" sizes="192x192" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=3" />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <meta name="generator" content={Astro.generator} />
 

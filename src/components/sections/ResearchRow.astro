@@ -1,0 +1,111 @@
+---
+/**
+ * ResearchRow: one document of the research page as a plain list row, laid out like the
+ * reference library: a PDF icon, the title (the link to the PDF, stretched over the whole
+ * row), and the authors below it. Rows are separated by hairlines by the parent list.
+ *
+ * Carries the same data hooks as ResearchCard (`data-research-item`, `data-title`,
+ * `data-authors`, `data-document-type`, `data-year`) for a later search and filter island.
+ */
+import type { CollectionEntry } from 'astro:content';
+import { useTranslations, type Locale } from '../../i18n';
+
+interface Props {
+  lang: Locale;
+  entry: CollectionEntry<'research'>;
+  headingLevel?: 'h3' | 'h4';
+}
+
+const { lang, entry, headingLevel: Heading = 'h3' } = Astro.props;
+const t = useTranslations(lang);
+const d = entry.data;
+const authors = d.authors.join(' / ');
+---
+
+<article
+  class="doc-row"
+  data-research-item
+  data-title={d.title}
+  data-authors={d.authors.join('; ')}
+  data-document-type={d.documentType ?? ''}
+  data-year={d.year ?? ''}
+>
+  <svg
+    class="doc-row__icon"
+    viewBox="0 0 32 40"
+    width="28"
+    height="35"
+    aria-hidden="true"
+    focusable="false"
+  >
+    <rect x="1" y="1" width="30" height="38" rx="1.5" fill="none" stroke="currentColor" stroke-width="2"></rect>
+    <path
+      d="M9 30c2.5-1.6 5.6-6.8 7-11.5.8-2.7.6-5-.6-5s-1.6 2.4-.4 5.4c1.4 3.6 4.6 7 7.6 8 2 .7 3.2 0 2.8-1-.5-1.1-3.4-1-7 .1-4.4 1.3-8 3.4-9.4 4.9-.9 1-.6 1.6 0 1.3Z"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.4"
+      stroke-linejoin="round"></path>
+  </svg>
+  <div class="doc-row__text">
+    <Heading class="doc-row__title">
+      <a class="doc-row__link" href={d.pdf} target="_blank" rel="noopener">
+        {d.title}
+        <span class="visually-hidden"> ({t('a11y.newTab')})</span>
+      </a>
+    </Heading>
+    {authors && <p class="doc-row__authors">{authors}</p>}
+  </div>
+</article>
+
+<style>
+  .doc-row {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-4);
+    padding: var(--space-4) var(--space-1);
+  }
+  .doc-row__icon {
+    flex: none;
+    color: var(--label);
+    margin-block-start: 0.15em;
+  }
+  .doc-row__text {
+    display: grid;
+    gap: var(--space-1);
+    min-width: 0;
+  }
+  .doc-row__title {
+    font-size: var(--text-headline);
+    line-height: var(--leading-headline);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    overflow-wrap: anywhere;
+  }
+  .doc-row__link {
+    color: var(--label);
+    text-decoration: none;
+  }
+  /* The title link covers the whole row, so the icon and authors are clickable too. */
+  .doc-row__link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+  .doc-row:hover .doc-row__link {
+    color: var(--accent);
+  }
+  .doc-row__link:focus-visible {
+    outline: none;
+  }
+  .doc-row__link:focus-visible::after {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm, 6px);
+  }
+  .doc-row__authors {
+    font-size: var(--text-subheadline);
+    line-height: var(--leading-subheadline);
+    color: var(--label-secondary);
+  }
+</style>

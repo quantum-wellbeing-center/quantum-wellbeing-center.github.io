@@ -1,18 +1,19 @@
 ---
 /**
- * PricingPage: service cards sorted by `order` with the highlighted card emphasised, each with
- * a "Programează-te" BookingLink; the VAT note (TODO(content) in the dictionaries); what every
- * session includes; and a CTA band with the WhatsApp link and the phone number.
+ * PricingPage: the price list as wide horizontal cards, one per service in `order`. Each card
+ * reads left to right: "Sesiune EESystem · 60 min" over the duration in words ("O oră"), the
+ * price, and a "Programează-te" BookingLink that preselects the service in the WhatsApp chat.
+ * Under the cards, a short footnote (what every session includes, from the Markdown body, and
+ * the VAT note), then the CTA band.
  */
 import { render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { useTranslations, type Locale } from '../../i18n';
-import { getPage, getServices } from '../../lib/content';
-import Icon from '../ui/Icon.astro';
+import { formatPrice, useTranslations, type Locale } from '../../i18n';
+import { getPage, getServices, serviceAnchor } from '../../lib/content';
+import BookingLink from '../BookingLink.astro';
 import Section from '../ui/Section.astro';
 import CtaBand from '../sections/CtaBand.astro';
 import PageIntro from '../sections/PageIntro.astro';
-import ServicesGrid from '../sections/ServicesGrid.astro';
 
 interface Props {
   lang: Locale;
@@ -24,22 +25,57 @@ const { entry, data: page } = await getPage(lang, 'pricing');
 const { Content } = await render(entry);
 const services = await getServices(lang);
 const hasBody = Boolean(entry.body && entry.body.trim());
+
+const items = services.map((entry) => ({
+  d: entry.data,
+  anchor: serviceAnchor(entry),
+  // Intl joins number and currency with a no-break space; a plain one lets "RON 120" wrap at
+  // 320px and 200% text instead of overflowing the card.
+  price: formatPrice(lang, entry.data.price, entry.data.currency).replace(/ /g, ' '),
+}));
 ---
 
 <BaseLayout lang={lang} pageKey="pricing" title={page.title} description={page.description}>
   <PageIntro title={page.title} lead={page.subheading} />
 
   <Section spacing="compact" class="pricing" aria-label={page.title}>
-    <ServicesGrid lang={lang} entries={services} bare />
-    <p class="pricing__vat" role="note">
-      <Icon name="info" size={18} />
-      <span>{t('common.vatNote')}</span>
-    </p>
-    {hasBody && (
-      <div class="prose pricing__includes">
-        <Content />
-      </div>
-    )}
+    <ul class="price-list" role="list">
+      {items.map(({ d, anchor, price }) => (
+        <li>
+          <article class="price-card" id={anchor} data-service={d.translationKey}>
+            <div class="price-card__info">
+              <p class="price-card__eyebrow">
+                {page.sessionLabel} · {t('common.duration', { minutes: d.durationMinutes })}
+              </p>
+              <h2 class="price-card__name">{d.durationLabel}</h2>
+            </div>
+            <div class="price-card__buy">
+              <p class="price-card__price">
+                <span class="visually-hidden">{t('common.price')}: </span>
+                <span class="price-card__amount">{price}</span>
+              </p>
+              <BookingLink
+                lang={lang}
+                service={d.name}
+                message={d.whatsappMessage}
+                icon="whatsapp"
+                iconPosition="start"
+              >
+                {t('actions.bookShort')}
+              </BookingLink>
+            </div>
+          </article>
+        </li>
+      ))}
+    </ul>
+
+    <div class="pricing__notes">
+      {hasBody && (
+        <div class="prose pricing__includes">
+          <Content />
+        </div>
+      )}
+    </div>
   </Section>
 
   <CtaBand
@@ -56,24 +92,88 @@ const hasBody = Boolean(entry.body && entry.body.trim());
   .pricing {
     padding-block-end: clamp(var(--space-7), 8vw, var(--space-9));
   }
-  .pricing__vat {
+  /* Clears the cards off the navy page-intro band above them. */
+  .section.pricing {
+    padding-block-start: clamp(var(--space-6), 5vw, var(--space-8));
+  }
+
+  .price-list {
+    display: grid;
+    /* minmax(0, …) so a card never grows past the container at 320px and 200% text. */
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-4);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  /*
+   * One wide tile per price, full container width: quiet fill, large radius, no border or
+   * shadow. Below ~48em the two halves stack; above, they share one row.
+   */
+  .price-card {
     display: flex;
-    align-items: flex-start;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-5) var(--space-7);
+    padding: clamp(var(--space-5), 4vw, var(--space-7)) clamp(var(--space-4), 5vw, var(--space-8));
+    border-radius: var(--radius-lg);
+    background: var(--bg-secondary);
+  }
+  .price-card__info {
+    display: grid;
     gap: var(--space-2);
-    margin-block-start: var(--space-5);
+    flex: 1 1 min(100%, 14rem);
+    min-width: 0;
+  }
+  .price-card__eyebrow {
+    font-size: var(--text-subheadline);
+    line-height: var(--leading-subheadline);
+    font-weight: 500;
+    color: var(--label-secondary);
+  }
+  .price-card__name {
+    font-size: clamp(var(--text-title-1), 1rem + 2.2vw, 2.75rem);
+    line-height: 1.1;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+  }
+  .price-card__buy {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-4) var(--space-6);
+    min-width: 0;
+  }
+  .price-card__price {
+    min-width: 0;
+  }
+  .price-card__amount {
+    font-size: clamp(var(--text-title-1), 1rem + 2.2vw, 2.75rem);
+    line-height: 1.1;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    font-variant-numeric: tabular-nums;
+  }
+  /* The booking label wraps (even inside "Programează-te") instead of overflowing at 320px and
+     200% text. */
+  .price-card__buy :global(.btn) {
+    max-width: 100%;
+    white-space: normal;
+  }
+  .price-card__buy :global(.btn__label) {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .pricing__notes {
+    display: grid;
+    gap: var(--space-3);
+    margin-block-start: var(--space-6);
     max-width: var(--measure);
     font-size: var(--text-subheadline);
     line-height: var(--leading-subheadline);
-    color: var(--warning);
-  }
-  .pricing__vat :global(.icon) {
-    flex-shrink: 0;
-    margin-block-start: 0.1em;
-  }
-  .pricing__includes {
-    margin-block-start: var(--space-6);
-    padding-block-start: var(--space-6);
-    border-top: 1px solid var(--separator);
     color: var(--label-secondary);
   }
 </style>

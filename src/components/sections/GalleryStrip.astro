@@ -1,0 +1,169 @@
+---
+/**
+ * GalleryStrip: the home page's "Despre centru" section. A title and the photos only, in one
+ * horizontal row, all the same height and large enough to see. Images are only resized, never edited.
+ *
+ * Without JavaScript the row scrolls by swipe, trackpad, scrollbar or keyboard (it is a focusable
+ * region). With JavaScript, Previous/Next buttons appear next to the title and scroll one photo
+ * at a time; each is disabled at its end of the row. Instant scrolling under reduced motion.
+ */
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+import { useTranslations, type Locale } from '../../i18n';
+import Icon from '../ui/Icon.astro';
+
+interface Props {
+  lang: Locale;
+  heading: string;
+  headingId: string;
+  photos: { src: ImageMetadata; alt: string }[];
+}
+
+const { lang, heading, headingId, photos } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<div class="strip" data-strip>
+  <div class="strip__head">
+    <h2 id={headingId}>{heading}</h2>
+    <div class="strip__buttons" data-strip-controls hidden>
+      <button class="strip__button" type="button" data-strip-prev>
+        <Icon name="chevron-left" size={22} />
+        <span class="visually-hidden">{t('common.previous')}</span>
+      </button>
+      <button class="strip__button" type="button" data-strip-next>
+        <Icon name="chevron-right" size={22} />
+        <span class="visually-hidden">{t('common.next')}</span>
+      </button>
+    </div>
+  </div>
+  <ul class="strip__track" role="list" tabindex="0" aria-labelledby={headingId} data-strip-track>
+    {photos.map((photo) => (
+      <li class="strip__item" data-strip-item>
+        <Image
+          src={photo.src}
+          alt={photo.alt}
+          widths={[480, 720, 960, 1280, 1600]}
+          sizes="(min-width: 48em) 50rem, 100vw"
+          loading="lazy"
+          decoding="async"
+          class="strip__image"
+        />
+      </li>
+    ))}
+  </ul>
+</div>
+
+<script>
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  for (const strip of document.querySelectorAll<HTMLElement>('[data-strip]')) {
+    const track = strip.querySelector<HTMLElement>('[data-strip-track]');
+    const controls = strip.querySelector<HTMLElement>('[data-strip-controls]');
+    const prev = strip.querySelector<HTMLButtonElement>('[data-strip-prev]');
+    const next = strip.querySelector<HTMLButtonElement>('[data-strip-next]');
+    if (!track || !controls || !prev || !next) continue;
+
+    const items = () => [...track.querySelectorAll<HTMLElement>('[data-strip-item]')];
+    const behavior = (): ScrollBehavior => (reduceMotion.matches ? 'auto' : 'smooth');
+
+    /** Scrolls so the first photo starting past (or before) the current position is at the start. */
+    const step = (direction: 1 | -1) => {
+      const start = track.scrollLeft;
+      // The first photo sits at scrollLeft 0, so each photo's scroll position is its offset from it.
+      const all = items();
+      const offsets = all.map((item) => item.offsetLeft - all[0].offsetLeft);
+      const target =
+        direction === 1
+          ? offsets.find((x) => x > start + 4)
+          : [...offsets].reverse().find((x) => x < start - 4);
+      track.scrollTo({
+        left: target ?? (direction === 1 ? track.scrollWidth : 0),
+        behavior: behavior(),
+      });
+    };
+
+    const update = () => {
+      const max = track.scrollWidth - track.clientWidth;
+      controls.hidden = max <= 4;
+      prev.disabled = track.scrollLeft <= 4;
+      next.disabled = track.scrollLeft >= max - 4;
+    };
+
+    prev.addEventListener('click', () => step(-1));
+    next.addEventListener('click', () => step(1));
+    track.addEventListener('scroll', update, { passive: true });
+    new ResizeObserver(update).observe(track);
+    update();
+  }
+</script>
+
+<style>
+  .strip__head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-4);
+    margin-block-end: var(--space-6);
+  }
+  .strip__buttons {
+    display: flex;
+    gap: var(--space-2);
+  }
+  .strip__buttons[hidden] {
+    display: none;
+  }
+  .strip__button {
+    display: inline-grid;
+    place-items: center;
+    inline-size: 2.75rem;
+    block-size: 2.75rem;
+    border: 0;
+    border-radius: 50%;
+    background: var(--fill-secondary, var(--bg));
+    color: var(--label);
+    box-shadow: inset 0 0 0 1px var(--separator);
+    cursor: pointer;
+    transition: opacity var(--duration-base) var(--ease-out);
+  }
+  .strip__button:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+
+  /*
+   * One row, every photo the same height: as tall as the screen allows (up to 36rem) but never
+   * taller than the phone is wide, so a portrait photo leaves a peek of the next one. A photo
+   * wider than the screen is cropped to the screen width. The row bleeds into the side gutters.
+   */
+  .strip__track {
+    --strip-h: min(36rem, 70svh, calc(100vw - 2 * var(--gutter)));
+    display: flex;
+    gap: var(--space-4);
+    list-style: none;
+    margin: 0 calc(-1 * var(--gutter));
+    padding: 0 var(--gutter) var(--space-3);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--gutter);
+    scrollbar-width: thin;
+  }
+  .strip__track:focus-visible {
+    outline-offset: -2px;
+  }
+  .strip__item {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+  }
+  .strip__image {
+    display: block;
+    block-size: var(--strip-h);
+    inline-size: auto;
+    max-inline-size: calc(100vw - 2 * var(--gutter));
+    object-fit: cover;
+    border-radius: var(--radius-card);
+    background: var(--bg-secondary);
+    box-shadow: inset 0 0 0 1px var(--separator);
+  }
+</style>

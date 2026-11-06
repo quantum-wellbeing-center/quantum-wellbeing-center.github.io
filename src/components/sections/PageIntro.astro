@@ -2,6 +2,10 @@
 /**
  * PageIntro: the h1 band at the top of every non-home page, with an optional lead paragraph.
  * Extra content (a meta line, a note, actions) goes in the default slot under the lead.
+ *
+ * The band is the brand navy with the `.surface-brand` token mapping (white title, cyan eyebrow
+ * and links, white buttons), the same surface as the home hero, so every page opens in the
+ * brand colours. Slot content keeps using the semantic tokens and is re-mapped with them.
  */
 import Section from '../ui/Section.astro';
 
@@ -11,14 +15,16 @@ interface Props {
   /** Small label above the title, e.g. "Eroare 404". */
   eyebrow?: string;
   align?: 'start' | 'center';
-  tone?: 'default' | 'secondary';
   class?: string;
 }
 
-const { title, lead, eyebrow, align = 'start', tone = 'default', class: className } = Astro.props;
+const { title, lead, eyebrow, align = 'start', class: className } = Astro.props;
 ---
 
-<Section tone={tone} spacing="compact" class={['page-intro', className].filter(Boolean).join(' ')}>
+<Section
+  spacing="compact"
+  class={['page-intro', 'surface-brand', className].filter(Boolean).join(' ')}
+>
   <div class:list={['page-intro__inner', `page-intro__inner--${align}`]}>
     {eyebrow && <p class="page-intro__eyebrow">{eyebrow}</p>}
     <h1 class="page-intro__title">{title}</h1>
@@ -28,8 +34,10 @@ const { title, lead, eyebrow, align = 'start', tone = 'default', class: classNam
 </Section>
 
 <style>
-  .page-intro {
-    padding-block: clamp(var(--space-6), 6vw, var(--space-8)) var(--space-5);
+  /* `.section.page-intro` outranks Section's own tone background and padding rules. */
+  .section.page-intro {
+    background: var(--brand-navy);
+    padding-block: clamp(var(--space-6), 6vw, var(--space-8));
   }
   .page-intro__inner {
     display: grid;
@@ -50,6 +58,7 @@ const { title, lead, eyebrow, align = 'start', tone = 'default', class: classNam
   .page-intro__title {
     font-size: clamp(var(--text-large-title), 4.5vw, 3rem);
     line-height: 1.1;
+    color: var(--label);
   }
   .page-intro__lead {
     font-size: var(--text-title-3);

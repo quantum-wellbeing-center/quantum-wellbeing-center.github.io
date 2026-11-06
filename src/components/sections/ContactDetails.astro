@@ -1,13 +1,13 @@
 ---
 /**
- * ContactDetails: address, phone (tel:), email (mailto:), the grouped opening hours and the
- * social profiles, all from site config. The WhatsApp trigger lives in its own section of the
- * contact page (a BookingLink), so it is not repeated here.
+ * ContactDetails: one row per channel, an icon and the value, all from site config: email
+ * (mailto:), phone (tel:), the address (a link to Google Maps in a new tab, `data-map-link`)
+ * and the grouped opening hours. Each row's label is visually hidden and read by screen
+ * readers. The WhatsApp trigger is a BookingLink placed by the contact page, not repeated here.
  */
 import { site } from '../../config/site';
 import { useTranslations, type Locale } from '../../i18n';
 import OpeningHours from '../OpeningHours.astro';
-import SocialLinks from '../SocialLinks.astro';
 import Icon from '../ui/Icon.astro';
 
 interface Props {
@@ -16,112 +16,112 @@ interface Props {
 
 const { lang } = Astro.props;
 const t = useTranslations(lang);
-const addressLines = [
-  site.address.street,
-  `${site.address.postalCode} ${site.address.city}, ${site.address.county}`,
-];
-const hasSocials = Object.values(site.socials).some(Boolean);
+const addressLine = `${site.address.street}, ${site.address.postalCode} ${site.address.city}, ${t('contact.county', { county: site.address.county })}`;
 ---
 
 <dl class="contact-details">
+  {
+    site.email && (
+      <div class="contact-details__row">
+        <dt>
+          <Icon name="mail" size={24} />
+          <span class="visually-hidden">{t('contact.email')}</span>
+        </dt>
+        <dd>
+          <a class="contact-details__link" href={`mailto:${site.email}`}>
+            {site.email}
+          </a>
+        </dd>
+      </div>
+    )
+  }
   <div class="contact-details__row">
     <dt>
-      <Icon name="map-pin" size={18} />
-      <span>{t('contact.address')}</span>
+      <Icon name="phone" size={24} />
+      <span class="visually-hidden">{t('contact.phone')}</span>
     </dt>
     <dd>
-      <address>
-        {addressLines.map((line) => (
-          <span class="contact-details__line">{line}</span>
-        ))}
-      </address>
-    </dd>
-  </div>
-  <div class="contact-details__row">
-    <dt>
-      <Icon name="phone" size={18} />
-      <span>{t('contact.phone')}</span>
-    </dt>
-    <dd>
-      <a class="contact-details__link" href={`tel:${site.phoneHref}`}>
+      <a class="contact-details__link contact-details__link--phone" href={`tel:${site.phoneHref}`}>
         {site.phone}
       </a>
     </dd>
   </div>
   <div class="contact-details__row">
     <dt>
-      <Icon name="mail" size={18} />
-      <span>{t('contact.email')}</span>
+      <Icon name="map-pin" size={24} />
+      <span class="visually-hidden">{t('contact.address')}</span>
     </dt>
     <dd>
-      <a class="contact-details__link" href={`mailto:${site.email}`}>
-        {site.email}
-      </a>
+      <address>
+        <a
+          class="contact-details__link"
+          href={site.mapUrl}
+          target="_blank"
+          rel="noopener"
+          data-map-link
+        >
+          {addressLine}
+          <span class="visually-hidden">({t('a11y.newTab')})</span>
+        </a>
+      </address>
     </dd>
   </div>
-  <div class="contact-details__row">
+  <div class="contact-details__row contact-details__row--hours">
     <dt>
-      <Icon name="clock" size={18} />
-      <span>{t('contact.hours')}</span>
+      <Icon name="clock" size={24} />
+      <span class="visually-hidden">{t('contact.hours')}</span>
     </dt>
     <dd>
       <OpeningHours lang={lang} class="contact-details__hours" />
     </dd>
   </div>
-  {hasSocials && (
-    <div class="contact-details__row">
-      <dt>
-        <Icon name="globe" size={18} />
-        <span>{t('contact.socials')}</span>
-      </dt>
-      <dd>
-        <SocialLinks lang={lang} class="contact-details__socials" />
-      </dd>
-    </div>
-  )}
 </dl>
 
 <style>
   .contact-details {
     display: grid;
-    gap: var(--space-4);
+    gap: var(--space-5);
     margin: 0;
   }
   .contact-details__row {
     display: grid;
-    gap: var(--space-1);
-    padding-block-start: var(--space-4);
-    border-top: 1px solid var(--separator);
+    grid-template-columns: 1.75rem minmax(0, 1fr);
+    align-items: center;
+    column-gap: var(--space-4);
   }
-  .contact-details__row:first-child {
-    border-top: 0;
-    padding-block-start: 0;
+  .contact-details__row--hours {
+    align-items: start;
   }
   .contact-details dt {
     display: inline-flex;
-    align-items: center;
-    gap: 0.5em;
-    font-size: var(--text-subheadline);
-    line-height: var(--leading-subheadline);
-    font-weight: 600;
-    color: var(--label-secondary);
+    color: var(--label);
   }
   .contact-details dd {
     margin: 0;
   }
-  .contact-details__line {
-    display: block;
+  .contact-details address {
+    font-style: normal;
   }
   .contact-details__link {
     display: inline-flex;
     align-items: center;
     min-height: var(--touch-target);
+    color: var(--accent);
+    font-size: var(--text-body);
+    line-height: var(--leading-body);
     font-weight: 500;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+  }
+  .contact-details__link:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+  .contact-details__link--phone {
+    font-variant-numeric: tabular-nums;
   }
   .contact-details__hours {
     max-width: 22rem;
-  }
-  .contact-details__socials {
-    margin-inline-start: calc(-1 * var(--space-3));
+    padding-block-start: 0.125rem;
   }
 </style>

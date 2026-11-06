@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /styleguide/
 
-Sitemap: https://www.quantumwellbeing.ro/sitemap-index.xml
+Sitemap: https://quantum-wellbeing-center.github.io/sitemap-index.xml

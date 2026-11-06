@@ -1,11 +1,10 @@
 ---
 /**
- * FaqPage: questions grouped by category (i18n headings) as native details/summary accordions,
- * FAQPage structured data with plain-text answers, and a CTA band that opens the WhatsApp chat
- * on the "other question" topic next to the phone number.
+ * FaqPage: one flat list of short questions as native details/summary accordions (modelled on
+ * the FAQ on quantumclinic.ro), FAQPage structured data with plain-text answers, and a CTA band
+ * that opens the WhatsApp chat on the "other question" topic next to the phone number.
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { FAQ_CATEGORIES } from '../../content.config';
 import { useTranslations, type Locale } from '../../i18n';
 import { getFaqs, getPage, jsonLd, markdownToText } from '../../lib/content';
 import Section from '../ui/Section.astro';
@@ -21,12 +20,6 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 const { data: page } = await getPage(lang, 'faq');
 const faqs = await getFaqs(lang);
-
-const groups = FAQ_CATEGORIES.map((category) => ({
-  category,
-  heading: t(`faq.category.${category}`),
-  entries: faqs.filter((e) => e.data.category === category),
-})).filter((g) => g.entries.length > 0);
 
 const structuredData = {
   '@context': 'https://schema.org',
@@ -45,35 +38,13 @@ const structuredData = {
     <script type="application/ld+json" set:html={jsonLd(structuredData)} />
   </Fragment>
 
-  <PageIntro title={page.title} lead={page.subheading}>
-    <nav class="faq-toc" aria-label={t('a11y.tableOfContents')}>
-      <ul class="faq-toc__list" role="list">
-        {groups.map((group) => (
-          <li>
-            <a class="faq-toc__link" href={`#faq-${group.category}`}>
-              {group.heading}
-            </a>
-          </li>
-        ))}
-      </ul>
-    </nav>
-  </PageIntro>
+  <PageIntro title={page.title} lead={page.subheading} />
 
-  {groups.map((group, index) => (
-    <Section
-      id={`faq-${group.category}`}
-      tone={index % 2 === 0 ? 'secondary' : 'default'}
-      spacing="compact"
-      aria-labelledby={`faq-${group.category}-heading`}
-    >
-      <div class="faq-group">
-        <h2 id={`faq-${group.category}-heading`} class="faq-group__title">
-          {group.heading}
-        </h2>
-        <FaqAccordion entries={group.entries} />
-      </div>
-    </Section>
-  ))}
+  <Section id="faq-list" spacing="compact">
+    <div class="faq-list">
+      <FaqAccordion entries={faqs} headingLevel="h2" />
+    </div>
+  </Section>
 
   <CtaBand
     lang={lang}
@@ -86,36 +57,7 @@ const structuredData = {
 </BaseLayout>
 
 <style>
-  .faq-toc__list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2);
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  .faq-toc__link {
-    display: inline-flex;
-    align-items: center;
-    min-height: var(--touch-target);
-    padding: 0 var(--space-4);
-    border-radius: var(--radius-capsule);
-    background: var(--fill);
-    color: var(--label);
-    font-size: var(--text-subheadline);
-    font-weight: 500;
-    text-decoration: none;
-  }
-  .faq-toc__link:hover {
-    background: var(--fill-strong);
-    color: var(--accent);
-  }
-  .faq-group {
+  .faq-list {
     max-width: 48rem;
-  }
-  .faq-group__title {
-    font-size: var(--text-title-2);
-    line-height: var(--leading-title-2);
-    margin-block-end: var(--space-4);
   }
 </style>

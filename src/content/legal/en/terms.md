@@ -12,7 +12,7 @@ TODO(legal): identification of the provider (legal name, CUI, Reg. Com., registe
 
 ## The services
 
-TODO(legal): description of the services offered – EESystem sessions of 60 or 90 minutes, on your own or in a small group, the 3 + 1 package and the pensioners' rate – described factually: what happens during the visit, the duration, the price and what each service includes.
+TODO(legal): description of the services offered – EESystem sessions of 60, 90 or 120 minutes, on your own or in a small group – described factually: what happens during the visit, the duration, the price and what each service includes.
 
 TODO(legal): the conditions for attending (minimum age, accompanying minors, situations in which the centre may refuse entry) and the rules of conduct at the centre.
 
@@ -22,11 +22,11 @@ TODO(legal): bookings are made by WhatsApp message to the number shown on the we
 
 ## Cancellations and rescheduling
 
-TODO(legal): a booking is cancelled or moved by WhatsApp message or by phone, at no cost, at least 24 hours before the agreed time. State the consequences of late cancellations and no-shows (including for sessions in a package), the rule for late arrivals and the conditions under which the centre may cancel or move a booking.
+TODO(legal): a booking is cancelled or moved by WhatsApp message or by phone, at no cost, at least 24 hours before the agreed time. State the consequences of late cancellations and no-shows, the rule for late arrivals and the conditions under which the centre may cancel or move a booking.
 
 ## Payment and prices
 
-TODO(legal): prices shown in lei, the VAT statement, the payment methods accepted at reception, the validity of packages, the refund policy for unused sessions and the issuing of fiscal receipts and invoices.
+TODO(legal): prices shown in lei, the VAT statement, the payment methods accepted at reception, the refund policy and the issuing of fiscal receipts and invoices.
 
 ## Liability
 
